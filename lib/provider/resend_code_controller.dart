@@ -4,19 +4,19 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/auth_results.dart';
 import '../repositories/auth_repository.dart';
 
-part 'login_controller.g.dart';
+part 'resend_code_controller.g.dart';
 
 @riverpod
-class LoginController extends _$LoginController {
+class ResendCodeController extends _$ResendCodeController {
   @override
   FutureOr<AuthResults> build() {
-    return const AuthResults.signInResultValue(result: null);
+    return const AuthResults.resendSignUpCodeResultValue(result: null);
   }
 
-  Future<void> logInUser(String email, String password) async {
+  Future<void> resendSignUpUserCode(String email) async {
     final authRepository = ref.watch(authRepositoryProvider);
     state = const AsyncLoading();
-    state = await AsyncValue.guard(
-        () => authRepository.signInUser(email, password));
+    state =
+        await AsyncValue.guard(() => authRepository.resendSignUpCode(email));
   }
 }

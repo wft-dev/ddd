@@ -1,12 +1,12 @@
-import 'package:daily_dairy_diary/provider/update_user_controller.dart';
-import 'package:daily_dairy_diary/router/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../constant/strings.dart';
+import '../provider/todo_controller.dart';
+import '../provider/update_user_controller.dart';
 import '../repositories/auth_repository.dart';
+import '../router/routes.dart';
 import '../utils/common_utils.dart';
 import '../widgets/all_widgets.dart';
 
@@ -35,7 +35,6 @@ class ProfileState extends ConsumerState<Profile> {
   }
 
   Widget getBody() {
-    ref.watch(currentUserRepositoryProvider);
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
@@ -48,7 +47,9 @@ class ProfileState extends ConsumerState<Profile> {
             ),
             SizedBox(height: Sizes.p2.sh),
             buildProfileForm(),
-            buildButton(),
+            buildSaveButton(),
+            SizedBox(height: Sizes.p2.sh),
+            buildChangePasswordButton(),
           ],
         ),
       ),
@@ -82,10 +83,7 @@ class ProfileState extends ConsumerState<Profile> {
     );
   }
 
-  AppButton buildButton() {
-    ref.listen<AsyncValue>(updateUseControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
-    });
+  AppButton buildSaveButton() {
     return AppButton(
       text: Strings.save,
       onPress: () async {
@@ -94,6 +92,15 @@ class ProfileState extends ConsumerState<Profile> {
             firstNameController.text,
             lastNameController.text,
             phoneNumberController.text);
+      },
+    );
+  }
+
+  AppButton buildChangePasswordButton() {
+    return AppButton(
+      text: Strings.changePassword,
+      onPress: () async {
+        const ChangePasswordRoute().go(context);
       },
     );
   }

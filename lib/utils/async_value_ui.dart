@@ -9,9 +9,9 @@ import 'show_exception_alert_dialog.dart';
 extension AsyncValueUI on AsyncValue {
   void showAlertDialogOnError(BuildContext context) {
     debugPrint('isLoading: $isLoading, hasError: $hasError');
-    isLoading
-        ? LoadingIndicatorDialog().show(context)
-        : LoadingIndicatorDialog().dismiss(context);
+    // isLoading
+    //     ? LoadingIndicatorDialog().show(context)
+    //     : LoadingIndicatorDialog().dismiss(context);
     if (!isLoading && hasError) {
       final message = error;
       showExceptionAlertDialog(

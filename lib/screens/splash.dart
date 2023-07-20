@@ -26,4 +26,9 @@ class SplashState extends State<Splash> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }

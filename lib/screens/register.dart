@@ -1,9 +1,13 @@
-import 'package:daily_dairy_diary/provider/register_controller.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../constant/strings.dart';
+import '../models/auth_results.dart';
+import '../provider/register_controller.dart';
+import '../router/routes.dart';
 import '../utils/common_utils.dart';
 import '../widgets/all_widgets.dart';
 
@@ -52,7 +56,7 @@ class RegisterState extends ConsumerState<Register> {
             ),
             SizedBox(height: Sizes.p2.sh),
             buildEmailSignUpForm(),
-            buildButton(),
+            buildRegisterButton(),
           ],
         ),
       ),
@@ -86,7 +90,8 @@ class RegisterState extends ConsumerState<Register> {
             controller: passwordController,
             label: Strings.password,
             obscure: true,
-            validator: Validations.validatePassword,
+            validator: (value) => Validations.validatePassword(
+                value, Strings.password.toLowerCase()),
             textInputAction: TextInputAction.next,
           ),
           AppTextFormField(
@@ -107,9 +112,33 @@ class RegisterState extends ConsumerState<Register> {
     );
   }
 
-  AppButton buildButton() {
-    ref.listen<AsyncValue>(registerControllerProvider,
-        (_, state) => state.showAlertDialogOnError(context));
+  AppButton buildRegisterButton() {
+    ref.listen<AsyncValue>(registerControllerProvider, (_, state) {
+      print('loginControllerProvider state, $state');
+      state.showAlertDialogOnError(context);
+      if (!state.hasError && state.hasValue && !state.isLoading) {
+        state.whenData(
+          (result) async {
+            final AuthResults signUpResult = result;
+            if (signUpResult is SignUpResultValue) {
+              final signUpStep = signUpResult.result!.nextStep.signUpStep;
+              if (signUpStep == AuthSignUpStep.confirmSignUp) {
+                final codeDetail =
+                    signUpResult.result!.nextStep.codeDeliveryDetails;
+                ConfirmCodeRoute(
+                        email: emailController.text,
+                        destination: codeDetail?.destination,
+                        name: codeDetail!.deliveryMedium.name)
+                    .go(context);
+              } else if (signUpStep == AuthSignUpStep.done) {
+                const DashboardRoute().go(context);
+              }
+              print("user122 ${signUpResult.result?.nextStep.signUpStep}");
+            }
+          },
+        );
+      }
+    });
     return AppButton(
       text: Strings.register,
       onPress: () async {

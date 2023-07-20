@@ -3,9 +3,11 @@ class Strings {
   static const String ok = 'OK';
   static const String cancel = 'Cancel';
 
-// Error
+  // Error
   static const String error = 'Error';
+  static const String success = 'Success';
 
+  // Login Screen
   static const String login = 'Login';
   static const String register = 'Register';
   static const String forgetPassword = 'Forget Password';
@@ -29,9 +31,41 @@ class Strings {
   static const rememberMe = 'Remember Me';
   static const doNotAccount = 'Don\'t have an account? ';
 
+  static const String code = 'Code';
   static const String save = 'Save';
+  static const String send = 'Send';
+  static const String submit = 'Submit';
+
+  // Profile Screen
   static const String profile = 'Profile';
+
+  static const String dashboard = 'Dashboard';
+
+  // Change Password Screen
   static const String changePassword = 'Change Password';
-  static const String setting = 'Setting';
+  static const String newPassword = 'New Password';
+  static const String oldPassword = 'Old Password';
+  static const String passwordUpdate = 'Password has been successfully updated';
+  static const String resetPasswordSuccess =
+      'Password has been successfully reset';
+  // Confirm Code Screen
   static const String add = 'Add';
+  static const String confirmCode = 'Confirm Code';
+  static const String confirmationCode =
+      'Add the confirmation code \nreceived on $email';
+  static const String resendVerifyCode = 'Resend verification code';
+  static const String sendVerificationSuccess =
+      'Verification code is send successfully';
+  static const String confirm = 'Confirm';
+  static const String resend = 'Re Send';
+  static const String newPasswordContinue =
+      'Enter a new password to continue signing in';
+
+  // Setting Screen
+  static const String setting = 'Setting';
+
+  static String confirmationMessage(String? destination, String name) {
+    return 'A confirmation code has been sent to $destination. '
+        'Please check your $name for the code.';
+  }
 }

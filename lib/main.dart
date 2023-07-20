@@ -8,6 +8,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/aws_amplify.dart';
+import 'router/router_listenable.dart';
 import 'router/routes.dart';
 import 'screens/login.dart';
 import 'utils/state_logger.dart';
@@ -25,29 +26,30 @@ Future<void> main() async {
     ],
   );
   runApp(ProviderScope(
-      parent: container, observers: [StateLogger()], child: MyApp()));
+      parent: container, observers: [StateLogger()], child: const MyApp()));
 }
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends ConsumerWidget {
-  MyApp({super.key});
-  // final notifier = ref.watch(routerListenableProvider.notifier);
+  const MyApp({super.key});
 
-  final GoRouter _router = GoRouter(
-    navigatorKey: rootNavigatorKey,
-    // refreshListenable: notifier,
-    initialLocation: LoginRoute.path,
-    debugLogDiagnostics: true,
-    routes: $appRoutes,
-    // redirect: notifier.redirect,
-  );
+  GoRouter _router(notifier) => GoRouter(
+        navigatorKey: rootNavigatorKey,
+        refreshListenable: notifier,
+        initialLocation: SplashRoute.path,
+        debugLogDiagnostics: true,
+        routes: $appRoutes,
+        redirect: notifier.redirect,
+      );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.watch(routerListenableProvider.notifier);
+
     return ResponsiveApp(builder: (context) {
       return MaterialApp.router(
-        routerConfig: _router,
+        routerConfig: _router(notifier),
         title: 'App',
       );
     });

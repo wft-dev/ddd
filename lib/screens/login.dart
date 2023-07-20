@@ -1,12 +1,16 @@
-import 'package:daily_dairy_diary/provider/login_controller.dart';
-import 'package:daily_dairy_diary/provider/remember_me_controller.dart';
-import 'package:daily_dairy_diary/repositories/remember_me_repository.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+
 import 'package:flutter/material.dart';
-import 'package:daily_dairy_diary/router/routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../constant/strings.dart';
+import '../models/auth_results.dart';
+import '../provider/login_controller.dart';
+import '../provider/remember_me_controller.dart';
+import '../provider/resend_code_controller.dart';
+import '../repositories/remember_me_repository.dart';
+import '../router/routes.dart';
 import '../utils/common_utils.dart';
 import '../widgets/all_widgets.dart';
 
@@ -120,7 +124,8 @@ class LoginState extends ConsumerState<Login> {
             controller: passwordController,
             label: Strings.password,
             obscure: true,
-            validator: Validations.validatePassword,
+            validator: (value) => Validations.validatePassword(
+                value, Strings.password.toLowerCase()),
             textInputAction: TextInputAction.done,
           ),
         ],
@@ -130,8 +135,57 @@ class LoginState extends ConsumerState<Login> {
 
   AppButton buildButton() {
     ref.listen<AsyncValue>(loginControllerProvider, (_, state) {
+      print('loginControllerProvider state, $state');
       state.showAlertDialogOnError(context);
+      if (!state.hasError && state.hasValue && !state.isLoading) {
+        state.whenData(
+          (result) async {
+            final AuthResults signInResult = result;
+            if (signInResult is SignInResultValue) {
+              final signInStep = signInResult.result!.nextStep.signInStep;
+              if (signInStep == AuthSignInStep.confirmSignInWithNewPassword) {
+                showExceptionAlertDialog(
+                  context: context,
+                  title: Strings.error,
+                  exception: Strings.newPasswordContinue,
+                );
+              } else if (signInStep == AuthSignInStep.confirmSignUp) {
+                await ref
+                    .read(resendCodeControllerProvider.notifier)
+                    .resendSignUpUserCode(emailController.text);
+              } else if (signInStep == AuthSignInStep.done) {
+                const ProfileRoute().go(context);
+              }
+              print("user122 ${signInResult.result?.nextStep.signInStep}");
+            }
+          },
+        );
+      }
+      // user?.when(
+      //     signInResultValue: (result) =>
+      //         print("user ${result?.nextStep.signInStep}"),
+      //     signUpResult: (AuthSignInStep result) {});
     });
+    ref.listen<AsyncValue>(resendCodeControllerProvider, (_, state) {
+      state.showAlertDialogOnError(context);
+      if (!state.hasError && state.hasValue && !state.isLoading) {
+        state.whenData((result) async {
+          final AuthResults resendCodeResult = result;
+          if (resendCodeResult is ResendSignUpCodeResultValue) {
+            final codeDetail = resendCodeResult.result!.codeDeliveryDetails;
+            ConfirmCodeRoute(
+                    email: emailController.text,
+                    destination: codeDetail.destination,
+                    name: codeDetail.deliveryMedium.name)
+                .go(context);
+          }
+        });
+      }
+    });
+    // final AuthResults? user = ref.watch(loginControllerProvider).value;
+    // user?.when(
+    //     signInResultValue: (result) =>
+    //         print("user ${result?.nextStep.signInStep}"), signUpResult: (AuthSignInStep result) {  });
     return AppButton(
       text: Strings.login,
       onPress: () async {
@@ -139,20 +193,11 @@ class LoginState extends ConsumerState<Login> {
         await ref
             .read(loginControllerProvider.notifier)
             .logInUser(emailController.text, passwordController.text);
-        // ignore: use_build_context_synchronously
-        const ProfileRoute().go(context);
       },
     );
   }
 
   AppCheckbox buildRememberCheckbox() {
-    // final state = ref.watch(rememberMeControllerProvider);
-    // ref.listen<AsyncValue>(
-    //   rememberMeControllerProvider,
-    //   (_, state) => state.showAlertDialogOnError(context),
-    // );
-    // print("state ${state.isLoading}");
-
     return AppCheckbox(
       listTileCheckBox: isRememberMeChecked,
       title: Strings.rememberMe,

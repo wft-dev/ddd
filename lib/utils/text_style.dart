@@ -6,7 +6,7 @@ class CustomTextStyle {
   static TextStyle loginTitleStyle({bool isWidth = true}) {
     return TextStyle(
       fontSize: checkSize(36, isWidth),
-      color: Colors.white,
+      color: Colors.black,
       fontWeight: FontWeight.w600,
     );
   }

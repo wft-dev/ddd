@@ -1,8 +1,8 @@
-import 'package:daily_dairy_diary/model/remember.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/strings.dart';
+import '../models/remember.dart';
 import '../provider/remember_me_controller.dart';
 part 'remember_me_repository.g.dart';
 
