@@ -1,3 +1,4 @@
+import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/screens/dashboard.dart';
 import 'package:daily_dairy_diary/screens/profile.dart';
 import 'package:daily_dairy_diary/screens/reset_password.dart';
@@ -108,8 +109,106 @@ class ChangePasswordRoute extends GoRouteData {
   }
 }
 
+@TypedShellRoute<MyShellRouteData>(
+  routes: <TypedRoute<RouteData>>[
+    TypedGoRoute<DashboardRoute>(path: DashboardRoute.path),
+    TypedGoRoute<SettingRoute>(path: SettingRoute.path),
+    TypedGoRoute<ReportRoute>(path: ReportRoute.path),
+    TypedGoRoute<ProfileRoute>(path: ProfileRoute.path),
+  ],
+)
+class MyShellRouteData extends ShellRouteData {
+  const MyShellRouteData();
+
+  @override
+  Widget builder(
+    BuildContext context,
+    GoRouterState state,
+    Widget navigator,
+  ) {
+    return MyShellRouteScreen(child: navigator);
+  }
+}
+
+class MyShellRouteScreen extends StatelessWidget {
+  const MyShellRouteScreen({required this.child, super.key});
+
+  final Widget child;
+
+  int getCurrentIndex(BuildContext context) {
+    final String location = GoRouterState.of(context).location;
+    if (location == SettingRoute.path) {
+      return 1;
+    }
+    if (location == ReportRoute.path) {
+      return 2;
+    }
+    if (location == ProfileRoute.path) {
+      return 3;
+    }
+    return 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final int currentIndex = getCurrentIndex(context);
+    return Scaffold(
+      body: child,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        type: BottomNavigationBarType.fixed,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.dashboard,
+              size: 20,
+            ),
+            label: Strings.dashboard,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.settings,
+              size: 20,
+            ),
+            label: Strings.setting,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person_2,
+              size: 20,
+            ),
+            label: Strings.profile,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.report,
+              size: 20,
+            ),
+            label: Strings.report,
+          ),
+        ],
+        onTap: (int index) {
+          switch (index) {
+            case 0:
+              const DashboardRoute().go(context);
+              break;
+            case 1:
+              const SettingRoute().go(context);
+              break;
+            case 2:
+              const ReportRoute().go(context);
+              break;
+            case 3:
+              const ProfileRoute().go(context);
+              break;
+          }
+        },
+      ),
+    );
+  }
+}
+
 // DashboardRoute
-@TypedGoRoute<DashboardRoute>(path: DashboardRoute.path)
 class DashboardRoute extends GoRouteData {
   const DashboardRoute();
   static const path = '/dashboard';
@@ -121,7 +220,6 @@ class DashboardRoute extends GoRouteData {
 }
 
 // ProfileRoute
-@TypedGoRoute<ProfileRoute>(path: ProfileRoute.path)
 class ProfileRoute extends GoRouteData {
   const ProfileRoute();
   static const path = '/profile';
@@ -133,7 +231,6 @@ class ProfileRoute extends GoRouteData {
 }
 
 // SettingRoute
-@TypedGoRoute<SettingRoute>(path: SettingRoute.path)
 class SettingRoute extends GoRouteData {
   const SettingRoute();
   static const path = '/setting';
@@ -141,5 +238,16 @@ class SettingRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const Setting();
+  }
+}
+
+// ReportRoute
+class ReportRoute extends GoRouteData {
+  const ReportRoute();
+  static const path = '/report';
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const Login();
   }
 }
