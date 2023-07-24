@@ -9,7 +9,6 @@ part 'product_repository.g.dart';
 class ProductRepository {
   Future<void> createProduct(Product product) async {
     try {
-      // final product = Product(name: 'milk', price: '20', quantity: '2');
       final request = ModelMutations.create(product);
       final response = await Amplify.API.mutate(request: request).response;
 
@@ -25,7 +24,7 @@ class ProductRepository {
   }
 
   Future<void> updateProduct(Product originalProduct) async {
-    final productWithNewName = originalProduct.copyWith(price: '10');
+    final productWithNewName = originalProduct.copyWith(price: 10);
 
     final request = ModelMutations.update(productWithNewName);
     final response = await Amplify.API.mutate(request: request).response;
@@ -36,6 +35,23 @@ class ProductRepository {
     final request = ModelMutations.delete(productToDelete);
     final response = await Amplify.API.mutate(request: request).response;
     safePrint('Response: $response');
+  }
+
+  Future<List<Product?>> queryProductItems() async {
+    try {
+      final request = ModelQueries.list(Product.classType);
+      final response = await Amplify.API.query(request: request).response;
+
+      final products = response.data?.items;
+      if (products == null) {
+        safePrint('errors: ${response.errors}');
+        return const [];
+      }
+      return products;
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      return const [];
+    }
   }
 }
 

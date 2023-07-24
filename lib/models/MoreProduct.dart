@@ -21,22 +21,18 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
-import 'package:collection/collection.dart';
 
-/** This is an auto generated class representing the Product type in your schema. */
-class Product extends amplify_core.Model {
-  static const classType = const _ProductModelType();
+/** This is an auto generated class representing the MoreProduct type in your schema. */
+class MoreProduct extends amplify_core.Model {
+  static const classType = const _MoreProductModelType();
   final String id;
   final String? _name;
   final String? _type;
   final int? _price;
   final int? _quantity;
-  final amplify_core.TemporalDateTime? _date;
-  final String? _userID;
-  final bool? _isDefault;
-  final List<MoreProduct>? _moreProducts;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
+  final String? _productMoreProductsId;
 
   @override
   getInstanceType() => classType;
@@ -46,8 +42,8 @@ class Product extends amplify_core.Model {
   @override
   String getId() => id;
 
-  ProductModelIdentifier get modelIdentifier {
-    return ProductModelIdentifier(id: id);
+  MoreProductModelIdentifier get modelIdentifier {
+    return MoreProductModelIdentifier(id: id);
   }
 
   String? get name {
@@ -66,31 +62,6 @@ class Product extends amplify_core.Model {
     return _quantity;
   }
 
-  amplify_core.TemporalDateTime? get date {
-    return _date;
-  }
-
-  String get userID {
-    try {
-      return _userID!;
-    } catch (e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages
-              .codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion: amplify_core.AmplifyExceptionMessages
-              .codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString());
-    }
-  }
-
-  bool? get isDefault {
-    return _isDefault;
-  }
-
-  List<MoreProduct>? get moreProducts {
-    return _moreProducts;
-  }
-
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -99,51 +70,41 @@ class Product extends amplify_core.Model {
     return _updatedAt;
   }
 
-  const Product._internal(
+  String? get productMoreProductsId {
+    return _productMoreProductsId;
+  }
+
+  const MoreProduct._internal(
       {required this.id,
       name,
       type,
       price,
       quantity,
-      date,
-      required userID,
-      isDefault,
-      moreProducts,
       createdAt,
-      updatedAt})
+      updatedAt,
+      productMoreProductsId})
       : _name = name,
         _type = type,
         _price = price,
         _quantity = quantity,
-        _date = date,
-        _userID = userID,
-        _isDefault = isDefault,
-        _moreProducts = moreProducts,
         _createdAt = createdAt,
-        _updatedAt = updatedAt;
+        _updatedAt = updatedAt,
+        _productMoreProductsId = productMoreProductsId;
 
-  factory Product(
+  factory MoreProduct(
       {String? id,
       String? name,
       String? type,
       int? price,
       int? quantity,
-      amplify_core.TemporalDateTime? date,
-      required String userID,
-      bool? isDefault,
-      List<MoreProduct>? moreProducts}) {
-    return Product._internal(
+      String? productMoreProductsId}) {
+    return MoreProduct._internal(
         id: id == null ? amplify_core.UUID.getUUID() : id,
         name: name,
         type: type,
         price: price,
         quantity: quantity,
-        date: date,
-        userID: userID,
-        isDefault: isDefault,
-        moreProducts: moreProducts != null
-            ? List<MoreProduct>.unmodifiable(moreProducts)
-            : moreProducts);
+        productMoreProductsId: productMoreProductsId);
   }
 
   bool equals(Object other) {
@@ -153,16 +114,13 @@ class Product extends amplify_core.Model {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Product &&
+    return other is MoreProduct &&
         id == other.id &&
         _name == other._name &&
         _type == other._type &&
         _price == other._price &&
         _quantity == other._quantity &&
-        _date == other._date &&
-        _userID == other._userID &&
-        _isDefault == other._isDefault &&
-        DeepCollectionEquality().equals(_moreProducts, other._moreProducts);
+        _productMoreProductsId == other._productMoreProductsId;
   }
 
   @override
@@ -172,7 +130,7 @@ class Product extends amplify_core.Model {
   String toString() {
     var buffer = new StringBuffer();
 
-    buffer.write("Product {");
+    buffer.write("MoreProduct {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("type=" + "$_type" + ", ");
@@ -181,88 +139,64 @@ class Product extends amplify_core.Model {
     buffer.write("quantity=" +
         (_quantity != null ? _quantity!.toString() : "null") +
         ", ");
-    buffer.write("date=" + (_date != null ? _date!.format() : "null") + ", ");
-    buffer.write("userID=" + "$_userID" + ", ");
-    buffer.write("isDefault=" +
-        (_isDefault != null ? _isDefault!.toString() : "null") +
-        ", ");
     buffer.write("createdAt=" +
         (_createdAt != null ? _createdAt!.format() : "null") +
         ", ");
-    buffer.write(
-        "updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
+    buffer.write("updatedAt=" +
+        (_updatedAt != null ? _updatedAt!.format() : "null") +
+        ", ");
+    buffer.write("productMoreProductsId=" + "$_productMoreProductsId");
     buffer.write("}");
 
     return buffer.toString();
   }
 
-  Product copyWith(
+  MoreProduct copyWith(
       {String? name,
       String? type,
       int? price,
       int? quantity,
-      amplify_core.TemporalDateTime? date,
-      String? userID,
-      bool? isDefault,
-      List<MoreProduct>? moreProducts}) {
-    return Product._internal(
+      String? productMoreProductsId}) {
+    return MoreProduct._internal(
         id: id,
         name: name ?? this.name,
         type: type ?? this.type,
         price: price ?? this.price,
         quantity: quantity ?? this.quantity,
-        date: date ?? this.date,
-        userID: userID ?? this.userID,
-        isDefault: isDefault ?? this.isDefault,
-        moreProducts: moreProducts ?? this.moreProducts);
+        productMoreProductsId:
+            productMoreProductsId ?? this.productMoreProductsId);
   }
 
-  Product copyWithModelFieldValues(
+  MoreProduct copyWithModelFieldValues(
       {ModelFieldValue<String?>? name,
       ModelFieldValue<String?>? type,
       ModelFieldValue<int?>? price,
       ModelFieldValue<int?>? quantity,
-      ModelFieldValue<amplify_core.TemporalDateTime?>? date,
-      ModelFieldValue<String>? userID,
-      ModelFieldValue<bool?>? isDefault,
-      ModelFieldValue<List<MoreProduct>?>? moreProducts}) {
-    return Product._internal(
+      ModelFieldValue<String?>? productMoreProductsId}) {
+    return MoreProduct._internal(
         id: id,
         name: name == null ? this.name : name.value,
         type: type == null ? this.type : type.value,
         price: price == null ? this.price : price.value,
         quantity: quantity == null ? this.quantity : quantity.value,
-        date: date == null ? this.date : date.value,
-        userID: userID == null ? this.userID : userID.value,
-        isDefault: isDefault == null ? this.isDefault : isDefault.value,
-        moreProducts:
-            moreProducts == null ? this.moreProducts : moreProducts.value);
+        productMoreProductsId: productMoreProductsId == null
+            ? this.productMoreProductsId
+            : productMoreProductsId.value);
   }
 
-  Product.fromJson(Map<String, dynamic> json)
+  MoreProduct.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         _name = json['name'],
         _type = json['type'],
         _price = (json['price'] as num?)?.toInt(),
         _quantity = (json['quantity'] as num?)?.toInt(),
-        _date = json['date'] != null
-            ? amplify_core.TemporalDateTime.fromString(json['date'])
-            : null,
-        _userID = json['userID'],
-        _isDefault = json['isDefault'],
-        _moreProducts = json['moreProducts'] is List
-            ? (json['moreProducts'] as List)
-                .where((e) => e?['serializedData'] != null)
-                .map((e) => MoreProduct.fromJson(
-                    new Map<String, dynamic>.from(e['serializedData'])))
-                .toList()
-            : null,
         _createdAt = json['createdAt'] != null
             ? amplify_core.TemporalDateTime.fromString(json['createdAt'])
             : null,
         _updatedAt = json['updatedAt'] != null
             ? amplify_core.TemporalDateTime.fromString(json['updatedAt'])
-            : null;
+            : null,
+        _productMoreProductsId = json['productMoreProductsId'];
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -270,13 +204,9 @@ class Product extends amplify_core.Model {
         'type': _type,
         'price': _price,
         'quantity': _quantity,
-        'date': _date?.format(),
-        'userID': _userID,
-        'isDefault': _isDefault,
-        'moreProducts':
-            _moreProducts?.map((MoreProduct? e) => e?.toJson()).toList(),
         'createdAt': _createdAt?.format(),
-        'updatedAt': _updatedAt?.format()
+        'updatedAt': _updatedAt?.format(),
+        'productMoreProductsId': _productMoreProductsId
       };
 
   Map<String, Object?> toMap() => {
@@ -285,84 +215,51 @@ class Product extends amplify_core.Model {
         'type': _type,
         'price': _price,
         'quantity': _quantity,
-        'date': _date,
-        'userID': _userID,
-        'isDefault': _isDefault,
-        'moreProducts': _moreProducts,
         'createdAt': _createdAt,
-        'updatedAt': _updatedAt
+        'updatedAt': _updatedAt,
+        'productMoreProductsId': _productMoreProductsId
       };
 
-  static final amplify_core.QueryModelIdentifier<ProductModelIdentifier>
+  static final amplify_core.QueryModelIdentifier<MoreProductModelIdentifier>
       MODEL_IDENTIFIER =
-      amplify_core.QueryModelIdentifier<ProductModelIdentifier>();
+      amplify_core.QueryModelIdentifier<MoreProductModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final NAME = amplify_core.QueryField(fieldName: "name");
   static final TYPE = amplify_core.QueryField(fieldName: "type");
   static final PRICE = amplify_core.QueryField(fieldName: "price");
   static final QUANTITY = amplify_core.QueryField(fieldName: "quantity");
-  static final DATE = amplify_core.QueryField(fieldName: "date");
-  static final USERID = amplify_core.QueryField(fieldName: "userID");
-  static final ISDEFAULT = amplify_core.QueryField(fieldName: "isDefault");
-  static final MOREPRODUCTS = amplify_core.QueryField(
-      fieldName: "moreProducts",
-      fieldType: amplify_core.ModelFieldType(
-          amplify_core.ModelFieldTypeEnum.model,
-          ofModelName: 'MoreProduct'));
+  static final PRODUCTMOREPRODUCTSID =
+      amplify_core.QueryField(fieldName: "productMoreProductsId");
   static var schema = amplify_core.Model.defineSchema(
       define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "Product";
-    modelSchemaDefinition.pluralName = "Products";
+    modelSchemaDefinition.name = "MoreProduct";
+    modelSchemaDefinition.pluralName = "MoreProducts";
 
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
 
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-        key: Product.NAME,
+        key: MoreProduct.NAME,
         isRequired: false,
         ofType: amplify_core.ModelFieldType(
             amplify_core.ModelFieldTypeEnum.string)));
 
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-        key: Product.TYPE,
+        key: MoreProduct.TYPE,
         isRequired: false,
         ofType: amplify_core.ModelFieldType(
             amplify_core.ModelFieldTypeEnum.string)));
 
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-        key: Product.PRICE,
+        key: MoreProduct.PRICE,
         isRequired: false,
         ofType:
             amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)));
 
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-        key: Product.QUANTITY,
+        key: MoreProduct.QUANTITY,
         isRequired: false,
         ofType:
             amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)));
-
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-        key: Product.DATE,
-        isRequired: false,
-        ofType: amplify_core.ModelFieldType(
-            amplify_core.ModelFieldTypeEnum.dateTime)));
-
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-        key: Product.USERID,
-        isRequired: true,
-        ofType: amplify_core.ModelFieldType(
-            amplify_core.ModelFieldTypeEnum.string)));
-
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-        key: Product.ISDEFAULT,
-        isRequired: false,
-        ofType:
-            amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)));
-
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
-        key: Product.MOREPRODUCTS,
-        isRequired: false,
-        ofModelName: 'MoreProduct',
-        associatedKey: MoreProduct.PRODUCTMOREPRODUCTSID));
 
     modelSchemaDefinition.addField(
         amplify_core.ModelFieldDefinition.nonQueryField(
@@ -379,32 +276,39 @@ class Product extends amplify_core.Model {
             isReadOnly: true,
             ofType: amplify_core.ModelFieldType(
                 amplify_core.ModelFieldTypeEnum.dateTime)));
+
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+        key: MoreProduct.PRODUCTMOREPRODUCTSID,
+        isRequired: false,
+        ofType: amplify_core.ModelFieldType(
+            amplify_core.ModelFieldTypeEnum.string)));
   });
 }
 
-class _ProductModelType extends amplify_core.ModelType<Product> {
-  const _ProductModelType();
+class _MoreProductModelType extends amplify_core.ModelType<MoreProduct> {
+  const _MoreProductModelType();
 
   @override
-  Product fromJson(Map<String, dynamic> jsonData) {
-    return Product.fromJson(jsonData);
+  MoreProduct fromJson(Map<String, dynamic> jsonData) {
+    return MoreProduct.fromJson(jsonData);
   }
 
   @override
   String modelName() {
-    return 'Product';
+    return 'MoreProduct';
   }
 }
 
 /**
  * This is an auto generated class representing the model identifier
- * of [Product] in your schema.
+ * of [MoreProduct] in your schema.
  */
-class ProductModelIdentifier implements amplify_core.ModelIdentifier<Product> {
+class MoreProductModelIdentifier
+    implements amplify_core.ModelIdentifier<MoreProduct> {
   final String id;
 
-  /** Create an instance of ProductModelIdentifier using [id] the primary key. */
-  const ProductModelIdentifier({required this.id});
+  /** Create an instance of MoreProductModelIdentifier using [id] the primary key. */
+  const MoreProductModelIdentifier({required this.id});
 
   @override
   Map<String, dynamic> serializeAsMap() => (<String, dynamic>{'id': id});
@@ -419,7 +323,7 @@ class ProductModelIdentifier implements amplify_core.ModelIdentifier<Product> {
   String serializeAsString() => serializeAsMap().values.join('#');
 
   @override
-  String toString() => 'ProductModelIdentifier(id: $id)';
+  String toString() => 'MoreProductModelIdentifier(id: $id)';
 
   @override
   bool operator ==(Object other) {
@@ -427,7 +331,7 @@ class ProductModelIdentifier implements amplify_core.ModelIdentifier<Product> {
       return true;
     }
 
-    return other is ProductModelIdentifier && id == other.id;
+    return other is MoreProductModelIdentifier && id == other.id;
   }
 
   @override

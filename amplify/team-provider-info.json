@@ -14,6 +14,9 @@
     "categories": {
       "auth": {
         "ddd607fbf72": {}
+      },
+      "api": {
+        "ddd": {}
       }
     }
   }
