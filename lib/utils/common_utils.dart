@@ -5,3 +5,4 @@ export 'text_style.dart';
 export 'validations.dart';
 export 'async_value_ui.dart';
 export 'show_exception_alert_dialog.dart';
+export 'extensions.dart';

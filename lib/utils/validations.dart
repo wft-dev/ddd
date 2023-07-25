@@ -10,6 +10,11 @@ class Validations {
     return validateName(value);
   }
 
+  static String? validateString(String value, String textFiled) {
+    if (value.isEmpty) return '$textFiled is required.';
+    return null;
+  }
+
   static String? validateName(String value) {
     final RegExp nameExp = RegExp(r'^[A-za-z ]+$');
     if (!nameExp.hasMatch(value)) {
