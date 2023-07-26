@@ -1,8 +1,7 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../models/Product.dart';
 
 part 'product_repository.g.dart';
 
@@ -11,7 +10,6 @@ class ProductRepository {
     try {
       final request = ModelMutations.create(product);
       final response = await Amplify.API.mutate(request: request).response;
-
       final createdProduct = response.data;
       if (createdProduct == null) {
         safePrint('errors: ${response.errors}');

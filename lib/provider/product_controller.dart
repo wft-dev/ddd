@@ -17,7 +17,8 @@ class ProductController extends _$ProductController {
     return fetchProduct();
   }
 
-  Future<void> addTodo(Product product) async {
+  // Let's allow add products.
+  Future<void> addProduct(Product product) async {
     final productRepository = ref.watch(productRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -26,8 +27,8 @@ class ProductController extends _$ProductController {
     });
   }
 
-  // Let's allow removing products
-  Future<void> removeTodo(Product productId) async {
+  // Let's allow removing products.
+  Future<void> removeProduct(Product productId) async {
     final productRepository = ref.watch(productRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
@@ -36,13 +37,13 @@ class ProductController extends _$ProductController {
     });
   }
 
-//   // Let's mark a product as completed
-//   Future<void> toggle(String productId) async {
-//         final productRepository = ref.watch(productRepositoryProvider);
-
-//     state = const AsyncValue.loading();
-//  state = await AsyncValue.guard(() async {
-//       await productRepository.createProduct(product);
-//       return fetchProduct();
-//     })  }
+  // Let's allow edit product.
+  Future<void> editProduct(Product product) async {
+    final productRepository = ref.watch(productRepositoryProvider);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await productRepository.updateProduct(product);
+      return fetchProduct();
+    });
+  }
 }

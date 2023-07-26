@@ -1,6 +1,7 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
+import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'setting_repository.g.dart';
@@ -19,13 +20,30 @@ class SettingRepository {
       safePrint('Mutation result: ${createSetting.name}');
     } on ApiException catch (e) {
       safePrint('Mutation failed: $e');
+      rethrow;
     }
   }
 
   Future<void> updateSetting(Setting setting) async {
-    final request = ModelMutations.update(setting);
-    final response = await Amplify.API.mutate(request: request).response;
-    safePrint('Response: $response');
+    try {
+      final request = ModelMutations.update(setting);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> deleteSetting(Setting settingToDelete) async {
+    try {
+      final request = ModelMutations.delete(settingToDelete);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+      rethrow;
+    }
   }
 
   Future<List<Setting?>> querySettingItems() async {
@@ -41,7 +59,7 @@ class SettingRepository {
       return settings;
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
-      return const [];
+      rethrow;
     }
   }
 }

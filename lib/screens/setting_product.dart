@@ -2,23 +2,22 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
-import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/widgets/all_widgets.dart';
+import 'package:daily_dairy_diary/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddProduct extends ConsumerStatefulWidget {
-  const AddProduct({super.key});
+class SettingProduct extends ConsumerStatefulWidget {
+  const SettingProduct({super.key});
   @override
-  ConsumerState<AddProduct> createState() => AddProductState();
+  ConsumerState<SettingProduct> createState() => SettingProductState();
 }
 
-class AddProductState extends ConsumerState<AddProduct> {
+class SettingProductState extends ConsumerState<SettingProduct> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _moreFormKey = GlobalKey<FormState>();
   List<GroupControllers> groupControllers = [];
 
   late DateTime _startDate = DateTime.now();
@@ -37,9 +36,6 @@ class AddProductState extends ConsumerState<AddProduct> {
   ];
 
   Setting? settingData;
-  Product? productData;
-
-  List<Product> productList = [];
 
   DateTime get start => DateTime(_startDate.year, _startDate.month,
       _startDate.day, _startTime.hour, _startTime.minute);
@@ -50,7 +46,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(Strings.add),
+          title: const Text(Strings.setting),
         ),
         body: getBody());
   }
@@ -101,35 +97,12 @@ class AddProductState extends ConsumerState<AddProduct> {
               });
             }),
             buildSettingForm(_formKey),
-            buildIsDefaultCheckbox(),
             gapH12,
             buildSaveButton(),
-            gapH12,
-            buildAddMoreButton(),
-            gapH12,
-            Form(
-              key: _moreFormKey,
-              child: Flexible(
-                // height: 400,
-                child: buildMoreProductListView(),
-              ),
-            ),
+            buildRemoveButton(),
           ],
         ),
       ),
-    );
-  }
-
-  // This [AppCheckbox] is used for mark the entry as default for setting screen.
-  AppCheckbox buildIsDefaultCheckbox() {
-    return AppCheckbox(
-      listTileCheckBox: isDefault,
-      title: Strings.markDefault,
-      onChange: (value) async {
-        setState(() {
-          isDefault = !isDefault;
-        });
-      },
     );
   }
 
@@ -185,27 +158,29 @@ class AddProductState extends ConsumerState<AddProduct> {
     );
   }
 
-  // This [AppButton] is used for create the setting product and additional products.
+  // This [AppButton] is used for create and update the setting product.
   AppButton buildSaveButton() {
-    // final q = ref.watch(settingControllerProvider);
-
     return AppButton(
-      text: Strings.save,
+      text: settingData != null ? Strings.update : Strings.save,
       onPress: () async {
-        if (!_formKey.currentState!.validate() ||
-            !_moreFormKey.currentState!.validate()) return;
+        if (!_formKey.currentState!.validate()) return;
         final userID = ref.read(currentUserRepositoryProvider).value;
         if (userID != null) {
           final now = DateTime.now();
-          var product = Product(
-            name: groupControllers[0].name.text,
-            price: groupControllers[0].price.text.parseInt(),
-            type: selectedValue,
-            quantity: groupControllers[0].quantity.text.parseInt(),
-            date: TemporalDateTime(now),
-            userID: userID,
-          );
-          if (settingData == null && isDefault) {
+          if (settingData != null) {
+            final updateSettingData = settingData!.copyWith(
+              name: groupControllers[0].name.text,
+              price: groupControllers[0].price.text.parseInt(),
+              type: selectedValue,
+              quantity: groupControllers[0].quantity.text.parseInt(),
+              date: TemporalDateTime(now),
+              userID: userID,
+              isDefault: true,
+            );
+            ref
+                .read(settingControllerProvider.notifier)
+                .editSetting(updateSettingData);
+          } else {
             var setting = Setting(
               name: groupControllers[0].name.text,
               price: groupControllers[0].price.text.parseInt(),
@@ -213,105 +188,23 @@ class AddProductState extends ConsumerState<AddProduct> {
               quantity: groupControllers[0].quantity.text.parseInt(),
               date: TemporalDateTime(now),
               userID: userID,
-              isDefault: isDefault,
+              isDefault: true,
             );
-            final settingValue = ref
-                .read(settingControllerProvider.notifier)
-                .addSetting(setting);
-            print(settingValue);
-            ref.read(productControllerProvider.notifier).addProduct(product);
-          } else if (productData != null) {
-            final updateProductData = productData!.copyWith(
-              name: groupControllers[0].name.text,
-              price: groupControllers[0].price.text.parseInt(),
-              type: selectedValue,
-              quantity: groupControllers[0].quantity.text.parseInt(),
-              date: TemporalDateTime(now),
-              userID: userID,
-            );
-            ref
-                .read(productControllerProvider.notifier)
-                .editProduct(updateProductData);
-          } else {
-            ref.read(productControllerProvider.notifier).addProduct(product);
+            ref.read(settingControllerProvider.notifier).addSetting(setting);
           }
         }
       },
     );
   }
 
-  // This [AppButton] is used for add additional products.
-  AppButton buildAddMoreButton() {
+  // This [AppButton] is used for remove the setting product.
+  AppButton buildRemoveButton() {
     return AppButton(
-      text: Strings.addMore,
-      onPress: () {
-        final group = GroupControllers();
-        setState(() {
-          groupControllers.add(group);
-          productList.add(Product(userID: ''));
-        });
-      },
-    );
-  }
-
-  // This [ListView] is displaying additional products.
-  ListView buildMoreProductListView() {
-    return ListView.builder(
-        padding: const EdgeInsets.all(8),
-        shrinkWrap: true,
-        primary: false,
-        itemCount: productList.length,
-        itemBuilder: (BuildContext context, int index) {
-          int indexForList = index + 1;
-          Product productByIndex = productList[index];
-          return SizedBox(
-            // height: 50,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "",
-                  style:
-                      CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
-                ),
-                buildDropDown(index, productList[index].type, (value) {
-                  setState(() {
-                    productList[index] = productByIndex.copyWith(type: value);
-                  });
-                }),
-                generateTextField(groupControllers[indexForList].name,
-                    Strings.name, TextInputAction.next, (value) {
-                  setState(() {
-                    productList[index] = productByIndex.copyWith(name: value);
-                  });
-                }),
-                generateTextField(groupControllers[indexForList].price,
-                    Strings.price, TextInputAction.next, (value) {
-                  setState(() {
-                    productList[index] =
-                        productByIndex.copyWith(price: value.parseInt());
-                  });
-                }),
-                generateTextField(groupControllers[indexForList].quantity,
-                    Strings.quantity, TextInputAction.done, (value) {
-                  setState(() {
-                    productList[index] =
-                        productByIndex.copyWith(quantity: value.parseInt());
-                  });
-                }),
-                AppButton(
-                  text: Strings.remove,
-                  onPress: () {
-                    final group = GroupControllers();
-                    setState(() {
-                      groupControllers.add(group);
-                      productList.removeAt(index);
-                    });
-                  },
-                ),
-              ],
-            ),
-          );
+        text: Strings.remove,
+        onPress: () async {
+          ref
+              .read(settingControllerProvider.notifier)
+              .removeSetting(settingData!);
         });
   }
 
