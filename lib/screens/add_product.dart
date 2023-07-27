@@ -1,5 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
@@ -10,8 +11,11 @@ import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// ignore: must_be_immutable
 class AddProduct extends ConsumerStatefulWidget {
-  const AddProduct({super.key});
+  AddProduct(this.productData, {super.key});
+  Product? productData;
+
   @override
   ConsumerState<AddProduct> createState() => AddProductState();
 }
@@ -37,7 +41,6 @@ class AddProductState extends ConsumerState<AddProduct> {
   ];
 
   Setting? settingData;
-  Product? productData;
 
   List<Product> productList = [];
 
@@ -63,23 +66,32 @@ class AddProductState extends ConsumerState<AddProduct> {
   }
 
   // This is used for display all widgets.
+  void autofillSettingData<T>(<T> settingItem) {
+    selectedValue = settingItem.type;
+    groupControllers[0].name.text = settingItem.name!;
+    groupControllers[0].price.text = settingItem.price.toString();
+    groupControllers[0].quantity.text = settingItem.quantity.toString();
+  }
+
+  // This is used for display all widgets.
   Widget getBody() {
     ref.listen<AsyncValue>(settingControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
       print('state ${state.value}');
     });
-    final settingList = ref.watch(settingControllerProvider);
-    print('state112 $settingList');
-    settingList.whenData((setting) {
-      if (setting.isNotEmpty) {
-        final settingItem = setting[0]!;
-        settingData = settingItem;
-        selectedValue = settingItem.type;
-        groupControllers[0].name.text = settingItem.name!;
-        groupControllers[0].price.text = settingItem.price.toString();
-        groupControllers[0].quantity.text = settingItem.quantity.toString();
-      }
-    });
+    if (widget.productData != null) {
+      autofillSettingData(widget.productData);
+    } else {
+      final settingList = ref.watch(settingControllerProvider);
+      print('state112 $settingList');
+      settingList.whenData((setting) {
+        if (setting.isNotEmpty) {
+          final settingItem = setting[0]!;
+          settingData = settingItem;
+          autofillSettingData(settingItem);
+        }
+      });
+    }
     return SingleChildScrollView(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
@@ -103,6 +115,7 @@ class AddProductState extends ConsumerState<AddProduct> {
             buildSettingForm(_formKey),
             buildIsDefaultCheckbox(),
             gapH12,
+            buildResetButton(),
             buildSaveButton(),
             gapH12,
             buildAddMoreButton(),
@@ -192,8 +205,8 @@ class AddProductState extends ConsumerState<AddProduct> {
     return AppButton(
       text: Strings.save,
       onPress: () async {
-        if (!_formKey.currentState!.validate() ||
-            !_moreFormKey.currentState!.validate()) return;
+        // if (!_formKey.currentState!.validate() ||
+        //     !_moreFormKey.currentState!.validate()) return;
         final userID = ref.read(currentUserRepositoryProvider).value;
         if (userID != null) {
           final now = DateTime.now();
@@ -205,6 +218,8 @@ class AddProductState extends ConsumerState<AddProduct> {
             date: TemporalDateTime(now),
             userID: userID,
           );
+          var l = productList.map((todo) => todo.toString()).toList();
+          var products = MoreProduct(products: l);
           if (settingData == null && isDefault) {
             var setting = Setting(
               name: groupControllers[0].name.text,
@@ -219,9 +234,9 @@ class AddProductState extends ConsumerState<AddProduct> {
                 .read(settingControllerProvider.notifier)
                 .addSetting(setting);
             print(settingValue);
-            ref.read(productControllerProvider.notifier).addProduct(product);
-          } else if (productData != null) {
-            final updateProductData = productData!.copyWith(
+            // ref.read(productControllerProvider.notifier).addProduct(product);
+          } else if (widget.productData != null) {
+            final updatedProductData = widget.productData!.copyWith(
               name: groupControllers[0].name.text,
               price: groupControllers[0].price.text.parseInt(),
               type: selectedValue,
@@ -231,9 +246,11 @@ class AddProductState extends ConsumerState<AddProduct> {
             );
             ref
                 .read(productControllerProvider.notifier)
-                .editProduct(updateProductData);
+                .editProduct(updatedProductData);
           } else {
-            ref.read(productControllerProvider.notifier).addProduct(product);
+            ref
+                .read(productControllerProvider.notifier)
+                .addProduct(productList);
           }
         }
       },
@@ -250,6 +267,18 @@ class AddProductState extends ConsumerState<AddProduct> {
           groupControllers.add(group);
           productList.add(Product(userID: ''));
         });
+      },
+    );
+  }
+
+  // This [AppButton] is used for add reset the inputs for getting back setting products.
+  AppButton buildResetButton() {
+    return AppButton(
+      text: Strings.reset,
+      onPress: () {
+        if (settingData != null) {
+          autofillSettingData(settingData!);
+        }
       },
     );
   }

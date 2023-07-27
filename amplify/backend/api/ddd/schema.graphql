@@ -3,7 +3,7 @@
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
 
-type Product @model {
+type Setting @model {
   id: ID!
   name: String
   type: String
@@ -12,13 +12,24 @@ type Product @model {
   date: AWSDateTime
   userID: ID!
   isDefault: Boolean
-  moreProducts: [MoreProduct] @hasMany
 }
 
-type MoreProduct @model {
+type Product @model {
   id: ID!
   name: String
   type: String
   price: Int
   quantity: Int
+  date: AWSDateTime
+  userID: ID!
+}
+
+type MoreProduct @model {
+  products: [AWSJSON]
+}
+
+type Inventory @model {
+  id: ID!
+  type: String
+  price: Int
 }

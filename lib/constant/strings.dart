@@ -35,6 +35,7 @@ class Strings {
   static const String save = 'Save';
   static const String send = 'Send';
   static const String submit = 'Submit';
+  static const String update = 'Update';
 
   // Profile Screen
   static const String profile = 'Profile';
@@ -60,12 +61,22 @@ class Strings {
   static const String resend = 'Re Send';
   static const String newPasswordContinue =
       'Enter a new password to continue signing in';
-
-  // Setting Screen
-  static const String setting = 'Setting';
-
   static String confirmationMessage(String? destination, String name) {
     return 'A confirmation code has been sent to $destination. '
         'Please check your $name for the code.';
   }
+
+  // Setting Screen
+  static const String setting = 'Setting';
+  static const String name = 'Name';
+  static const String price = 'Price';
+  static const String type = 'Type';
+  static const String quantity = 'Quantity';
+  static const String date = 'Date';
+  static const String addMore = 'Add More';
+  static const String reset = 'Reset';
+  static const String remove = 'Remove';
+  static const markDefault = 'Do you want to mark this entry as default?';
+  static const selectType = 'Select Type';
+  static const String report = 'Report';
 }

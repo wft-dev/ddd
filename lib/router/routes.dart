@@ -1,4 +1,7 @@
 import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:daily_dairy_diary/models/Product.dart';
+import 'package:daily_dairy_diary/models/Setting.dart';
+import 'package:daily_dairy_diary/screens/add_product.dart';
 import 'package:daily_dairy_diary/screens/dashboard.dart';
 import 'package:daily_dairy_diary/screens/profile.dart';
 import 'package:daily_dairy_diary/screens/reset_password.dart';
@@ -10,7 +13,7 @@ import '../screens/confirm_code.dart';
 import '../screens/forget_password.dart';
 import '../screens/login.dart';
 import '../screens/register.dart';
-import '../screens/setting.dart';
+import '../screens/setting_product.dart';
 import '../screens/splash.dart';
 
 part 'routes.g.dart';
@@ -109,10 +112,11 @@ class ChangePasswordRoute extends GoRouteData {
   }
 }
 
+// MyShellRouteData
 @TypedShellRoute<MyShellRouteData>(
   routes: <TypedRoute<RouteData>>[
     TypedGoRoute<DashboardRoute>(path: DashboardRoute.path),
-    TypedGoRoute<SettingRoute>(path: SettingRoute.path),
+    TypedGoRoute<SettingProductRoute>(path: SettingProductRoute.path),
     TypedGoRoute<ReportRoute>(path: ReportRoute.path),
     TypedGoRoute<ProfileRoute>(path: ProfileRoute.path),
   ],
@@ -137,7 +141,7 @@ class MyShellRouteScreen extends StatelessWidget {
 
   int getCurrentIndex(BuildContext context) {
     final String location = GoRouterState.of(context).location;
-    if (location == SettingRoute.path) {
+    if (location == SettingProductRoute.path) {
       return 1;
     }
     if (location == ReportRoute.path) {
@@ -193,7 +197,7 @@ class MyShellRouteScreen extends StatelessWidget {
               const DashboardRoute().go(context);
               break;
             case 1:
-              const SettingRoute().go(context);
+              const SettingProductRoute().go(context);
               break;
             case 2:
               const ReportRoute().go(context);
@@ -230,14 +234,14 @@ class ProfileRoute extends GoRouteData {
   }
 }
 
-// SettingRoute
-class SettingRoute extends GoRouteData {
-  const SettingRoute();
-  static const path = '/setting';
+// SettingProductRoute
+class SettingProductRoute extends GoRouteData {
+  const SettingProductRoute();
+  static const path = '/settingProduct';
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const Setting();
+    return const SettingProduct();
   }
 }
 
@@ -249,5 +253,18 @@ class ReportRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const Login();
+  }
+}
+
+// AddProduct
+@TypedGoRoute<AddProductRoute>(path: AddProductRoute.path)
+class AddProductRoute extends GoRouteData {
+  const AddProductRoute({this.productData});
+  static const path = '/addProduct';
+  final Product? productData;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AddProduct(productData);
   }
 }

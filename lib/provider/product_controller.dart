@@ -1,3 +1,4 @@
+import 'package:daily_dairy_diary/models/MoreProduct.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/repositories/product_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,17 +13,33 @@ class ProductController extends _$ProductController {
     return productList;
   }
 
+  Future<List<MoreProduct?>> fetchMoreProduct() async {
+    final productList =
+        ref.watch(productRepositoryProvider).queryMoreProductItems();
+    return productList;
+  }
+
   @override
   FutureOr<List<Product?>> build() async {
     return fetchProduct();
   }
 
   // Let's allow add products.
-  Future<void> addProduct(Product product) async {
+  Future<void> addProduct(List<Product> product) async {
     final productRepository = ref.watch(productRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await productRepository.createProduct(product);
+      return fetchProduct();
+    });
+  }
+
+  // Let's allow add more products.
+  Future<void> addMoreProduct(MoreProduct product) async {
+    final productRepository = ref.watch(productRepositoryProvider);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await productRepository.createMoreProduct(product);
       return fetchProduct();
     });
   }

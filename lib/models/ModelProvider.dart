@@ -21,43 +21,42 @@
 
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'Inventory.dart';
+import 'MoreProduct.dart';
 import 'Product.dart';
 import 'Setting.dart';
 
 export 'Inventory.dart';
+export 'MoreProduct.dart';
 export 'Product.dart';
 export 'Setting.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "0c4e3a26c7854cae3a923127047d733a";
+  String version = "0f172f01b9fa9b6bba16701a066e0628";
   @override
-  List<amplify_core.ModelSchema> modelSchemas = [
-    Inventory.schema,
-    Product.schema,
-    Setting.schema
-  ];
+  List<amplify_core.ModelSchema> modelSchemas = [Inventory.schema, MoreProduct.schema, Product.schema, Setting.schema];
   @override
   List<amplify_core.ModelSchema> customTypeSchemas = [];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;
-
+  
   amplify_core.ModelType getModelTypeByModelName(String modelName) {
-    switch (modelName) {
+    switch(modelName) {
       case "Inventory":
         return Inventory.classType;
+      case "MoreProduct":
+        return MoreProduct.classType;
       case "Product":
         return Product.classType;
       case "Setting":
         return Setting.classType;
       default:
-        throw Exception(
-            "Failed to find model in model provider for model name: " +
-                modelName);
+        throw Exception("Failed to find model in model provider for model name: " + modelName);
     }
   }
 }
+
 
 class ModelFieldValue<T> {
   const ModelFieldValue.value(this.value);
