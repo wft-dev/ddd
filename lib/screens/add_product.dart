@@ -13,8 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // ignore: must_be_immutable
 class AddProduct extends ConsumerStatefulWidget {
-  AddProduct(this.productData, {super.key});
-  Product? productData;
+  const AddProduct(this.productData, {Key? key}) : super(key: key);
+  final Product? productData;
 
   @override
   ConsumerState<AddProduct> createState() => AddProductState();
@@ -65,12 +65,26 @@ class AddProductState extends ConsumerState<AddProduct> {
     groupControllers.add(group);
   }
 
-  // This is used for display all widgets.
-  void autofillSettingData<T>(<T> settingItem) {
-    selectedValue = settingItem.type;
-    groupControllers[0].name.text = settingItem.name!;
-    groupControllers[0].price.text = settingItem.price.toString();
-    groupControllers[0].quantity.text = settingItem.quantity.toString();
+  // This method is used for autofill the data from [Setting] and [Product].
+  // The [Product] data is used for update the entry and [Setting] data for taking the default value.
+  void autofillData<T>(T? item) {
+    if (item is Setting) {
+      setAutofillData(item.type, item.name!, item.price.toString(),
+          item.quantity.toString());
+    }
+    if (item is Product) {
+      setAutofillData(item.type, item.name!, item.price.toString(),
+          item.quantity.toString());
+    }
+  }
+
+  // This method is setting the data in all fields that get from [Setting] or [Product].
+  void setAutofillData(
+      String? type, String name, String price, String quantity) {
+    selectedValue = type;
+    groupControllers[0].name.text = name;
+    groupControllers[0].price.text = price;
+    groupControllers[0].quantity.text = quantity;
   }
 
   // This is used for display all widgets.
@@ -80,15 +94,15 @@ class AddProductState extends ConsumerState<AddProduct> {
       print('state ${state.value}');
     });
     if (widget.productData != null) {
-      autofillSettingData(widget.productData);
+      autofillData(widget.productData);
     } else {
       final settingList = ref.watch(settingControllerProvider);
       print('state112 $settingList');
       settingList.whenData((setting) {
         if (setting.isNotEmpty) {
-          final settingItem = setting[0]!;
+          final settingItem = setting[0];
           settingData = settingItem;
-          autofillSettingData(settingItem);
+          autofillData(settingItem);
         }
       });
     }
@@ -201,7 +215,10 @@ class AddProductState extends ConsumerState<AddProduct> {
   // This [AppButton] is used for create the setting product and additional products.
   AppButton buildSaveButton() {
     // final q = ref.watch(settingControllerProvider);
-
+    ref.listen<AsyncValue>(productControllerProvider, (_, state) {
+      state.showAlertDialogOnError(context);
+      print('state ${state.value}');
+    });
     return AppButton(
       text: Strings.save,
       onPress: () async {
@@ -215,11 +232,15 @@ class AddProductState extends ConsumerState<AddProduct> {
             price: groupControllers[0].price.text.parseInt(),
             type: selectedValue,
             quantity: groupControllers[0].quantity.text.parseInt(),
-            date: TemporalDateTime(now),
+            date: TemporalDateTime(start),
             userID: userID,
           );
-          var l = productList.map((todo) => todo.toString()).toList();
-          var products = MoreProduct(products: l);
+          productList.add(product);
+          // var l = productList.map((todo) => todo.toString()).toList();
+          // var products = MoreProduct(products: l);
+          // List<Product> products = productList
+          //         .map((todo) => todo.copyWith(date: TemporalDateTime(now)))
+          //     as List<Product>;
           if (settingData == null && isDefault) {
             var setting = Setting(
               name: groupControllers[0].name.text,
@@ -230,11 +251,10 @@ class AddProductState extends ConsumerState<AddProduct> {
               userID: userID,
               isDefault: isDefault,
             );
-            final settingValue = ref
-                .read(settingControllerProvider.notifier)
-                .addSetting(setting);
-            print(settingValue);
-            // ref.read(productControllerProvider.notifier).addProduct(product);
+            ref.read(settingControllerProvider.notifier).addSetting(setting);
+            ref
+                .read(productControllerProvider.notifier)
+                .addProduct(productList);
           } else if (widget.productData != null) {
             final updatedProductData = widget.productData!.copyWith(
               name: groupControllers[0].name.text,
@@ -277,7 +297,7 @@ class AddProductState extends ConsumerState<AddProduct> {
       text: Strings.reset,
       onPress: () {
         if (settingData != null) {
-          autofillSettingData(settingData!);
+          autofillData(settingData!);
         }
       },
     );
@@ -305,7 +325,8 @@ class AddProductState extends ConsumerState<AddProduct> {
                 ),
                 buildDropDown(index, productList[index].type, (value) {
                   setState(() {
-                    productList[index] = productByIndex.copyWith(type: value);
+                    productList[index] = productByIndex.copyWith(
+                        type: value, date: TemporalDateTime(start));
                   });
                 }),
                 generateTextField(groupControllers[indexForList].name,

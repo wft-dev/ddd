@@ -259,12 +259,12 @@ class ReportRoute extends GoRouteData {
 // AddProduct
 @TypedGoRoute<AddProductRoute>(path: AddProductRoute.path)
 class AddProductRoute extends GoRouteData {
-  const AddProductRoute({this.productData});
+  AddProductRoute({this.$extra});
   static const path = '/addProduct';
-  final Product? productData;
+  final Product? $extra;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return AddProduct(productData);
+    return AddProduct($extra);
   }
 }

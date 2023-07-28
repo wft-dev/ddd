@@ -8,6 +8,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'product_repository.g.dart';
 
 class ProductRepository {
+  // This [GraphQL] mutation is used for create [Product].
   Future<void> createProduct(List<Product> products) async {
     try {
       for (var productData in products) {
@@ -16,15 +17,17 @@ class ProductRepository {
         final createdProduct = response.data;
         if (createdProduct == null) {
           safePrint('errors: ${response.errors}');
-          return;
+          throw response.errors;
         }
         safePrint('Mutation result: ${createdProduct.name}');
       }
     } on ApiException catch (e) {
       safePrint('Mutation failed: $e');
+      rethrow;
     }
   }
 
+  // This [GraphQL] mutation is used for create [MoreProduct].
   Future<void> createMoreProduct(MoreProduct product) async {
     try {
       final request = ModelMutations.create(product);
@@ -32,11 +35,12 @@ class ProductRepository {
       final createdProduct = response.data;
       if (createdProduct == null) {
         safePrint('errors: ${response.errors}');
-        return;
+        throw response.errors;
       }
       safePrint('Mutation result: $createdProduct');
     } on ApiException catch (e) {
       safePrint('Mutation failed: $e');
+      rethrow;
     }
   }
 
@@ -63,58 +67,70 @@ class ProductRepository {
       // var response =  result.data;
     } on ApiException catch (e) {
       safePrint('Mutation failed: $e');
+      rethrow;
     }
   }
 
+  // This [GraphQL] mutation is used for update the [Product].
   Future<void> updateProduct(Product originalProduct) async {
-    final productWithNewName = originalProduct.copyWith(price: 10);
-
-    final request = ModelMutations.update(productWithNewName);
-    final response = await Amplify.API.mutate(request: request).response;
-    safePrint('Response: $response');
+    try {
+      final request = ModelMutations.update(originalProduct);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+      rethrow;
+    }
   }
 
+  // This [GraphQL] mutation is used for delete the [Product].
   Future<void> deleteProduct(Product productToDelete) async {
-    final request = ModelMutations.delete(productToDelete);
-    final response = await Amplify.API.mutate(request: request).response;
-    safePrint('Response: $response');
+    try {
+      final request = ModelMutations.delete(productToDelete);
+      final response = await Amplify.API.mutate(request: request).response;
+      safePrint('Response: $response');
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+      rethrow;
+    }
   }
 
+  // This [GraphQL] query is used for get the list of [Product].
   Future<List<Product?>> queryProductItems() async {
     try {
       final request = ModelQueries.list(Product.classType);
       final response = await Amplify.API.query(request: request).response;
-
       final products = response.data?.items;
       if (products == null) {
         safePrint('errors: ${response.errors}');
-        return const [];
+        throw response.errors;
       }
       return products;
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
-      return const [];
+      rethrow;
     }
   }
 
+  // This [GraphQL] query is used for get the list of [MoreProduct].
   Future<List<MoreProduct?>> queryMoreProductItems() async {
     try {
       final request = ModelQueries.list(MoreProduct.classType);
       final response = await Amplify.API.query(request: request).response;
-
       final products = response.data?.items;
       if (products == null) {
         safePrint('errors: ${response.errors}');
-        return const [];
+        throw response.errors;
       }
       return products;
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
-      return const [];
+      rethrow;
     }
   }
 }
 
+//[ProductRepository] provider.
 @Riverpod(keepAlive: true)
 ProductRepository productRepository(ProductRepositoryRef ref) {
   return ProductRepository();

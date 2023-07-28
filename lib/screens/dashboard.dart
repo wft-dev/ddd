@@ -1,8 +1,13 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:math';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/event.dart';
+import 'package:daily_dairy_diary/provider/calendar_event_provider.dart';
+import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/repositories/product_repository.dart';
+import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/utils/size_config.dart';
 import 'package:flutter/material.dart';
@@ -25,16 +30,17 @@ class Dashboard extends ConsumerStatefulWidget {
 }
 
 class DashboardState extends ConsumerState<Dashboard> {
-  late final ValueNotifier<List<Event>> selectedEvents;
-  CalendarFormat calendarFormat = CalendarFormat.month;
+  late final ValueNotifier<List<Product>> selectedEvents;
+  CalendarFormat calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
   @override
   void initState() {
     super.initState();
-
     _selectedDay = _focusedDay;
+    s = ref.read(getCalendarEventProvider);
+
     selectedEvents = ValueNotifier(getEventsForDay(_selectedDay!));
   }
 
@@ -44,8 +50,10 @@ class DashboardState extends ConsumerState<Dashboard> {
     super.dispose();
   }
 
-  List<Event> getEventsForDay(DateTime day) {
-    return kEvents[day] ?? [];
+  var s = {};
+  List<Product> getEventsForDay(DateTime day) {
+    return s[day] ?? [];
+    // return kEvents[day] ?? [];
   }
 
   void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -73,6 +81,9 @@ class DashboardState extends ConsumerState<Dashboard> {
   }
 
   Widget getBody() {
+    s = ref.watch(getCalendarEventProvider);
+    // selectedEvents.value = getEventsForDay(_selectedDay!);
+
     return Container(
       color: bgColor,
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
@@ -82,10 +93,10 @@ class DashboardState extends ConsumerState<Dashboard> {
           buildCalendar(),
           const SizedBox(height: 8.0),
           Expanded(
-            child: ValueListenableBuilder<List<Event>>(
+            child: ValueListenableBuilder<List<Product>>(
               valueListenable: selectedEvents,
               builder: (context, value, _) {
-                return Container();
+                return ProductList(value);
               },
             ),
           ),
@@ -96,6 +107,35 @@ class DashboardState extends ConsumerState<Dashboard> {
   }
 
   Container buildCalendar() {
+    // print(productList);
+    // if (products != null && products.isNotEmpty) {
+    //   final Map<DateTime, List<Product>> productMap = {};
+    //   for (var item in products) {
+    //     Product productItem = item!;
+    //     DateTime? date = DateTime.utc(
+    //         productItem.date!.getDateTimeInUtc().year,
+    //         productItem.date!.getDateTimeInUtc().month,
+    //         productItem.date!.getDateTimeInUtc().day);
+    //     if (productMap.isNotEmpty && productMap.containsKey(date)) {
+    //       productMap[date] = [...productMap[date]!, productItem];
+    //     } else {
+    //       Map<DateTime, List<Product>>? productMap2 = {
+    //         DateTime.utc(
+    //             item.date!.getDateTimeInUtc().year,
+    //             item.date!.getDateTimeInUtc().month,
+    //             item.date!.getDateTimeInUtc().day): [productItem]
+    //       };
+    //       productMap.addAll(productMap2);
+    //     }
+    //   }
+
+    //   printSafe('c ==== $productMap');
+    //   final kEvents = LinkedHashMap<DateTime, List<Product>>(
+    //     equals: isSameDay,
+    //     hashCode: getHashCode,
+    //   )..addAll(productMap);
+    // }
+
     return Container(
       decoration: BoxDecoration(
         color: whiteColor,
@@ -103,7 +143,7 @@ class DashboardState extends ConsumerState<Dashboard> {
         borderRadius: BorderRadius.circular(Sizes.p6.sw),
       ),
       // padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-      child: TableCalendar<Event>(
+      child: TableCalendar<Product>(
         firstDay: kFirstDay,
         lastDay: kLastDay,
         focusedDay: _focusedDay,
@@ -204,7 +244,7 @@ class DashboardState extends ConsumerState<Dashboard> {
     return AppButton(
       text: Strings.setting,
       onPress: () async {
-        const SettingProductRoute().go(context);
+        AddProductRoute().push(context);
       },
     );
   }

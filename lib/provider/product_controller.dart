@@ -1,5 +1,6 @@
 import 'package:daily_dairy_diary/models/MoreProduct.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
+import 'package:daily_dairy_diary/provider/calendar_event_provider.dart';
 import 'package:daily_dairy_diary/repositories/product_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -7,6 +8,7 @@ part 'product_controller.g.dart';
 
 @riverpod
 class ProductController extends _$ProductController {
+  // Let's allow get all products.
   Future<List<Product?>> fetchProduct() async {
     final productList =
         ref.watch(productRepositoryProvider).queryProductItems();

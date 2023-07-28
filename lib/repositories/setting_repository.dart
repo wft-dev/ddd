@@ -7,15 +7,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'setting_repository.g.dart';
 
 class SettingRepository {
+  // This [GraphQL] mutation is used for create [Setting].
   Future<void> createSetting(Setting setting) async {
     try {
       final request = ModelMutations.create(setting);
       final response = await Amplify.API.mutate(request: request).response;
-
       final createSetting = response.data;
       if (createSetting == null) {
         safePrint('errors: ${response.errors}');
-        return;
+        throw response.errors;
       }
       safePrint('Mutation result: ${createSetting.name}');
     } on ApiException catch (e) {
@@ -24,6 +24,7 @@ class SettingRepository {
     }
   }
 
+  // This [GraphQL] mutation is used for update the [Setting].
   Future<void> updateSetting(Setting setting) async {
     try {
       final request = ModelMutations.update(setting);
@@ -35,6 +36,7 @@ class SettingRepository {
     }
   }
 
+  // This [GraphQL] mutation is used for delete the [Setting].
   Future<void> deleteSetting(Setting settingToDelete) async {
     try {
       final request = ModelMutations.delete(settingToDelete);
@@ -46,15 +48,15 @@ class SettingRepository {
     }
   }
 
+  // This [GraphQL] query is used for get the list of [Setting].
   Future<List<Setting?>> querySettingItems() async {
     try {
       final request = ModelQueries.list(Setting.classType);
       final response = await Amplify.API.query(request: request).response;
-
       final settings = response.data?.items;
       if (settings == null) {
         safePrint('errors: ${response.errors}');
-        return const [];
+        throw response.errors;
       }
       return settings;
     } on ApiException catch (e) {
@@ -64,6 +66,7 @@ class SettingRepository {
   }
 }
 
+//[SettingRepository] provider.
 @Riverpod(keepAlive: true)
 SettingRepository settingRepository(SettingRepositoryRef ref) {
   return SettingRepository();
