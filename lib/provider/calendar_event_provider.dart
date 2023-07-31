@@ -15,25 +15,26 @@ LinkedHashMap<DateTime, List<Product>> getCalendarEvent(
     equals: isSameDay,
     hashCode: getHashCode,
   );
-  // print(productList);
   if (products != null && products.isNotEmpty) {
+    // print('products $products');
     final Map<DateTime, List<Product>> productMap = {};
     for (var item in products) {
-      Product productItem = item!;
-      DateTime? date = DateTime.utc(
-          productItem.date!.getDateTimeInUtc().year,
-          productItem.date!.getDateTimeInUtc().month,
-          productItem.date!.getDateTimeInUtc().day);
-      if (productMap.isNotEmpty && productMap.containsKey(date)) {
-        productMap[date] = [...productMap[date]!, productItem];
-      } else {
-        Map<DateTime, List<Product>>? productMap2 = {
-          DateTime.utc(
-              item.date!.getDateTimeInUtc().year,
-              item.date!.getDateTimeInUtc().month,
-              item.date!.getDateTimeInUtc().day): [productItem]
-        };
-        productMap.addAll(productMap2);
+      if (item != null) {
+        Product productItem = item;
+        if (productItem.date != null) {
+          DateTime productUtcDate = productItem.date!.getDateTimeInUtc();
+          DateTime? utcToLocalDate = productUtcDate.toLocal();
+          DateTime? date = DateTime(
+              utcToLocalDate.year, utcToLocalDate.month, utcToLocalDate.day);
+          if (productMap.isNotEmpty && productMap.containsKey(date)) {
+            productMap[date] = [...productMap[date]!, productItem];
+          } else {
+            Map<DateTime, List<Product>>? productObj = {
+              date: [productItem]
+            };
+            productMap.addAll(productObj);
+          }
+        }
       }
     }
     events.addAll(productMap);

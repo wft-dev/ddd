@@ -6,7 +6,6 @@ import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/event.dart';
 import 'package:daily_dairy_diary/provider/calendar_event_provider.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
-import 'package:daily_dairy_diary/repositories/product_repository.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/utils/size_config.dart';
@@ -34,13 +33,13 @@ class DashboardState extends ConsumerState<Dashboard> {
   CalendarFormat calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  Map<DateTime, List<Product>> events = {};
 
   @override
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
-    s = ref.read(getCalendarEventProvider);
-
+    ref.read(getCalendarEventProvider);
     selectedEvents = ValueNotifier(getEventsForDay(_selectedDay!));
   }
 
@@ -50,10 +49,8 @@ class DashboardState extends ConsumerState<Dashboard> {
     super.dispose();
   }
 
-  var s = {};
   List<Product> getEventsForDay(DateTime day) {
-    return s[day] ?? [];
-    // return kEvents[day] ?? [];
+    return events[day] ?? [];
   }
 
   void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -81,8 +78,8 @@ class DashboardState extends ConsumerState<Dashboard> {
   }
 
   Widget getBody() {
-    s = ref.watch(getCalendarEventProvider);
-    // selectedEvents.value = getEventsForDay(_selectedDay!);
+    events = ref.watch(getCalendarEventProvider);
+    selectedEvents.value = getEventsForDay(_selectedDay!);
 
     return Container(
       color: bgColor,
@@ -193,8 +190,7 @@ class DashboardState extends ConsumerState<Dashboard> {
         },
         calendarBuilders: CalendarBuilders(
           dowBuilder: (context, day) {
-            final text =
-                DateFormat('E').format(day); //DateFormat.E().format(day);
+            final text = FormatDate.dayOfWeek(day);
             return Center(
               child: Text(
                 text[0],

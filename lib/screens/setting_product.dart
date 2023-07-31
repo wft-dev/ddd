@@ -2,6 +2,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
+import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
@@ -64,6 +65,7 @@ class SettingProductState extends ConsumerState<SettingProduct> {
       state.showAlertDialogOnError(context);
       print('state ${state.value}');
     });
+
     final settingList = ref.watch(settingControllerProvider);
     print('state112 $settingList');
     settingList.whenData((setting) {
@@ -122,7 +124,8 @@ class SettingProductState extends ConsumerState<SettingProduct> {
   // [DateTimePicker]
   Widget buildStartDate() {
     return DateTimePicker(
-      labelText: Strings.date,
+      dateLabelText: Strings.date,
+      timeLabelText: Strings.time,
       selectedDate: _startDate,
       selectedTime: _startTime,
       onSelectedDate: (date) => setState(() => _startDate = date),

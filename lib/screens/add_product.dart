@@ -10,6 +10,7 @@ import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class AddProduct extends ConsumerStatefulWidget {
@@ -25,13 +26,12 @@ class AddProductState extends ConsumerState<AddProduct> {
   final GlobalKey<FormState> _moreFormKey = GlobalKey<FormState>();
   List<GroupControllers> groupControllers = [];
 
-  late DateTime _startDate = DateTime.now();
-  late TimeOfDay _startTime = TimeOfDay.now();
-  late DateTime _endDate;
-  late TimeOfDay _endTime;
+  late DateTime buyDate = DateTime.now();
+  late TimeOfDay buyTime = TimeOfDay.now();
   String? selectedValue;
   static const int indexForSingleView = 0;
   bool isDefault = false;
+  bool isDateTimeSelected = false;
 
   final List<String> items = [
     'Milk',
@@ -44,16 +44,15 @@ class AddProductState extends ConsumerState<AddProduct> {
 
   List<Product> productList = [];
 
-  DateTime get start => DateTime(_startDate.year, _startDate.month,
-      _startDate.day, _startTime.hour, _startTime.minute);
-  DateTime get end => DateTime(_endDate.year, _endDate.month, _endDate.day,
-      _endTime.hour, _endTime.minute);
+  DateTime get buyDateTime => DateTime(
+      buyDate.year, buyDate.month, buyDate.day, buyTime.hour, buyTime.minute);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(Strings.add),
+          title:
+              Text(widget.productData == null ? Strings.add : Strings.update),
         ),
         body: getBody());
   }
@@ -69,22 +68,30 @@ class AddProductState extends ConsumerState<AddProduct> {
   // The [Product] data is used for update the entry and [Setting] data for taking the default value.
   void autofillData<T>(T? item) {
     if (item is Setting) {
-      setAutofillData(item.type, item.name!, item.price.toString(),
-          item.quantity.toString());
+      setAutofillData(
+        item.type,
+        item.name!,
+        item.price.toString(),
+        item.quantity.toString(),
+      );
     }
     if (item is Product) {
       setAutofillData(item.type, item.name!, item.price.toString(),
-          item.quantity.toString());
+          item.quantity.toString(), item.date!.getDateTimeInUtc());
     }
   }
 
   // This method is setting the data in all fields that get from [Setting] or [Product].
-  void setAutofillData(
-      String? type, String name, String price, String quantity) {
+  void setAutofillData(String? type, String name, String price, String quantity,
+      [DateTime? date]) {
     selectedValue = type;
     groupControllers[0].name.text = name;
     groupControllers[0].price.text = price;
     groupControllers[0].quantity.text = quantity;
+    if (date != null && !isDateTimeSelected) {
+      buyDate = date.toLocal();
+      buyTime = TimeOfDay.fromDateTime(date.toLocal());
+    }
   }
 
   // This is used for display all widgets.
@@ -120,27 +127,30 @@ class AddProductState extends ConsumerState<AddProduct> {
               "",
               style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
             ),
-            buildStartDate(),
+            buildDatePicker(),
             buildDropDown(indexForSingleView, selectedValue, (value) {
               setState(() {
                 selectedValue = value;
               });
             }),
             buildSettingForm(_formKey),
-            buildIsDefaultCheckbox(),
-            gapH12,
-            buildResetButton(),
-            buildSaveButton(),
-            gapH12,
-            buildAddMoreButton(),
-            gapH12,
-            Form(
-              key: _moreFormKey,
-              child: Flexible(
-                // height: 400,
-                child: buildMoreProductListView(),
+            if (widget.productData == null) ...[
+              buildIsDefaultCheckbox(),
+              gapH12,
+              buildResetButton(),
+              buildSaveButton(),
+              gapH12,
+              buildAddMoreButton(),
+              gapH12,
+              Form(
+                key: _moreFormKey,
+                child: Flexible(
+                  // height: 400,
+                  child: buildMoreProductListView(),
+                ),
               ),
-            ),
+            ] else
+              buildSaveButton(),
           ],
         ),
       ),
@@ -174,13 +184,20 @@ class AddProductState extends ConsumerState<AddProduct> {
   }
 
   // [DateTimePicker]
-  Widget buildStartDate() {
+  Widget buildDatePicker() {
     return DateTimePicker(
-      labelText: Strings.date,
-      selectedDate: _startDate,
-      selectedTime: _startTime,
-      onSelectedDate: (date) => setState(() => _startDate = date),
-      onSelectedTime: (time) => setState(() => _startTime = time),
+      dateLabelText: Strings.date,
+      timeLabelText: Strings.time,
+      selectedDate: buyDate,
+      selectedTime: buyTime,
+      onSelectedDate: (date) => setState(() {
+        buyDate = date;
+        isDateTimeSelected = true;
+      }),
+      onSelectedTime: (time) => setState(() {
+        buyTime = time;
+        isDateTimeSelected = true;
+      }),
     );
   }
 
@@ -217,13 +234,25 @@ class AddProductState extends ConsumerState<AddProduct> {
     // final q = ref.watch(settingControllerProvider);
     ref.listen<AsyncValue>(productControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
-      print('state ${state.value}');
+      state.whenData((value) {
+        showExceptionAlertDialog(
+          context: context,
+          title: Strings.success,
+          exception: Strings.success,
+        );
+      });
+      // ShowSnackBar.showSnackBar(context, 'message');
     });
     return AppButton(
       text: Strings.save,
       onPress: () async {
-        // if (!_formKey.currentState!.validate() ||
-        //     !_moreFormKey.currentState!.validate()) return;
+        if (widget.productData == null) {
+          if (!_formKey.currentState!.validate() ||
+              !_moreFormKey.currentState!.validate()) return;
+        } else {
+          if (!_formKey.currentState!.validate()) return;
+        }
+
         final userID = ref.read(currentUserRepositoryProvider).value;
         if (userID != null) {
           final now = DateTime.now();
@@ -232,7 +261,7 @@ class AddProductState extends ConsumerState<AddProduct> {
             price: groupControllers[0].price.text.parseInt(),
             type: selectedValue,
             quantity: groupControllers[0].quantity.text.parseInt(),
-            date: TemporalDateTime(start),
+            date: TemporalDateTime(buyDateTime),
             userID: userID,
           );
           productList.add(product);
@@ -247,7 +276,7 @@ class AddProductState extends ConsumerState<AddProduct> {
               price: groupControllers[0].price.text.parseInt(),
               type: selectedValue,
               quantity: groupControllers[0].quantity.text.parseInt(),
-              date: TemporalDateTime(now),
+              date: TemporalDateTime(buyDateTime),
               userID: userID,
               isDefault: isDefault,
             );
@@ -261,7 +290,7 @@ class AddProductState extends ConsumerState<AddProduct> {
               price: groupControllers[0].price.text.parseInt(),
               type: selectedValue,
               quantity: groupControllers[0].quantity.text.parseInt(),
-              date: TemporalDateTime(now),
+              date: TemporalDateTime(buyDateTime),
               userID: userID,
             );
             ref
@@ -326,7 +355,7 @@ class AddProductState extends ConsumerState<AddProduct> {
                 buildDropDown(index, productList[index].type, (value) {
                   setState(() {
                     productList[index] = productByIndex.copyWith(
-                        type: value, date: TemporalDateTime(start));
+                        type: value, date: TemporalDateTime(buyDateTime));
                   });
                 }),
                 generateTextField(groupControllers[indexForList].name,

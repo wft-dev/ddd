@@ -4,6 +4,7 @@ import 'package:daily_dairy_diary/models/Setting.dart';
 import 'package:daily_dairy_diary/screens/add_product.dart';
 import 'package:daily_dairy_diary/screens/dashboard.dart';
 import 'package:daily_dairy_diary/screens/profile.dart';
+import 'package:daily_dairy_diary/screens/report.dart';
 import 'package:daily_dairy_diary/screens/reset_password.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
@@ -144,10 +145,10 @@ class MyShellRouteScreen extends StatelessWidget {
     if (location == SettingProductRoute.path) {
       return 1;
     }
-    if (location == ReportRoute.path) {
+    if (location == ProfileRoute.path) {
       return 2;
     }
-    if (location == ProfileRoute.path) {
+    if (location == ReportRoute.path) {
       return 3;
     }
     return 0;
@@ -200,10 +201,10 @@ class MyShellRouteScreen extends StatelessWidget {
               const SettingProductRoute().go(context);
               break;
             case 2:
-              const ReportRoute().go(context);
+              const ProfileRoute().go(context);
               break;
             case 3:
-              const ProfileRoute().go(context);
+              const ReportRoute().go(context);
               break;
           }
         },
@@ -252,7 +253,7 @@ class ReportRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const Login();
+    return const Report();
   }
 }
 

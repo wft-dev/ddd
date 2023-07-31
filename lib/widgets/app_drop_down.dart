@@ -1,3 +1,5 @@
+import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/utils/size_config.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -65,9 +67,41 @@ class CustomDropdownButton2 extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: Sizes.p1_5.sh),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton2<String>(
+        child: DropdownButtonFormField2<String>(
           //To avoid long text overflowing.
           isExpanded: true,
+          decoration: InputDecoration(
+            // errorText: errorText,
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: Sizes.p05.sw),
+              borderRadius: BorderRadius.all(
+                Radius.circular(Sizes.p2.sw),
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: Sizes.p05.sw),
+              borderRadius: BorderRadius.all(
+                Radius.circular(Sizes.p2.sw),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: ThemeColor.primary, width: Sizes.p05.sw),
+              borderRadius: BorderRadius.all(
+                Radius.circular(Sizes.p2.sw),
+              ),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey, width: Sizes.p05.sw),
+              borderRadius: BorderRadius.all(
+                Radius.circular(Sizes.p2.sw),
+              ),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: Sizes.p1.sw,
+              vertical: Sizes.p2.sh,
+            ),
+          ),
           hint: Container(
             alignment: hintAlignment,
             child: Text(
@@ -75,10 +109,14 @@ class CustomDropdownButton2 extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).hintColor,
+                fontSize: Sizes.p4_5.sw,
               ),
             ),
+          ),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: Sizes.p4_5.sw,
+            fontWeight: FontWeight.w500,
           ),
           value: value,
           items: dropdownItems
@@ -92,22 +130,23 @@ class CustomDropdownButton2 extends StatelessWidget {
                     ),
                   ))
               .toList(),
+          validator: (value) =>
+              Validations.validateString(value ?? '', Strings.type),
           onChanged: onChanged,
           selectedItemBuilder: selectedItemBuilder,
           buttonStyleData: ButtonStyleData(
             // height: buttonHeight ?? 40,
             // width: buttonWidth ?? 140,
-            padding:
-                buttonPadding ?? const EdgeInsets.only(left: 14, right: 14),
-            decoration: buttonDecoration ??
-                BoxDecoration(
-                  borderRadius: BorderRadius.circular(Sizes.p2.sw),
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: Sizes.p05.sw,
-                  ),
-                ),
-            elevation: buttonElevation,
+            padding: buttonPadding ?? EdgeInsets.only(right: Sizes.p4.sw),
+            // decoration: buttonDecoration ??
+            //     BoxDecoration(
+            //       borderRadius: BorderRadius.circular(Sizes.p2.sw),
+            //       border: Border.all(
+            //         color: Colors.grey,
+            //         width: Sizes.p05.sw,
+            //       ),
+            //     ),
+            // elevation: buttonElevation,
           ),
           iconStyleData: IconStyleData(
             icon: icon ?? const Icon(Icons.arrow_forward_ios_outlined),
