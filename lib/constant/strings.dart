@@ -73,10 +73,18 @@ class Strings {
   static const String type = 'Type';
   static const String quantity = 'Quantity';
   static const String date = 'Date';
+  static const String time = 'Time';
   static const String addMore = 'Add More';
   static const String reset = 'Reset';
   static const String remove = 'Remove';
   static const markDefault = 'Do you want to mark this entry as default?';
   static const selectType = 'Select Type';
   static const String report = 'Report';
+  static const pleaseSelectType = 'Please select type';
+
+  static const String all = 'All';
+  static const String week = 'Week';
+  static const String month = 'Month';
+  static const String year = 'Year';
+  static const String dateRange = 'Date Range';
 }

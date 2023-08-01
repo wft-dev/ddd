@@ -3,6 +3,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/api_service/queries.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
+import 'package:daily_dairy_diary/models/filter_date.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_repository.g.dart';
@@ -76,7 +77,10 @@ class ProductRepository {
     try {
       final request = ModelMutations.update(originalProduct);
       final response = await Amplify.API.mutate(request: request).response;
-      safePrint('Response: $response');
+      final updatedProduct = response.data;
+      if (updatedProduct == null) {
+        throw response.errors;
+      }
     } on ApiException catch (e) {
       safePrint('Mutation failed: $e');
       rethrow;
@@ -125,6 +129,27 @@ class ProductRepository {
       return products;
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<Product?>> queryProductsWithDateFiltration(
+      FilterDate date) async {
+    try {
+      final request = ModelQueries.list(
+        Product.classType,
+        where:
+            Product.DATE.between(date.startDate.toUtc(), date.endsDate.toUtc()),
+      );
+      final response = await Amplify.API.query(request: request).response;
+      final products = response.data?.items;
+      if (products == null) {
+        safePrint('errors: ${response.errors}');
+        throw response.errors;
+      }
+      return products;
+    } on ApiException catch (e) {
+      safePrint('Something went wrong querying posts: ${e.message}');
       rethrow;
     }
   }

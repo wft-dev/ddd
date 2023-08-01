@@ -10,7 +10,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 class ProductList extends ConsumerWidget {
   const ProductList(this.products, {super.key});
-  final List<Product> products;
+  final List<Product?> products;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // productRepositoryProvider).queryProductItems()
@@ -20,10 +20,11 @@ class ProductList extends ConsumerWidget {
     // );
     // final productList = ref.watch(productControllerProvider);
     // print(productList);
+
     return ListView.builder(
       itemCount: products.length,
       itemBuilder: (context, index) {
-        final productItem = products[index];
+        final productItem = products[index]!;
         return Container(
           margin: const EdgeInsets.symmetric(
             horizontal: 12.0,
