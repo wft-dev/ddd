@@ -3,6 +3,14 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 // Custom text styles use for the app.
 class CustomTextStyle {
+  static TextStyle titleStyle({bool isWidth = true}) {
+    return TextStyle(
+      fontSize: checkSize(36, isWidth),
+      color: Colors.black,
+      fontWeight: FontWeight.w600,
+    );
+  }
+
   static TextStyle loginTitleStyle({bool isWidth = true}) {
     return TextStyle(
       fontSize: checkSize(36, isWidth),

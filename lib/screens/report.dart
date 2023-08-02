@@ -1,6 +1,12 @@
+import 'package:daily_dairy_diary/api_service/queries.dart';
+import 'package:daily_dairy_diary/constant/constant.dart';
+import 'package:daily_dairy_diary/delegate/search.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/models/filter_date.dart';
+import 'package:daily_dairy_diary/provider/filter_date_controller.dart';
+import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/product_filter_controller.dart';
+import 'package:daily_dairy_diary/provider/providers.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
@@ -35,41 +41,24 @@ class ReportState extends ConsumerState<Report> {
     super.dispose();
   }
 
-  void productListWithFilterType(ProductFilterType filterType) async {
-    final now = DateTime.now();
-    FilterDate date;
-    switch (filterType) {
-      case ProductFilterType.week:
-        final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-        final endOfWeek = startOfWeek.add(const Duration(days: 6));
-        date = FilterDate(startDate: startOfWeek, endsDate: endOfWeek);
-        break;
-      case ProductFilterType.month:
-        final startOfMonth = DateTime(now.year, now.month, 1);
-        final endOfMonth = DateTime(now.year, now.month + 1, 0);
-        date = FilterDate(startDate: startOfMonth, endsDate: endOfMonth);
-        break;
-      case ProductFilterType.year:
-        final startOfYear = DateTime(now.year, 1, 1);
-        final endOfYear = DateTime(now.year, 12, 31);
-        date = FilterDate(startDate: startOfYear, endsDate: endOfYear);
-        break;
-      case ProductFilterType.dateRange:
-        final startOfYear = DateTime(now.year, 1, 1);
-        final endOfYear = DateTime(now.year, 12, 31);
-        date = FilterDate(startDate: startOfYear, endsDate: endOfYear);
-        break;
-    }
-    await ref
-        .read(productFilterControllerProvider.notifier)
-        .filterProductWithDate(date);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text(Strings.report),
+          actions: [
+            IconButton(
+              onPressed: () {
+                // method to show the search bar
+                showSearch(
+                    context: context,
+                    // delegate to customize the search bar
+                    delegate: CustomSearchDelegate(
+                        productList: selectedEvents.value));
+              },
+              icon: const Icon(Icons.search),
+            )
+          ],
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom: Radius.elliptical(400, 16.0),
@@ -94,6 +83,7 @@ class ReportState extends ConsumerState<Report> {
         );
       }
     });
+    ref.watch(productFilterWithDateProvider);
 
     return Container(
       color: bgColor,
@@ -146,7 +136,10 @@ class ReportState extends ConsumerState<Report> {
       width: 80,
       text: Strings.week,
       onPress: () async {
-        productListWithFilterType(ProductFilterType.week);
+        // productListWithFilterType(ProductFilterType.week);
+        ref
+            .read(filterDateControllerProvider.notifier)
+            .updateFilterType(ProductFilterType.week);
       },
     );
   }
@@ -156,7 +149,10 @@ class ReportState extends ConsumerState<Report> {
       width: 80,
       text: Strings.month,
       onPress: () async {
-        productListWithFilterType(ProductFilterType.month);
+        // productListWithFilterType(ProductFilterType.month);
+        ref
+            .read(filterDateControllerProvider.notifier)
+            .updateFilterType(ProductFilterType.month, 5);
       },
     );
   }

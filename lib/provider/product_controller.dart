@@ -1,7 +1,13 @@
 import 'package:daily_dairy_diary/models/MoreProduct.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
+import 'package:daily_dairy_diary/models/filter_date.dart';
 import 'package:daily_dairy_diary/provider/calendar_event_provider.dart';
+import 'package:daily_dairy_diary/provider/filter_date_controller.dart';
+import 'package:daily_dairy_diary/provider/product_filter_controller.dart';
+import 'package:daily_dairy_diary/provider/providers.dart';
 import 'package:daily_dairy_diary/repositories/product_repository.dart';
+import 'package:daily_dairy_diary/screens/report.dart';
+import 'package:riverpod/src/framework.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'product_controller.g.dart';
@@ -52,6 +58,7 @@ class ProductController extends _$ProductController {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await productRepository.deleteProduct(productId);
+      reportDataUpdate();
       return fetchProduct();
     });
   }
@@ -62,7 +69,15 @@ class ProductController extends _$ProductController {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await productRepository.updateProduct(product);
+      reportDataUpdate();
       return fetchProduct();
     });
+  }
+
+  void reportDataUpdate() async {
+    final filterDate = ref.watch(filterDateControllerProvider);
+    await ref
+        .read(productFilterControllerProvider.notifier)
+        .filterProductWithDate(filterDate);
   }
 }

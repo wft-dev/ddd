@@ -49,6 +49,7 @@ class Strings {
   static const String passwordUpdate = 'Password has been successfully updated';
   static const String resetPasswordSuccess =
       'Password has been successfully reset';
+
   // Confirm Code Screen
   static const String add = 'Add';
   static const String confirmCode = 'Confirm Code';
@@ -87,4 +88,12 @@ class Strings {
   static const String month = 'Month';
   static const String year = 'Year';
   static const String dateRange = 'Date Range';
+
+  static const String searchPlaceHolder =
+      'Search by name, type, price, quantity';
+
+  static String noSearchResultMessage(String query) {
+    return 'There was no match found for "$query". '
+        'Please try another search.';
+  }
 }

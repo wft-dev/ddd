@@ -62,6 +62,9 @@ class AddProductState extends ConsumerState<AddProduct> {
     super.initState();
     final group = GroupControllers();
     groupControllers.add(group);
+    if (widget.productData != null) {
+      autofillData(widget.productData);
+    }
   }
 
   // This method is used for autofill the data from [Setting] and [Product].
@@ -84,7 +87,9 @@ class AddProductState extends ConsumerState<AddProduct> {
   // This method is setting the data in all fields that get from [Setting] or [Product].
   void setAutofillData(String? type, String name, String price, String quantity,
       [DateTime? date]) {
-    selectedValue = type;
+    setState(() {
+      selectedValue = type;
+    });
     groupControllers[0].name.text = name;
     groupControllers[0].price.text = price;
     groupControllers[0].quantity.text = quantity;
@@ -98,21 +103,20 @@ class AddProductState extends ConsumerState<AddProduct> {
   Widget getBody() {
     ref.listen<AsyncValue>(settingControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
-      print('state ${state.value}');
+      if (!state.hasError && state.hasValue && !state.isLoading) {
+        state.whenData((result) {
+          final List<Setting?> settings = result;
+          if (widget.productData == null) {
+            if (settings.isNotEmpty) {
+              final settingItem = settings[0];
+              settingData = settingItem;
+              autofillData(settingItem);
+            }
+          }
+        });
+      }
     });
-    if (widget.productData != null) {
-      autofillData(widget.productData);
-    } else {
-      final settingList = ref.watch(settingControllerProvider);
-      print('state112 $settingList');
-      settingList.whenData((setting) {
-        if (setting.isNotEmpty) {
-          final settingItem = setting[0];
-          settingData = settingItem;
-          autofillData(settingItem);
-        }
-      });
-    }
+
     return SingleChildScrollView(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
@@ -255,7 +259,6 @@ class AddProductState extends ConsumerState<AddProduct> {
 
         final userID = ref.read(currentUserRepositoryProvider).value;
         if (userID != null) {
-          final now = DateTime.now();
           var product = Product(
             name: groupControllers[0].name.text,
             price: groupControllers[0].price.text.parseInt(),

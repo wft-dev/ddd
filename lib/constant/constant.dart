@@ -8,3 +8,18 @@ class Insets {
 class Fonts {
   static const String fontName = '';
 }
+
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
