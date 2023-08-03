@@ -1,3 +1,5 @@
+import 'package:bottom_picker/bottom_picker.dart';
+import 'package:bottom_picker/resources/arrays.dart';
 import 'package:daily_dairy_diary/api_service/queries.dart';
 import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/delegate/search.dart';
@@ -9,6 +11,8 @@ import 'package:daily_dairy_diary/provider/product_filter_controller.dart';
 import 'package:daily_dairy_diary/provider/providers.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:daily_dairy_diary/widgets/app_drop_down_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -76,9 +80,7 @@ class ReportState extends ConsumerState<Report> {
         state.whenData(
           (result) async {
             final List<Product?> productList = result;
-            if (productList.isNotEmpty) {
-              selectedEvents.value = productList;
-            }
+            selectedEvents.value = productList;
           },
         );
       }
@@ -97,6 +99,7 @@ class ReportState extends ConsumerState<Report> {
               buildAllButton(),
               buildWeekButton(),
               buildMonthButton(),
+              buildDateRangePicker(),
             ],
           ),
           const SizedBox(height: 8.0),
@@ -127,7 +130,43 @@ class ReportState extends ConsumerState<Report> {
       text: Strings.all,
       onPress: () async {
         ref.invalidate(productFilterControllerProvider);
+        // showModalBottomSheet(
+        //   context: context,
+        //   builder: (BuildContext context) => yearDatePicker(),
+        // );
       },
+    );
+  }
+
+  AppButton buildDateRangePicker() {
+    return AppButton(
+      width: 80,
+      text: Strings.dateRange,
+      onPress: () async {
+        DateTimeRangePicker(
+            initialStartTime: DateTime.now(),
+            initialEndTime: DateTime.now().add(const Duration(days: 1)),
+            mode: DateTimeRangePickerMode.date,
+            onConfirm: (start, end) {
+              print(start);
+              print(end);
+              ref.read(filterDateControllerProvider.notifier).updateFilterType(
+                  ProductFilterType.dateRange,
+                  startDateRange: start,
+                  endDateRange: end);
+            }).showPicker(context);
+      },
+    );
+  }
+
+  // [AppDropDownButton]
+  AppDropDownButton buildDropDownButton(int index, String? value,
+      [ValueChanged<String?>? onChanged]) {
+    return AppDropDownButton(
+      onChangedMonth: onChanged,
+      showMonth: true,
+      hint: Strings.selectType,
+      value: value,
     );
   }
 
@@ -152,7 +191,7 @@ class ReportState extends ConsumerState<Report> {
         // productListWithFilterType(ProductFilterType.month);
         ref
             .read(filterDateControllerProvider.notifier)
-            .updateFilterType(ProductFilterType.month, 5);
+            .updateFilterType(ProductFilterType.month, month: 5);
       },
     );
   }

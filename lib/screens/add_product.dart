@@ -1,8 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
-import 'package:daily_dairy_diary/models/Setting.dart';
-import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
@@ -32,13 +31,6 @@ class AddProductState extends ConsumerState<AddProduct> {
   static const int indexForSingleView = 0;
   bool isDefault = false;
   bool isDateTimeSelected = false;
-
-  final List<String> items = [
-    'Milk',
-    'Curd',
-    'Bread',
-    'Sugar',
-  ];
 
   Setting? settingData;
 
@@ -132,9 +124,10 @@ class AddProductState extends ConsumerState<AddProduct> {
               style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
             ),
             buildDatePicker(),
-            buildDropDown(indexForSingleView, selectedValue, (value) {
+            buildDropDownFiled(indexForSingleView, selectedValue, (value) {
               setState(() {
-                selectedValue = value;
+                selectedValue = value!.type;
+                groupControllers[0].price.text = value.price.toString();
               });
             }),
             buildSettingForm(_formKey),
@@ -205,14 +198,14 @@ class AddProductState extends ConsumerState<AddProduct> {
     );
   }
 
-  // [CustomDropdownButton2]
-  Widget buildDropDown(int index, String? value,
-      [ValueChanged<String?>? onChanged]) {
-    return CustomDropdownButton2(
-      dropdownItems: items,
+  // [AppDropDownFiled]
+  AppDropDownFiled buildDropDownFiled(int index, String? value,
+      [ValueChanged<Inventory?>? onChanged]) {
+    return AppDropDownFiled<Inventory>(
+      dropdownItems: inventoryList,
       onChanged: onChanged,
       hint: Strings.selectType,
-      value: value,
+      value: null,
     );
   }
 
@@ -355,10 +348,12 @@ class AddProductState extends ConsumerState<AddProduct> {
                   style:
                       CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
                 ),
-                buildDropDown(index, productList[index].type, (value) {
+                buildDropDownFiled(index, productList[index].type, (value) {
                   setState(() {
                     productList[index] = productByIndex.copyWith(
-                        type: value, date: TemporalDateTime(buyDateTime));
+                        type: value!.type, date: TemporalDateTime(buyDateTime));
+                    groupControllers[indexForList].price.text =
+                        value.price.toString();
                   });
                 }),
                 generateTextField(groupControllers[indexForList].name,

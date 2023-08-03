@@ -92,6 +92,8 @@ class Strings {
   static const String searchPlaceHolder =
       'Search by name, type, price, quantity';
 
+  static const String noData = 'No data found';
+
   static String noSearchResultMessage(String query) {
     return 'There was no match found for "$query". '
         'Please try another search.';

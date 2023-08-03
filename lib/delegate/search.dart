@@ -98,17 +98,8 @@ class CustomSearchDelegate extends SearchDelegate {
         matchQuery.add(item);
       }
     }
-    return matchQuery.isEmpty
-        ? Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Sizes.p6.sw),
-              child: Text(
-                Strings.noSearchResultMessage(query),
-                style: CustomTextStyle.titleStyle()
-                    .copyWith(fontSize: Sizes.p4.sw),
-              ),
-            ),
-          )
-        : ProductList(matchQuery);
+    return ProductList(matchQuery,
+        message:
+            matchQuery.isEmpty ? null : Strings.noSearchResultMessage(query));
   }
 }

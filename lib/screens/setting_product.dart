@@ -1,5 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:daily_dairy_diary/models/Inventory.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
@@ -28,13 +30,6 @@ class SettingProductState extends ConsumerState<SettingProduct> {
   String? selectedValue;
   static const int indexForSingleView = 0;
   bool isDefault = false;
-
-  final List<String> items = [
-    'Milk',
-    'Curd',
-    'Bread',
-    'Sugar',
-  ];
 
   Setting? settingData;
 
@@ -93,9 +88,10 @@ class SettingProductState extends ConsumerState<SettingProduct> {
               style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
             ),
             buildStartDate(),
-            buildDropDown(indexForSingleView, selectedValue, (value) {
+            buildDropDownFiled(indexForSingleView, selectedValue, (value) {
               setState(() {
-                selectedValue = value;
+                selectedValue = value!.type;
+                groupControllers[0].price.text = value.price.toString();
               });
             }),
             buildSettingForm(_formKey),
@@ -133,14 +129,14 @@ class SettingProductState extends ConsumerState<SettingProduct> {
     );
   }
 
-  // [CustomDropdownButton2]
-  Widget buildDropDown(int index, String? value,
-      [ValueChanged<String?>? onChanged]) {
-    return CustomDropdownButton2(
-      dropdownItems: items,
+  // [AppDropDownFiled]
+  AppDropDownFiled buildDropDownFiled(int index, String? value,
+      [ValueChanged<Inventory?>? onChanged]) {
+    return AppDropDownFiled<Inventory>(
+      dropdownItems: inventoryList,
       onChanged: onChanged,
       hint: Strings.selectType,
-      value: value,
+      value: null,
     );
   }
 
