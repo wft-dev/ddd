@@ -39,7 +39,7 @@ class AppDropDownFiled<T> extends StatelessWidget {
     super.key,
   });
   final String hint;
-  final String? value;
+  final T? value;
   final List<T> dropdownItems;
   final ValueChanged<T?>? onChanged;
   final FormFieldValidator<T?>? validator;
@@ -121,15 +121,25 @@ class AppDropDownFiled<T> extends StatelessWidget {
             fontSize: Sizes.p4_5.sw,
             fontWeight: FontWeight.w500,
           ),
-          // value: value,
+          value: value,
           items: dropdownItems.map((item) {
-            final v = item as Inventory;
+            if (item is Inventory) {
+              return DropdownMenuItem<T>(
+                value: item,
+                child: Container(
+                  alignment: valueAlignment,
+                  child: Text(
+                    item.type ?? '',
+                  ),
+                ),
+              );
+            }
             return DropdownMenuItem<T>(
               value: item,
               child: Container(
                 alignment: valueAlignment,
                 child: Text(
-                  item.type ?? '',
+                  item as String,
                 ),
               ),
             );

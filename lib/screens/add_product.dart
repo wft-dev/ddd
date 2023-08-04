@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-// ignore: must_be_immutable
 class AddProduct extends ConsumerStatefulWidget {
   const AddProduct(this.productData, {Key? key}) : super(key: key);
   final Product? productData;
@@ -52,6 +51,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   @override
   void initState() {
     super.initState();
+
     final group = GroupControllers();
     groupControllers.add(group);
     if (widget.productData != null) {
@@ -205,7 +205,7 @@ class AddProductState extends ConsumerState<AddProduct> {
       dropdownItems: inventoryList,
       onChanged: onChanged,
       hint: Strings.selectType,
-      value: null,
+      value: findInventory(selectedValue ?? ''),
     );
   }
 

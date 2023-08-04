@@ -1,6 +1,7 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import '../amplifyconfiguration.dart';
 import '../models/ModelProvider.dart';
 
@@ -9,7 +10,9 @@ class AWSAmplifyConfigure {
   static Future<bool> configureAWSAmplify() async {
     final apiPlugin = AmplifyAPI(modelProvider: ModelProvider.instance);
     final authPlugin = AmplifyAuthCognito();
-    await Amplify.addPlugins([authPlugin, apiPlugin]);
+    final storage = AmplifyStorageS3();
+
+    await Amplify.addPlugins([authPlugin, apiPlugin, storage]);
     // You can use addPlugins if you are going to be adding multiple plugins
     // await Amplify.addPlugins([authPlugin, analyticsPlugin]);
 

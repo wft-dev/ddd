@@ -1,5 +1,6 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:daily_dairy_diary/repositories/storage_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/auth_results.dart';
@@ -189,6 +190,14 @@ class AuthRepository {
     } on AuthException catch (e) {
       safePrint('Error updating password: ${e.message}');
       rethrow;
+    }
+  }
+
+  Future<void> uploadFile(File file) async {
+    final fileKey = await ref.read(StorageRepositoryProvider).uploadFile(file);
+    if (fileKey != null) {
+      final imageUrl =
+          await ref.read(StorageRepositoryProvider).getImageUrl(fileKey);
     }
   }
 }

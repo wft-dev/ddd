@@ -136,7 +136,7 @@ class SettingProductState extends ConsumerState<SettingProduct> {
       dropdownItems: inventoryList,
       onChanged: onChanged,
       hint: Strings.selectType,
-      value: null,
+      value: findInventory(selectedValue ?? ''),
     );
   }
 
