@@ -1,9 +1,15 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_dairy_diary/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../constant/strings.dart';
-import '../provider/todo_controller.dart';
+import '../provider/product_controller.dart';
 import '../provider/update_user_controller.dart';
 import '../repositories/auth_repository.dart';
 import '../router/routes.dart';
@@ -24,6 +30,13 @@ class ProfileState extends ConsumerState<Profile> {
       TextEditingController(text: "");
   final TextEditingController phoneNumberController =
       TextEditingController(text: "");
+  String? pickedImage;
+  bool isImageSelected = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +48,23 @@ class ProfileState extends ConsumerState<Profile> {
   }
 
   Widget getBody() {
+    ref.listen<AsyncValue>(updateUseControllerProvider, (_, state) {
+      state.showAlertDialogOnError(context);
+      if (!state.hasError && state.hasValue && !state.isLoading) {
+        state.whenData((result) {
+          User user = result;
+          if (!isImageSelected) {
+            pickedImage = user.picture;
+          }
+          List splitUserName = user.name.splitSpaceString();
+          firstNameController.text = splitUserName[0];
+          lastNameController.text = splitUserName[1];
+          phoneNumberController.text = user.phoneNumber.toString();
+        });
+      }
+    });
+    // final userDetail = ref.watch(updateUseControllerProvider);
+
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
@@ -43,13 +73,39 @@ class ProfileState extends ConsumerState<Profile> {
           children: [
             Text(
               "",
-              style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
+              style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 16),
+            ),
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  PickImage()
+                      .imageFormGallery(
+                    context: context,
+                  )
+                      .then((value) {
+                    if (value != null) {
+                      setState(() {
+                        pickedImage = value;
+                        isImageSelected = true;
+                      });
+                    }
+                  });
+                },
+                child: CircularImage(
+                  isImageSelected: isImageSelected,
+                  imageURL: pickedImage ?? '',
+                  size: 100,
+                  borderColor: Colors.green,
+                ),
+              ),
             ),
             SizedBox(height: Sizes.p2.sh),
             buildProfileForm(),
             buildSaveButton(),
             SizedBox(height: Sizes.p2.sh),
             buildChangePasswordButton(),
+            SizedBox(height: Sizes.p2.sh),
+            buildLogoutButton()
           ],
         ),
       ),
@@ -88,10 +144,13 @@ class ProfileState extends ConsumerState<Profile> {
       text: Strings.save,
       onPress: () async {
         if (!_formKey.currentState!.validate()) return;
+        File? pickedImageFile =
+            pickedImage != null && isImageSelected ? File(pickedImage!) : null;
         await ref.read(updateUseControllerProvider.notifier).updateUser(
             firstNameController.text,
             lastNameController.text,
-            phoneNumberController.text);
+            phoneNumberController.text,
+            pickedImageFile);
       },
     );
   }
@@ -101,6 +160,15 @@ class ProfileState extends ConsumerState<Profile> {
       text: Strings.changePassword,
       onPress: () async {
         const ChangePasswordRoute().go(context);
+      },
+    );
+  }
+
+  AppButton buildLogoutButton() {
+    return AppButton(
+      text: Strings.logout,
+      onPress: () async {
+        await ref.read(authRepositoryProvider).signOut();
       },
     );
   }

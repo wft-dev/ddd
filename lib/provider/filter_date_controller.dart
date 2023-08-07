@@ -14,7 +14,17 @@ class FilterDateController extends _$FilterDateController {
     return setFilterDate(ProductFilterType.week);
   }
 
-  void updateFilterType(ProductFilterType filterType, [int? month]) {
-    state = setFilterDate(filterType, month);
+  void updateFilterType(
+    ProductFilterType filterType, {
+    int? month,
+    int? year,
+    DateTime? startDateRange,
+    DateTime? endDateRange,
+  }) {
+    state = setFilterDate(filterType,
+        month: month,
+        year: year,
+        startDateRange: startDateRange,
+        endDateRange: endDateRange);
   }
 }

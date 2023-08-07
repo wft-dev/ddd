@@ -7,4 +7,8 @@ extension NumberParsing on String {
   double parseDouble() {
     return double.parse(this);
   }
+
+  List splitSpaceString() {
+    return split(' ');
+  }
 }
