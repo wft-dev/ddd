@@ -8,6 +8,8 @@ class Sizes {
   static const p1 = 1.0;
   static const p1_5 = 1.5;
   static const p2 = 2.0;
+  static const p3 = 3.0;
+  static const p3_3 = 3.3;
   static const p4 = 4.0;
   static const p4_5 = 4.5;
   static const p5 = 5.0;
@@ -20,6 +22,7 @@ class Sizes {
   static const p32 = 32.0;
   static const p48 = 48.0;
   static const p64 = 64.0;
+  static const p150 = 150.0;
 }
 
 /// Constant gap widths

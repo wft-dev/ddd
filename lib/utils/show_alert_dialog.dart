@@ -1,3 +1,5 @@
+import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:daily_dairy_diary/router/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,9 +23,15 @@ Future<bool?> showAlertDialog({
             onPressed: () => context.pop(false),
           ),
         TextButton(
-          child: Text(defaultActionText),
-          onPressed: () => context.pop(false),
-        ),
+            child: Text(defaultActionText),
+            onPressed: () {
+              if (content == Strings.noUserSignedIn) {
+                context.pop(false);
+                const LoginRoute().go(context);
+              } else {
+                context.pop(false);
+              }
+            }),
       ],
     ),
   );

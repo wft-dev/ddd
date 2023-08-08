@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_dairy_diary/models/user.dart';
+import 'package:daily_dairy_diary/router/router_listenable.dart';
+import 'package:daily_dairy_diary/widgets/app_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -168,7 +170,24 @@ class ProfileState extends ConsumerState<Profile> {
     return AppButton(
       text: Strings.logout,
       onPress: () async {
-        await ref.read(authRepositoryProvider).signOut();
+        var value = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return const AppAlert(
+              title: Strings.logout,
+              content: Strings.wantToLogout,
+            );
+          },
+        );
+        value ??= false;
+        if (value) {
+          await ref.read(authRepositoryProvider).signOut();
+          // ref.read(routerListenableProvider.notifier);
+          // ref.watch(currentUserRepositoryProvider).value;
+          if (mounted) {
+            const LoginRoute().go(context);
+          }
+        }
       },
     );
   }

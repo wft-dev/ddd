@@ -39,7 +39,7 @@ class Strings {
 
   // Profile Screen
   static const String profile = 'Profile';
-
+  static const String wantToLogout = 'Do you want to logout';
   static const String dashboard = 'Dashboard';
 
   // Change Password Screen
@@ -98,4 +98,6 @@ class Strings {
     return 'There was no match found for "$query". '
         'Please try another search.';
   }
+
+  static const String noUserSignedIn = 'No user is currently signed in';
 }

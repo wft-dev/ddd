@@ -1,5 +1,6 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/repositories/storage_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -8,13 +9,23 @@ import '../models/auth_results.dart';
 part 'auth_repository.g.dart';
 
 class AuthRepository {
+  Future<bool> isUserSignedIn() async {
+    try {
+      final result = await Amplify.Auth.fetchAuthSession();
+      return result.isSignedIn;
+    } on AuthException catch (e) {
+      safePrint('Could not retrieve current user: ${e.message}');
+      rethrow;
+    }
+  }
+
   Future<String?> getCurrentUserId() async {
     try {
       final user = await Amplify.Auth.getCurrentUser();
       return user.userId;
     } on AuthException catch (e) {
       safePrint('Could not retrieve current user: ${e.message}');
-      return null;
+      rethrow;
     }
   }
 
@@ -111,22 +122,38 @@ class AuthRepository {
     }
   }
 
-  Future<void> fetchCurrentUserAttributes() async {
+  Future<User> fetchCurrentUserAttributes() async {
     try {
       final result = await Amplify.Auth.fetchUserAttributes();
+      String name = '';
+      String email = '';
+      String phoneNumber = '';
+      String picture = '';
       for (final element in result) {
-        safePrint('key: ${element.userAttributeKey}; value: ${element.value}');
+        // safePrint('key: ${element.userAttributeKey}; value: ${element.value}');
+        if (element.userAttributeKey.toString() == 'name') {
+          name = element.value;
+        }
+        if (element.userAttributeKey.toString() == 'email') {
+          email = element.value;
+        }
+        if (element.userAttributeKey.toString() == 'phone_number') {
+          phoneNumber = element.value;
+        }
+        if (element.userAttributeKey.toString() == 'picture') {
+          picture = element.value;
+        }
       }
+      return User(
+          name: name, email: email, phoneNumber: phoneNumber, picture: picture);
     } on AuthException catch (e) {
       safePrint('Error fetching user attributes: ${e.message}');
+      rethrow;
     }
   }
 
-  Future<void> updateUser(
-    String firstName,
-    String lastName,
-    String? phoneNumber,
-  ) async {
+  Future<void> updateUser(String firstName, String lastName,
+      String? phoneNumber, String? picture) async {
     try {
       final attributes = [
         AuthUserAttribute(
@@ -137,12 +164,18 @@ class AuthRepository {
           userAttributeKey: AuthUserAttributeKey.phoneNumber,
           value: phoneNumber ?? '',
         ),
+        if (picture != null)
+          AuthUserAttribute(
+            userAttributeKey: AuthUserAttributeKey.picture,
+            value: picture,
+          ),
       ];
       await Amplify.Auth.updateUserAttributes(
         attributes: attributes,
       );
     } on AuthException catch (e) {
       safePrint('Error updating user attribute: ${e.message}');
+      rethrow;
     }
   }
 
@@ -192,14 +225,6 @@ class AuthRepository {
       rethrow;
     }
   }
-
-  Future<void> uploadFile(File file) async {
-    final fileKey = await ref.read(StorageRepositoryProvider).uploadFile(file);
-    if (fileKey != null) {
-      final imageUrl =
-          await ref.read(StorageRepositoryProvider).getImageUrl(fileKey);
-    }
-  }
 }
 
 @Riverpod(keepAlive: true)
@@ -207,12 +232,12 @@ AuthRepository authRepository(AuthRepositoryRef ref) {
   return AuthRepository();
 }
 
-@Riverpod(keepAlive: true)
-Future<void> userAttributesRepository(UserAttributesRepositoryRef ref) {
-  return ref.watch(authRepositoryProvider).fetchCurrentUserAttributes();
-}
-
-@Riverpod(keepAlive: true)
+@riverpod
 Future<String?> currentUserRepository(CurrentUserRepositoryRef ref) {
   return ref.watch(authRepositoryProvider).getCurrentUserId();
+}
+
+@riverpod
+Future<bool> checkUserSignedIn(CheckUserSignedInRef ref) {
+  return ref.watch(authRepositoryProvider).isUserSignedIn();
 }

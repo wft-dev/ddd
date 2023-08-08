@@ -24,11 +24,12 @@ part 'router_listenable.g.dart';
 ///   1. It doesn't require us to pass [Ref](s) around
 ///   2. It works as a complete replacement for [ChangeNotifier], as it still implements [Listenable]
 ///   3. It allows for listening to multiple providers, or add more logic if needed
-@riverpod
+@Riverpod
 class RouterListenable extends _$RouterListenable implements Listenable {
   VoidCallback? _routerListener;
   bool _isAuth = false; // Useful for our global redirect function
 
+  @override
   Future<void> build() async {
     // One could watch more providers and write logic accordingly
     final userID = ref.watch(currentUserRepositoryProvider).value;
@@ -54,7 +55,7 @@ class RouterListenable extends _$RouterListenable implements Listenable {
     final isLoggingIn = state.location == LoginRoute.path;
     if (isLoggingIn) return _isAuth ? DashboardRoute.path : null;
 
-    return null;
+    return _isAuth ? null : SplashRoute.path;
   }
 
   /// Adds [GoRouter]'s listener as specified by its [Listenable].
