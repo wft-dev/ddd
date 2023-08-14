@@ -24,26 +24,33 @@ class ForgetPasswordState extends ConsumerState<ForgetPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(Strings.changePassword),
-        ),
-        body: getBody());
+    return HideKeyboardWidget(
+      child: Scaffold(
+          extendBodyBehindAppBar:
+              true, // This makes the body extend behind the app bar
+          appBar: AppBar(
+            elevation: 0, // Remove the shadow
+            backgroundColor: AppColors.transparentColor,
+          ),
+          body: getBody()),
+    );
   }
 
   Widget getBody() {
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
+    return CircularContainer(
+      heightSize: Sizes.p05,
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Box.gapH4,
             Text(
-              "",
-              style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
+              Strings.forgetYourPassword,
+              style: CustomTextStyle.titleHeaderStyle(),
             ),
-            SizedBox(height: Sizes.p2.sh),
+            Box.gapH2,
             buildChangePasswordForm(),
+            Box.gapH2,
             buildSaveButton(),
           ],
         ),
@@ -62,20 +69,6 @@ class ForgetPasswordState extends ConsumerState<ForgetPassword> {
             label: Strings.email,
             validator: Validations.validateEmail,
             textInputAction: TextInputAction.next,
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            alignment: Alignment.center,
-            child: ElevatedButton(
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  // await ref.read(authRepositoryProvider).resetPassword(
-                  //       emailController.text,
-                  //     );
-                }
-              },
-              child: const Text('Submit'),
-            ),
           ),
         ],
       ),
@@ -115,7 +108,7 @@ class ForgetPasswordState extends ConsumerState<ForgetPassword> {
       }
     });
     return AppButton(
-      text: Strings.save,
+      text: Strings.submit,
       onPress: () async {
         if (!_formKey.currentState!.validate()) return;
         await ref

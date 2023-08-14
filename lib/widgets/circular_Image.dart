@@ -7,6 +7,7 @@ class CircularImage extends StatelessWidget {
   final Color borderColor;
   final BoxFit fit;
   final double borderWidth;
+  final bool isImageSelected;
 
   const CircularImage({
     super.key,
@@ -15,6 +16,7 @@ class CircularImage extends StatelessWidget {
     required this.borderColor,
     this.fit = BoxFit.fill,
     this.borderWidth = 2,
+    this.isImageSelected = false,
   });
 
   @override
@@ -35,7 +37,7 @@ class CircularImage extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(300.0)),
-            child: imageURL != ''
+            child: isImageSelected == true
                 ? Image.asset(
                     imageURL,
                     fit: fit,
@@ -43,6 +45,11 @@ class CircularImage extends StatelessWidget {
                 : CachedNetworkImage(
                     imageUrl: imageURL,
                     fit: fit,
+                    placeholder: (context, url) => Container(
+                      alignment: Alignment.center,
+                      child:
+                          const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
+                    ),
                     errorWidget: (context, url, dynamic error) =>
                         const Icon(Icons.camera_alt_rounded),
                   ),

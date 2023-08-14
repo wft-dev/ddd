@@ -1,4 +1,5 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:daily_dairy_diary/constant/constant.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,13 +37,12 @@ class LoginState extends ConsumerState<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(Strings.login),
-        ),
-        body: getBody());
+    return HideKeyboardWidget(
+      child: Scaffold(body: getBody()),
+    );
   }
 
+  // This is used for display all widgets.
   Widget getBody() {
     final getRemember = ref.watch(getRememberProvider);
     if (getRemember.check) {
@@ -50,57 +50,39 @@ class LoginState extends ConsumerState<Login> {
       passwordController.text = getRemember.password;
       isRememberMeChecked = getRemember.check;
     }
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
+    return CircularContainer(
+      child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Box.gapH3,
                 Text(
-                  "",
-                  style:
-                      CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
+                  Strings.signInAccount,
+                  style: CustomTextStyle.titleHeaderStyle(),
                 ),
-                SizedBox(height: Sizes.p2.sh),
+                Box.gapH2,
                 buildEmailSignUpForm(),
                 buildRememberCheckbox(),
                 buildButton(),
-                SizedBox(height: Sizes.p2.sh),
+                Box.gapH4,
                 Align(
-                    alignment: Alignment.topRight,
+                    alignment: Alignment.center,
                     child: GestureDetector(
                       onTap: () {
                         const ForgetPasswordRoute().push(context);
                       },
-                      child: Text(
-                        Strings.forgetPassword,
-                        style: CustomTextStyle.registerButtonStyle()
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
+                      child: Text(Strings.forgetPassword,
+                          style: CustomTextStyle.buttonTitleStyle().copyWith(
+                              color: AppColors.pinkColor,
+                              fontSize: Sizes.p3_3.sw,
+                              fontWeight: FontWeight.w600)),
                     )),
-                SizedBox(height: Sizes.p2.sh),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      Strings.doNotAccount,
-                      style: CustomTextStyle.registerButtonStyle(),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        const RegisterRoute().push(context);
-                      },
-                      child: Text(
-                        Strings.register,
-                        style: CustomTextStyle.registerButtonStyle()
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  ],
-                ),
+                Box.gapH2,
+                loginSignUpButton(
+                    context, Strings.doNotAccount, Strings.signUp),
               ],
             ),
           ],

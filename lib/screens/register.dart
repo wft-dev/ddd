@@ -1,4 +1,5 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:daily_dairy_diary/constant/constant.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,30 +34,40 @@ class RegisterState extends ConsumerState<Register> {
 
   bool? success;
   String? userEmail;
+  bool isTermConditionChecked = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(Strings.register),
-        ),
-        body: getBody());
+    return HideKeyboardWidget(
+      child: Scaffold(
+          extendBodyBehindAppBar:
+              true, // This makes the body extend behind the app bar
+          appBar: AppBar(
+            elevation: 0, // Remove the shadow
+            backgroundColor: AppColors.transparentColor,
+          ),
+          body: getBody()),
+    );
   }
 
   Widget getBody() {
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
+    return CircularContainer(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Box.gapH3,
             Text(
-              "",
-              style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
+              Strings.createAnAccount,
+              style: CustomTextStyle.titleHeaderStyle(),
             ),
-            SizedBox(height: Sizes.p2.sh),
+            Box.gapH2,
             buildEmailSignUpForm(),
+            buildTermCondition(),
+            Box.gapH2,
             buildRegisterButton(),
+            Box.gapH2,
+            loginSignUpButton(context, Strings.haveAnAccount, Strings.login),
           ],
         ),
       ),
@@ -149,6 +160,18 @@ class RegisterState extends ConsumerState<Register> {
             emailController.text,
             passwordController.text,
             phoneNumberController.text);
+      },
+    );
+  }
+
+  AppCheckbox buildTermCondition() {
+    return AppCheckbox(
+      listTileCheckBox: isTermConditionChecked,
+      title: Strings.termAndCondition,
+      onChange: (value) async {
+        setState(() {
+          isTermConditionChecked = !isTermConditionChecked;
+        });
       },
     );
   }
