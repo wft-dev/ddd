@@ -16,7 +16,7 @@ Row loginSignUpButton(BuildContext context, String message, String title) {
       ),
       GestureDetector(
         onTap: () {
-          title == Strings.haveAnAccount
+          title == Strings.login
               ? const LoginRoute().push(context)
               : const RegisterRoute().push(context);
         },

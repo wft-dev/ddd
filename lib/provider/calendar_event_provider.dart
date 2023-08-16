@@ -43,6 +43,36 @@ LinkedHashMap<DateTime, List<Product>> getCalendarEvent(
   return events;
 }
 
+@riverpod
+Map<String, List<Product>> getProductByType(GetProductByTypeRef ref) {
+  final products = ref.watch(productControllerProvider).value;
+  final events = <String, List<Product>>{};
+  if (products != null && products.isNotEmpty) {
+    final Map<String, List<Product>> productMap = {};
+    for (var item in products) {
+      if (item != null) {
+        Product productItem = item;
+        if (productItem.type != null) {
+          String? type = productItem.type;
+          if (type != null) {
+            if (productMap.isNotEmpty && productMap.containsKey(type)) {
+              productMap[type] = [...productMap[type]!, productItem];
+            } else {
+              Map<String, List<Product>>? productObj = {
+                type: [productItem]
+              };
+              productMap.addAll(productObj);
+            }
+          }
+        }
+      }
+    }
+    events.addAll(productMap);
+    return events;
+  }
+  return events;
+}
+
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
 }

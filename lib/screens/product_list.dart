@@ -9,8 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class ProductList extends ConsumerWidget {
-  const ProductList(this.products, {super.key});
+  const ProductList(this.products, {this.message, super.key});
   final List<Product?> products;
+  final String? message;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // productRepositoryProvider).queryProductItems()
@@ -21,58 +23,70 @@ class ProductList extends ConsumerWidget {
     // final productList = ref.watch(productControllerProvider);
     // print(productList);
 
-    return ListView.builder(
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        final productItem = products[index]!;
-        return Container(
-          margin: const EdgeInsets.symmetric(
-            horizontal: 12.0,
-            vertical: 4.0,
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: ExpansionTile(
-            initiallyExpanded: false,
-            leading: const Icon(Icons.all_inclusive),
-            title: Column(children: [
-              AppButton(
-                height: Sizes.p8.sh,
-                width: Sizes.p4.sw,
-                isIcon: true,
-                icon: const Icon(Icons.delete),
-                onPress: () async {
-                  ref
-                      .read(productControllerProvider.notifier)
-                      .removeProduct(productItem);
-                },
+    return products.isEmpty
+        ? Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: Sizes.p6.sw),
+              child: Text(
+                message ?? Strings.noData,
+                style: CustomTextStyle.titleStyle().copyWith(
+                  fontSize: Sizes.p4.sw,
+                ),
               ),
-              Text('${productItem.type}'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text('${productItem.name}'),
-                  Text('${productItem.price}'),
-                  Text('${productItem.quantity}'),
-                  AppButton(
-                    height: Sizes.p4.sh,
-                    width: Sizes.p4.sw,
-                    isIcon: true,
-                    icon: const Icon(Icons.edit),
-                    onPress: () async {
-                      AddProductRoute($extra: productItem).push(context);
-                    },
-                  ),
-                ],
-              ),
-            ]),
-            // children: buildMoreProductView(moreProductList),
-          ),
-        );
-      },
-    );
+            ),
+          )
+        : ListView.builder(
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final productItem = products[index]!;
+              return Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 12.0,
+                  vertical: 4.0,
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: ExpansionTile(
+                  initiallyExpanded: false,
+                  leading: const Icon(Icons.all_inclusive),
+                  title: Column(children: [
+                    AppButton(
+                      // height: Sizes.p8.sh,
+                      // width: Sizes.p4.sw,
+                      // isIcon: true,
+                      // icon: const Icon(Icons.delete),
+                      onPress: () async {
+                        ref
+                            .read(productControllerProvider.notifier)
+                            .removeProduct(productItem);
+                      },
+                    ),
+                    Text('${productItem.type}'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text('${productItem.name}'),
+                        Text('${productItem.price}'),
+                        Text('${productItem.quantity}'),
+                        AppButton(
+                          // height: Sizes.p4.sh,
+                          // width: Sizes.p4.sw,
+                          // isIcon: true,
+                          // icon: const Icon(Icons.edit),
+                          onPress: () async {
+                            AddProductRoute($extra: productItem).push(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ]),
+                  // children: buildMoreProductView(moreProductList),
+                ),
+              );
+            },
+          );
   }
 
   // List<Widget> buildMoreProductView(List<MoreProduct>? moreProductList) {

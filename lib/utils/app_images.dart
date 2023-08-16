@@ -12,6 +12,7 @@ class AppImages {
   static const String homeDarkImage = '${imagesPath}home_dark.png';
   static const String reportsDarkImage = '${imagesPath}reports_dark.png';
   static const String settingsDrkImage = '${imagesPath}settings_dark.png';
+  static const String homeImage = '${imagesPath}home.png';
   static const String userDarkImage = '${imagesPath}user_dark.png';
   static const String reportsImage = '${imagesPath}reports.png';
   static const String settingsImage = '${imagesPath}settings.png';

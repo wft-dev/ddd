@@ -25,12 +25,13 @@ class CircularContainer extends StatelessWidget {
       child: Center(
         child: Container(
             height: ResponsiveAppUtil.height * heightSize,
+            width: ResponsiveAppUtil.width,
             decoration: BoxDecoration(
               color: AppColors.whiteColor,
               borderRadius: BorderRadius.all(Radius.circular(Sizes.p12.sw)),
             ),
             padding: EdgeInsets.symmetric(
-                vertical: Sizes.p2.sh, horizontal: Sizes.p5.sh),
+                vertical: Sizes.p3.sh, horizontal: Sizes.p5.sh),
             child: child),
       ),
     );

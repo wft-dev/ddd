@@ -2,14 +2,17 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:math';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/event.dart';
 import 'package:daily_dairy_diary/provider/calendar_event_provider.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
+import 'package:daily_dairy_diary/provider/update_user_controller.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/utils/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -34,6 +37,10 @@ class DashboardState extends ConsumerState<Dashboard> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   Map<DateTime, List<Product>> events = {};
+  Map<String, List<Product>> productByType = {};
+
+  String? userName;
+  int activeButtonIndex = Sizes.pInt0;
 
   @override
   void initState() {
@@ -49,10 +56,12 @@ class DashboardState extends ConsumerState<Dashboard> {
     super.dispose();
   }
 
+  // [List] of products.
   List<Product> getEventsForDay(DateTime day) {
     return events[day] ?? [];
   }
 
+  // Set selected day.
   void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
@@ -65,81 +74,167 @@ class DashboardState extends ConsumerState<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<String>>(
+        updateUseControllerProvider.select<AsyncValue<String>>(
+            (user) => user.whenData((value) => value.name)),
+        (previousName, newName) {
+      setState(() {
+        userName = newName.value;
+      });
+    });
+    ref.watch(updateUseControllerProvider.notifier);
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(Strings.dashboard),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.elliptical(400, 16.0),
+        backgroundColor: AppColors.whiteColor,
+        appBar: CustomAppBar(
+          userName: userName,
+          backgroundColor: AppColors.whiteColor,
+          title: Strings.dashboard,
+          actions: [
+            IconButton(
+              icon: Image.asset(AppImages.addMoreBtnImage),
+              onPressed: () {
+                AddProductRoute().push(context);
+              },
             ),
-          ),
+          ],
         ),
-        body: getBody());
+        body: Container(
+            height: ResponsiveAppUtil.height,
+            // width: ResponsiveAppUtil.width,
+            color: AppColors.alphaPurpleColor,
+            child: getBody()));
   }
 
+  // This is used for display all widgets.
   Widget getBody() {
     events = ref.watch(getCalendarEventProvider);
     selectedEvents.value = getEventsForDay(_selectedDay!);
+    print(productByType);
 
     return Container(
-      color: bgColor,
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          buildCalendar(),
-          const SizedBox(height: 8.0),
-          Expanded(
-            child: ValueListenableBuilder<List<Product>>(
-              valueListenable: selectedEvents,
-              builder: (context, value, _) {
-                return ProductList(value);
+      height: ResponsiveAppUtil.height * Sizes.p01.sh,
+      // width: ResponsiveAppUtil.width,
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius:
+            BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
+      ),
+      padding:
+          EdgeInsets.symmetric(vertical: Sizes.p01.sh, horizontal: Sizes.p6.sw),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildCalendar(),
+            Box.gapH2,
+            buildProductList(),
+            buildProductType(),
+            buildListOfProducts(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildProductType() {
+    productByType = ref.watch(getProductByTypeProvider);
+    final productKeyList = productByType.keys.toList();
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: Sizes.p6.sh,
+        minHeight: Sizes.p5.sh,
+      ),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: productKeyList.length,
+        itemBuilder: (context, index) {
+          String typeName = productKeyList[index];
+          List<Product> productList = productByType[typeName]!;
+
+          return Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: Sizes.p01.sh, horizontal: Sizes.p2.sw),
+            child: AppRectangularButton(
+              index: index,
+              height: Sizes.p6.sh,
+              text: typeName,
+              value: productList.length.toString(),
+              onPress: (int index) {
+                setState(() {
+                  activeButtonIndex = index;
+                  selectedEvents.value = productList;
+                });
               },
+              activeIndex: activeButtonIndex,
             ),
+          );
+        },
+      ),
+    );
+  }
+
+  // Show list of products based on selected date.
+  Widget buildListOfProducts() {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: Sizes.p20.sh,
+        minHeight: Sizes.p10.sh,
+      ),
+      child: ValueListenableBuilder<List<Product>>(
+        valueListenable: selectedEvents,
+        builder: (context, value, _) {
+          return ProductList(value);
+        },
+      ),
+    );
+  }
+
+  // This [Container] is display product list and view all.
+  // If you click on view all button, then it is going to report screen.
+  Container buildProductList() {
+    return Container(
+      padding:
+          EdgeInsets.symmetric(vertical: Sizes.p01.sh, horizontal: Sizes.p9.sw),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            Strings.productList,
+            style: CustomTextStyle.titleStyle().copyWith(
+                fontSize: Sizes.p4.sw, fontWeight: Fonts.fontWeightBold),
           ),
-          buildSettingButton(),
+          TextButton(
+            child: Text(
+              Strings.viewAll,
+              style: CustomTextStyle.titleStyle().copyWith(
+                  fontSize: Sizes.p3.sw, fontWeight: Fonts.fontWeightBold),
+            ),
+            onPressed: () => const ReportRoute().push(context),
+          ),
         ],
       ),
     );
   }
 
+  // This is used for display [TableCalendar].
   Container buildCalendar() {
-    // print(productList);
-    // if (products != null && products.isNotEmpty) {
-    //   final Map<DateTime, List<Product>> productMap = {};
-    //   for (var item in products) {
-    //     Product productItem = item!;
-    //     DateTime? date = DateTime.utc(
-    //         productItem.date!.getDateTimeInUtc().year,
-    //         productItem.date!.getDateTimeInUtc().month,
-    //         productItem.date!.getDateTimeInUtc().day);
-    //     if (productMap.isNotEmpty && productMap.containsKey(date)) {
-    //       productMap[date] = [...productMap[date]!, productItem];
-    //     } else {
-    //       Map<DateTime, List<Product>>? productMap2 = {
-    //         DateTime.utc(
-    //             item.date!.getDateTimeInUtc().year,
-    //             item.date!.getDateTimeInUtc().month,
-    //             item.date!.getDateTimeInUtc().day): [productItem]
-    //       };
-    //       productMap.addAll(productMap2);
-    //     }
-    //   }
-
-    //   printSafe('c ==== $productMap');
-    //   final kEvents = LinkedHashMap<DateTime, List<Product>>(
-    //     equals: isSameDay,
-    //     hashCode: getHashCode,
-    //   )..addAll(productMap);
-    // }
-
     return Container(
+      padding: EdgeInsets.only(bottom: Sizes.p4.sh),
       decoration: BoxDecoration(
-        color: whiteColor,
         shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(Sizes.p6.sw),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(Sizes.p8.sw),
+          bottomRight: Radius.circular(Sizes.p8.sw),
+        ),
+        // color: AppColors.alphaPurpleColor,
+        // shape: BoxShape.rectangle,
+        // borderRadius: BorderRadius.circular(Sizes.p6.sw),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [AppColors.whiteColor, AppColors.alphaPurpleColor],
+        ),
       ),
-      // padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
       child: TableCalendar<Product>(
         firstDay: kFirstDay,
         lastDay: kLastDay,
@@ -147,29 +242,70 @@ class DashboardState extends ConsumerState<Dashboard> {
         selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
         calendarFormat: calendarFormat,
         eventLoader: getEventsForDay,
+        rowHeight: Sizes.p7.sh,
+        daysOfWeekHeight: Sizes.p8.sh,
         startingDayOfWeek: StartingDayOfWeek.monday,
+        headerStyle: HeaderStyle(
+          headerMargin: EdgeInsets.only(left: Sizes.p4.sw, right: Sizes.p4.sw),
+          titleCentered: true,
+          formatButtonVisible: false,
+          titleTextStyle: CustomTextStyle.titleStyle().copyWith(
+              fontSize: Sizes.p5.sw, fontWeight: Fonts.fontWeightBold),
+          leftChevronIcon: Icon(
+            Icons.chevron_left,
+            color: AppColors
+                .darkPurpleColor, // Change the color of the left chevron here
+          ),
+          rightChevronIcon: Icon(
+            Icons.chevron_right,
+            color: AppColors
+                .darkPurpleColor, // Change the color of the left chevron here
+          ),
+        ),
+        daysOfWeekStyle: DaysOfWeekStyle(
+          decoration: BoxDecoration(
+            color: AppColors.alphaPurpleColor,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(Sizes.p8.sw),
+              topRight: Radius.circular(Sizes.p8.sw),
+            ),
+          ),
+        ),
         calendarStyle: CalendarStyle(
+          cellMargin: const EdgeInsets.only(
+              top: Sizes.p3, bottom: Sizes.p3, left: Sizes.p2, right: Sizes.p2),
           markersMaxCount: 1,
           markersAnchor: 1,
-          outsideDaysVisible: false,
-          markerDecoration: BoxDecoration(
-            color: Colors.red,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(Sizes.p4.sw),
+          todayTextStyle: CustomTextStyle.calendarTitleStyle().copyWith(
+              color: AppColors.whiteColor, fontWeight: Fonts.fontWeightMedium),
+          defaultTextStyle: CustomTextStyle.calendarTitleStyle()
+              .copyWith(fontWeight: Fonts.fontWeightMedium),
+          selectedTextStyle: CustomTextStyle.calendarTitleStyle().copyWith(
+              color: AppColors.whiteColor, fontWeight: Fonts.fontWeightMedium),
+          weekendTextStyle: CustomTextStyle.calendarTitleStyle()
+              .copyWith(fontWeight: Fonts.fontWeightNormal),
+          rowDecoration: BoxDecoration(
+            color: AppColors.alphaPurpleColor,
           ),
           todayDecoration: BoxDecoration(
-            color: Colors.orange,
+            color: AppColors.darkPurpleColor,
             shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(Sizes.p1.sw),
+            borderRadius: BorderRadius.circular(Sizes.p3.sw),
           ),
           selectedDecoration: BoxDecoration(
-            color: Colors.orange,
+            color: AppColors.pinkColor,
             shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(Sizes.p1.sw),
+            borderRadius: BorderRadius.circular(Sizes.p3.sw),
+          ),
+          disabledDecoration: BoxDecoration(
+            color: AppColors.pinkColor,
+            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(Sizes.p3.sw),
           ),
           weekendDecoration: BoxDecoration(
             shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(Sizes.p1.sw),
+            borderRadius: BorderRadius.circular(Sizes.p3.sw),
           ),
           defaultDecoration: BoxDecoration(
             shape: BoxShape.rectangle,
@@ -192,21 +328,28 @@ class DashboardState extends ConsumerState<Dashboard> {
           dowBuilder: (context, day) {
             final text = FormatDate.dayOfWeek(day);
             return Center(
-              child: Text(
-                text[0],
-                style: const TextStyle(color: Colors.red),
+              child: Container(
+                padding: EdgeInsets.only(top: Sizes.p3.sh),
+                child: Text(
+                  text[0],
+                  style: CustomTextStyle.titleStyle()
+                      .copyWith(fontSize: Sizes.p4.sw),
+                ),
               ),
             );
           },
           singleMarkerBuilder: (context, day, _) {
             return Padding(
-              padding: const EdgeInsets.only(left: 1.0),
+              padding: const EdgeInsets.only(left: Sizes.p1),
               child: Container(
-                width: Sizes.p4.sw,
-                height: Sizes.p1.sh,
-                decoration: const BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                width: Sizes.p5.sw,
+                height: Sizes.p06.sh,
+                decoration: BoxDecoration(
+                    color: _selectedDay == day
+                        ? AppColors.whiteColor
+                        : AppColors.darkPurpleColor,
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(Sizes.p10.sh))),
               ),
             );
           },
@@ -233,6 +376,17 @@ class DashboardState extends ConsumerState<Dashboard> {
           // },
         ),
       ),
+      // Container(
+      //   padding: EdgeInsets.only(top: Sizes.p4.sh),
+      //   decoration: BoxDecoration(
+      //     color: AppColors.transparentColor,
+      //     shape: BoxShape.rectangle,
+      //     borderRadius: BorderRadius.only(
+      //       bottomLeft: Radius.circular(Sizes.p8.sw),
+      //       bottomRight: Radius.circular(Sizes.p8.sw),
+      //     ),
+      //   ),
+      // ),
     );
   }
 

@@ -19,11 +19,12 @@ class AppColors {
   static Color whiteColor = HexColors.fromHex('#FFFFFF');
   static Color darkPurpleColor = HexColors.fromHex('#382D60');
   static Color lightPurpleColor = HexColors.fromHex('#B6A2FF');
-  static Color dimPurpleColor = HexColors.fromHex('#AFA8C8');
+  static Color dimPurpleColor = HexColors.fromHex('#C0BADB');
   static Color alphaPurpleColor = HexColors.fromHex('#EDE9FB');
   static Color thinPurpleColor = HexColors.fromHex('#AFA8C8');
   static Color pinkColor = HexColors.fromHex('#FFA2BF');
   static Color transparentColor = Colors.transparent;
+  static Color redColor = HexColors.fromHex('#F44336');
 }
 
 class ThemeColor {
