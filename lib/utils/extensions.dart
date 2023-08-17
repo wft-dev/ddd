@@ -11,4 +11,8 @@ extension NumberParsing on String {
   List splitSpaceString() {
     return split(' ');
   }
+
+  String capitalizeFirst() {
+    return "${this[0].toUpperCase()}${substring(1)}";
+  }
 }

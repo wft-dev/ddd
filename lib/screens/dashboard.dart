@@ -40,7 +40,7 @@ class DashboardState extends ConsumerState<Dashboard> {
   Map<String, List<Product>> productByType = {};
 
   String? userName;
-  int activeButtonIndex = Sizes.pInt0;
+  int activeButtonIndex = Sizes.pIntN1;
 
   @override
   void initState() {
@@ -67,6 +67,7 @@ class DashboardState extends ConsumerState<Dashboard> {
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
+        activeButtonIndex = Sizes.pIntN1;
       });
       selectedEvents.value = getEventsForDay(selectedDay);
     }
@@ -108,7 +109,9 @@ class DashboardState extends ConsumerState<Dashboard> {
   // This is used for display all widgets.
   Widget getBody() {
     events = ref.watch(getCalendarEventProvider);
-    selectedEvents.value = getEventsForDay(_selectedDay!);
+    if (activeButtonIndex == Sizes.pIntN1) {
+      selectedEvents.value = getEventsForDay(_selectedDay!);
+    }
     print(productByType);
 
     return Container(
@@ -119,16 +122,23 @@ class DashboardState extends ConsumerState<Dashboard> {
         borderRadius:
             BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
       ),
-      padding:
-          EdgeInsets.symmetric(vertical: Sizes.p01.sh, horizontal: Sizes.p6.sw),
+      padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildCalendar(),
-            Box.gapH2,
-            buildProductList(),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: Sizes.p6.sw),
+              child: Column(
+                children: [
+                  buildCalendar(),
+                  Box.gapH2,
+                  buildProductList(),
+                ],
+              ),
+            ),
             buildProductType(),
+            Box.gapH3,
             buildListOfProducts(),
           ],
         ),
@@ -144,31 +154,36 @@ class DashboardState extends ConsumerState<Dashboard> {
         maxHeight: Sizes.p6.sh,
         minHeight: Sizes.p5.sh,
       ),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: productKeyList.length,
-        itemBuilder: (context, index) {
-          String typeName = productKeyList[index];
-          List<Product> productList = productByType[typeName]!;
-
-          return Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: Sizes.p01.sh, horizontal: Sizes.p2.sw),
-            child: AppRectangularButton(
-              index: index,
-              height: Sizes.p6.sh,
-              text: typeName,
-              value: productList.length.toString(),
-              onPress: (int index) {
-                setState(() {
-                  activeButtonIndex = index;
-                  selectedEvents.value = productList;
-                });
-              },
-              activeIndex: activeButtonIndex,
-            ),
-          );
-        },
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: Sizes.p8.sw,
+          right: Sizes.p8.sw,
+        ),
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: productKeyList.length,
+          itemBuilder: (context, index) {
+            String typeName = productKeyList[index];
+            List<Product> productList = productByType[typeName]!;
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: Sizes.p01.sh, horizontal: Sizes.p2.sw),
+              child: AppRectangularButton(
+                index: index,
+                height: Sizes.p6.sh,
+                text: typeName,
+                value: productList.length.toString(),
+                onPress: (int index) {
+                  setState(() {
+                    activeButtonIndex = index;
+                    selectedEvents.value = productList;
+                  });
+                },
+                activeIndex: activeButtonIndex,
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -194,7 +209,7 @@ class DashboardState extends ConsumerState<Dashboard> {
   Container buildProductList() {
     return Container(
       padding:
-          EdgeInsets.symmetric(vertical: Sizes.p01.sh, horizontal: Sizes.p9.sw),
+          EdgeInsets.symmetric(vertical: Sizes.p01.sh, horizontal: Sizes.p8.sw),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -345,7 +360,8 @@ class DashboardState extends ConsumerState<Dashboard> {
                 width: Sizes.p5.sw,
                 height: Sizes.p06.sh,
                 decoration: BoxDecoration(
-                    color: _selectedDay == day
+                    color: (_selectedDay == day ||
+                            day == FormatDate.getDateUtc(kToday))
                         ? AppColors.whiteColor
                         : AppColors.darkPurpleColor,
                     borderRadius:

@@ -1,4 +1,5 @@
 import 'package:daily_dairy_diary/models/Inventory.dart';
+import 'package:flutter/material.dart';
 
 class Insets {
   static const double small = 4;
@@ -8,7 +9,17 @@ class Insets {
 }
 
 class Fonts {
-  static const String fontName = '';
+  static const String mPLUSRoundedBlack = 'MPLUSRounded1c';
+
+  static const fontWeightBlack = FontWeight.w900;
+  static const fontWeightExtraBold = FontWeight.w800;
+  static const fontWeightBold = FontWeight.w700;
+  static const fontWeightSemiBold = FontWeight.w600;
+  static const fontWeightMedium = FontWeight.w500;
+  static const fontWeightNormal = FontWeight.w400;
+  static const fontWeightLight = FontWeight.w300;
+  static const fontWeightExtraLight = FontWeight.w200;
+  static const fontWeightThin = FontWeight.w100;
 }
 
 final List<Inventory> inventoryList = [

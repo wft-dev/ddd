@@ -1,3 +1,4 @@
+import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -21,29 +22,26 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width ?? 150.sw,
-      height: height ?? 6.sh,
+      width: width ?? ResponsiveAppUtil.width * Sizes.p1.sw,
+      height: height ?? Sizes.p6.sh,
       child: TextButton(
         onPressed: onPress,
         style: ButtonStyle(
           shape: !isIcon
               ? MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0.sw),
+                    borderRadius: BorderRadius.circular(Sizes.p4_5.sw),
                   ),
                 )
               : null,
           backgroundColor:
-              !isIcon ? MaterialStateProperty.all(Colors.black) : null,
+              !isIcon ? MaterialStateProperty.all(AppColors.pinkColor) : null,
         ),
         child: isIcon
             ? Container(child: icon)
             : Text(
                 text ?? '',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: CustomTextStyle.buttonTitleStyle(),
               ),
       ),
     );

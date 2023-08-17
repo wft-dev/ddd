@@ -8,7 +8,7 @@ class AppImages {
   static const String appBarImage = '${imagesPath}bg_hm.jpg';
   static const String bgImage = '${imagesPath}bg.jpg';
   static const String addMoreBtnImage = '${imagesPath}add_more_btn.png';
-  static const String dotteMoreImage = '${imagesPath}dotte_more.png';
+  static const String dotMoreImage = '${imagesPath}dot_more.png';
   static const String homeDarkImage = '${imagesPath}home_dark.png';
   static const String reportsDarkImage = '${imagesPath}reports_dark.png';
   static const String settingsDrkImage = '${imagesPath}settings_dark.png';

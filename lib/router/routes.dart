@@ -6,8 +6,10 @@ import 'package:daily_dairy_diary/screens/dashboard.dart';
 import 'package:daily_dairy_diary/screens/profile.dart';
 import 'package:daily_dairy_diary/screens/report.dart';
 import 'package:daily_dairy_diary/screens/reset_password.dart';
+import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 import '../screens/change_password.dart';
 import '../screens/confirm_code.dart';
@@ -140,15 +142,16 @@ class MyShellRouteScreen extends StatelessWidget {
 
   final Widget child;
 
+  // Get current index form selected location.
   int getCurrentIndex(BuildContext context) {
     final String location = GoRouterState.of(context).location;
-    if (location == SettingProductRoute.path) {
+    if (location == ReportRoute.path) {
       return 1;
     }
-    if (location == ProfileRoute.path) {
+    if (location == SettingProductRoute.path) {
       return 2;
     }
-    if (location == ReportRoute.path) {
+    if (location == ProfileRoute.path) {
       return 3;
     }
     return 0;
@@ -160,37 +163,22 @@ class MyShellRouteScreen extends StatelessWidget {
     return Scaffold(
       body: child,
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: AppColors.alphaPurpleColor,
+        selectedItemColor: AppColors.whiteColor,
+        unselectedItemColor: AppColors.dimPurpleColor,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         currentIndex: currentIndex,
         type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.dashboard,
-              size: 20,
-            ),
-            label: Strings.dashboard,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.settings,
-              size: 20,
-            ),
-            label: Strings.setting,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person_2,
-              size: 20,
-            ),
-            label: Strings.profile,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.report,
-              size: 20,
-            ),
-            label: Strings.report,
-          ),
+        items: <BottomNavigationBarItem>[
+          buildBottomBarItem(
+              checkSelectedIndex(currentIndex, 0), AppImages.homeImage),
+          buildBottomBarItem(
+              checkSelectedIndex(currentIndex, 1), AppImages.reportsImage),
+          buildBottomBarItem(
+              checkSelectedIndex(currentIndex, 2), AppImages.settingsImage),
+          buildBottomBarItem(
+              checkSelectedIndex(currentIndex, 3), AppImages.userImage),
         ],
         onTap: (int index) {
           switch (index) {
@@ -198,18 +186,45 @@ class MyShellRouteScreen extends StatelessWidget {
               const DashboardRoute().go(context);
               break;
             case 1:
-              const SettingProductRoute().go(context);
+              const ReportRoute().go(context);
               break;
             case 2:
-              const ProfileRoute().go(context);
+              const SettingProductRoute().go(context);
               break;
             case 3:
-              const ReportRoute().go(context);
+              const ProfileRoute().go(context);
               break;
           }
         },
       ),
     );
+  }
+
+  // Check current index match with the selected index.
+  bool checkSelectedIndex(int currentIndex, int selectedIndex) {
+    return currentIndex == selectedIndex ? true : false;
+  }
+
+  // [BottomNavigationBarItem] is used to show bottom icon without label.
+  BottomNavigationBarItem buildBottomBarItem(
+      bool isBarSelected, String imageName) {
+    return BottomNavigationBarItem(
+        icon: Container(
+          height: Sizes.p8.sh,
+          width: Sizes.p11.sw,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isBarSelected
+                ? AppColors.darkPurpleColor
+                : AppColors.alphaPurpleColor,
+          ),
+          child: ImageIcon(
+            AssetImage(imageName),
+            size: Sizes.p10,
+          ),
+        ),
+        label: '' //Strings.dashboard,
+        );
   }
 }
 

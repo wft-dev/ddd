@@ -68,17 +68,20 @@ class AppRectangularButtonState extends State<AppRectangularButton> {
                       ? AppColors.whiteColor
                       : AppColors.thinPurpleColor,
                   fontSize: Sizes.p3_5.sw,
-                  fontWeight: Fonts.fontWeightBold),
+                  fontWeight: isIndexSelected
+                      ? Fonts.fontWeightBlack
+                      : Fonts.fontWeightBold),
             ),
             Container(
+              margin: EdgeInsets.only(left: Sizes.p1.sw),
               padding: EdgeInsets.symmetric(
-                  vertical: Sizes.p02.sh, horizontal: Sizes.p02.sw),
+                  vertical: Sizes.p01.sh, horizontal: Sizes.p1_5.sw),
               decoration: BoxDecoration(
                 color: isIndexSelected
                     ? AppColors.whiteColor
                     : AppColors.alphaPurpleColor,
                 shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(Sizes.p3.sw),
+                borderRadius: BorderRadius.circular(Sizes.p2.sw),
               ),
               child: Text(
                 widget.value ?? '',
@@ -86,7 +89,7 @@ class AppRectangularButtonState extends State<AppRectangularButton> {
                   color: isIndexSelected
                       ? AppColors.darkPurpleColor
                       : AppColors.thinPurpleColor,
-                  fontSize: Sizes.p3_5.sw,
+                  fontSize: Sizes.p2_5.sw,
                   fontWeight: Fonts.fontWeightBold,
                 ),
               ),
