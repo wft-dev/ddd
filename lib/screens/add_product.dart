@@ -10,6 +10,7 @@ import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class AddProduct extends ConsumerStatefulWidget {
   const AddProduct(this.productData, {Key? key}) : super(key: key);
@@ -40,12 +41,10 @@ class AddProductState extends ConsumerState<AddProduct> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title:
-              Text(widget.productData == null ? Strings.add : Strings.update),
-        ),
-        body: getBody());
+    return ScaffoldAppBar(
+      barTitle: widget.productData == null ? Strings.add : Strings.update,
+      child: getBody(),
+    );
   }
 
   @override
@@ -82,9 +81,9 @@ class AddProductState extends ConsumerState<AddProduct> {
     setState(() {
       selectedValue = type;
     });
-    groupControllers[0].name.text = name;
-    groupControllers[0].price.text = price;
-    groupControllers[0].quantity.text = quantity;
+    groupControllers[Sizes.pInt0].name.text = name;
+    groupControllers[Sizes.pInt0].price.text = price;
+    groupControllers[Sizes.pInt0].quantity.text = quantity;
     if (date != null && !isDateTimeSelected) {
       buyDate = date.toLocal();
       buyTime = TimeOfDay.fromDateTime(date.toLocal());
@@ -100,7 +99,7 @@ class AddProductState extends ConsumerState<AddProduct> {
           final List<Setting?> settings = result;
           if (widget.productData == null) {
             if (settings.isNotEmpty) {
-              final settingItem = settings[0];
+              final settingItem = settings[Sizes.pInt0];
               settingData = settingItem;
               autofillData(settingItem);
             }
@@ -109,54 +108,87 @@ class AddProductState extends ConsumerState<AddProduct> {
       }
     });
 
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minHeight: 100.0, //viewportConstraints.maxHeight,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-              "",
-              style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
-            ),
-            buildDatePicker(),
-            buildDropDownFiled(indexForSingleView, selectedValue, (value) {
-              setState(() {
-                selectedValue = value!.type;
-                groupControllers[0].price.text = value.price.toString();
-              });
-            }),
-            buildSettingForm(_formKey),
-            if (widget.productData == null) ...[
-              buildIsDefaultCheckbox(),
-              gapH12,
-              buildResetButton(),
-              buildSaveButton(),
-              gapH12,
-              buildAddMoreButton(),
-              gapH12,
-              Form(
-                key: _moreFormKey,
-                child: Flexible(
-                  // height: 400,
-                  child: buildMoreProductListView(),
+    return Container(
+      height: ResponsiveAppUtil.height * Sizes.p01.sh,
+      // width: ResponsiveAppUtil.width,
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius:
+            BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
+      ),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
+        child: Container(
+          padding: EdgeInsets.only(bottom: Sizes.p4.sh),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildRoundedContainer(
+                child: Column(
+                  children: [
+                    buildDatePicker(),
+                    buildDropDownFiled(indexForSingleView, selectedValue,
+                        (value) {
+                      setState(() {
+                        selectedValue = value!.type;
+                        groupControllers[Sizes.pInt0].price.text =
+                            value.price.toString();
+                      });
+                    }),
+                    buildSettingForm(_formKey),
+                    if (widget.productData == null) ...[
+                      buildIsDefaultCheckbox(),
+                      Box.gapH2,
+                      buildSaveAndResetButton(),
+                    ] else ...[
+                      Box.gapH2,
+                      buildSaveButton(),
+                    ]
+                  ],
                 ),
               ),
-            ] else
-              buildSaveButton(),
-          ],
+              if (widget.productData == null) ...[
+                Form(
+                  key: _moreFormKey,
+                  child: Flexible(
+                    // height: 400,
+                    child: buildMoreProductListView(),
+                  ),
+                ),
+                Box.gapH1,
+                buildAddMoreButton(),
+                Box.gapH1,
+              ]
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  // This [Row] is used show add, update and reset buttons.
+  Row buildSaveAndResetButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: buildSaveButton(),
+        ),
+        Box.gapW12,
+        Expanded(
+          child: buildResetButton(),
+        ),
+      ],
     );
   }
 
   // This [AppCheckbox] is used for mark the entry as default for setting screen.
   AppCheckbox buildIsDefaultCheckbox() {
     return AppCheckbox(
+      style: CustomTextStyle.textFieldLabelStyle()
+          .copyWith(fontWeight: Fonts.fontWeightMedium, fontSize: Sizes.p4.sw),
       listTileCheckBox: isDefault,
       title: Strings.markDefault,
       onChange: (value) async {
@@ -175,6 +207,9 @@ class AddProductState extends ConsumerState<AddProduct> {
       controller: controller,
       label: label,
       validator: (value) => Validations.validateString(value, label),
+      keyboardType: label == Strings.price || label == Strings.quantity
+          ? TextInputType.number
+          : TextInputType.text,
       textInputAction: textInputAction,
       onChanged: onChanged,
     );
@@ -202,6 +237,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   AppDropDownFiled buildDropDownFiled(int index, String? value,
       [ValueChanged<Inventory?>? onChanged]) {
     return AppDropDownFiled<Inventory>(
+      label: Strings.type,
       dropdownItems: inventoryList,
       onChanged: onChanged,
       hint: Strings.selectType,
@@ -215,11 +251,11 @@ class AddProductState extends ConsumerState<AddProduct> {
       key: key,
       child: Column(
         children: <Widget>[
-          generateTextField(groupControllers[indexForSingleView].name,
-              Strings.name, TextInputAction.next),
-          generateTextField(groupControllers[indexForSingleView].price,
-              Strings.price, TextInputAction.next),
-          generateTextField(groupControllers[indexForSingleView].quantity,
+          generateTextField(groupControllers[Sizes.pInt0].name, Strings.name,
+              TextInputAction.next),
+          generateTextField(groupControllers[Sizes.pInt0].price, Strings.price,
+              TextInputAction.next),
+          generateTextField(groupControllers[Sizes.pInt0].quantity,
               Strings.quantity, TextInputAction.done),
         ],
       ),
@@ -253,10 +289,10 @@ class AddProductState extends ConsumerState<AddProduct> {
         final userID = ref.read(currentUserRepositoryProvider).value;
         if (userID != null) {
           var product = Product(
-            name: groupControllers[0].name.text,
-            price: groupControllers[0].price.text.parseInt(),
+            name: groupControllers[Sizes.pInt0].name.text,
+            price: groupControllers[Sizes.pInt0].price.text.parseInt(),
             type: selectedValue,
-            quantity: groupControllers[0].quantity.text.parseInt(),
+            quantity: groupControllers[Sizes.pInt0].quantity.text.parseInt(),
             date: TemporalDateTime(buyDateTime),
             userID: userID,
           );
@@ -268,32 +304,34 @@ class AddProductState extends ConsumerState<AddProduct> {
           //     as List<Product>;
           if (settingData == null && isDefault) {
             var setting = Setting(
-              name: groupControllers[0].name.text,
-              price: groupControllers[0].price.text.parseInt(),
+              name: groupControllers[Sizes.pInt0].name.text,
+              price: groupControllers[Sizes.pInt0].price.text.parseInt(),
               type: selectedValue,
-              quantity: groupControllers[0].quantity.text.parseInt(),
+              quantity: groupControllers[Sizes.pInt0].quantity.text.parseInt(),
               date: TemporalDateTime(buyDateTime),
               userID: userID,
               isDefault: isDefault,
             );
-            ref.read(settingControllerProvider.notifier).addSetting(setting);
-            ref
+            await ref
+                .read(settingControllerProvider.notifier)
+                .addSetting(setting);
+            await ref
                 .read(productControllerProvider.notifier)
                 .addProduct(productList);
           } else if (widget.productData != null) {
             final updatedProductData = widget.productData!.copyWith(
-              name: groupControllers[0].name.text,
-              price: groupControllers[0].price.text.parseInt(),
+              name: groupControllers[Sizes.pInt0].name.text,
+              price: groupControllers[Sizes.pInt0].price.text.parseInt(),
               type: selectedValue,
-              quantity: groupControllers[0].quantity.text.parseInt(),
+              quantity: groupControllers[Sizes.pInt0].quantity.text.parseInt(),
               date: TemporalDateTime(buyDateTime),
               userID: userID,
             );
-            ref
+            await ref
                 .read(productControllerProvider.notifier)
                 .editProduct(updatedProductData);
           } else {
-            ref
+            await ref
                 .read(productControllerProvider.notifier)
                 .addProduct(productList);
           }
@@ -331,23 +369,18 @@ class AddProductState extends ConsumerState<AddProduct> {
   // This [ListView] is displaying additional products.
   ListView buildMoreProductListView() {
     return ListView.builder(
-        padding: const EdgeInsets.all(8),
-        shrinkWrap: true,
-        primary: false,
-        itemCount: productList.length,
-        itemBuilder: (BuildContext context, int index) {
-          int indexForList = index + 1;
-          Product productByIndex = productList[index];
-          return SizedBox(
+      shrinkWrap: true,
+      primary: false,
+      itemCount: productList.length,
+      itemBuilder: (BuildContext context, int index) {
+        int indexForList = index + 1;
+        Product productByIndex = productList[index];
+        return buildRoundedContainer(
+          child: SizedBox(
             // height: 50,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "",
-                  style:
-                      CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
-                ),
                 buildDropDownFiled(index, productList[index].type, (value) {
                   setState(() {
                     productList[index] = productByIndex.copyWith(
@@ -376,6 +409,7 @@ class AddProductState extends ConsumerState<AddProduct> {
                         productByIndex.copyWith(quantity: value.parseInt());
                   });
                 }),
+                Box.gapH2,
                 AppButton(
                   text: Strings.remove,
                   onPress: () {
@@ -388,8 +422,10 @@ class AddProductState extends ConsumerState<AddProduct> {
                 ),
               ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   @override

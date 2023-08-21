@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/utils/format_Date.dart';
 import 'package:daily_dairy_diary/utils/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 import 'input_dropdown.dart';
 
@@ -46,12 +48,12 @@ class DateTimePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final valueStyle = Theme.of(context).textTheme.titleLarge!;
+    final valueStyle = CustomTextStyle.textFieldTitleStyle();
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
-          flex: 5,
+          // flex: Sizes.p5.toInt(),
           child: InputDropdown(
             labelText: dateLabelText,
             valueText: FormatDate.date(selectedDate),
@@ -59,9 +61,9 @@ class DateTimePicker extends StatelessWidget {
             onPressed: () => _selectDate(context),
           ),
         ),
-        gapW12,
+        Box.gapW2,
         Expanded(
-          flex: 4,
+          // flex: Sizes.p4.toInt(),
           child: InputDropdown(
             labelText: timeLabelText,
             valueText: selectedTime.format(context),

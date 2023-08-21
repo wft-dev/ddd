@@ -1,4 +1,6 @@
+import 'package:daily_dairy_diary/widgets/common_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../utils/common_utils.dart';
@@ -65,104 +67,79 @@ class AppTextFormFieldState extends State<AppTextFormField> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: Sizes.p1.sh),
       child: ValueListenableBuilder<bool>(
-          valueListenable: _textFiledIsFocused,
-          builder: (context, value, child) => Padding(
-                padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Sizes.p1_5.sh),
-                      child: Text(
-                        widget.label ?? '',
-                        textAlign: TextAlign.left,
-                        style: CustomTextStyle.textFieldLabelStyle(),
-                      ),
-                    ),
-                    Box.gapH1,
-                    TextFormField(
-                        focusNode: textFieldFocus,
-                        onChanged: widget.onChanged,
-                        onEditingComplete: widget.onEditingCompleted,
-                        autofocus: widget.autoFocus,
-                        minLines:
-                            widget.isMultiline ? Sizes.pInt4 : Sizes.pInt1,
-                        maxLines: widget.isMultiline ? null : Sizes.pInt1,
-                        onTap: widget.onTap,
-                        enabled: widget.enabled,
-                        readOnly: widget.readOnly,
-                        obscureText:
-                            !obscureText ? obscureText : widget.obscure,
-                        keyboardType: widget.keyboardType,
-                        controller: widget.controller,
-                        textInputAction: widget.textInputAction,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: InputDecoration(
-                          errorText: widget.errorText,
-                          prefixIcon: widget.prefix,
-                          suffixIcon: !widget.obscure
-                              ? widget.suffix
-                              : GestureDetector(
-                                  onTap: () {
-                                    toggleVisibility();
-                                  },
-                                  child: Icon(
-                                    color: AppColors.thinPurpleColor,
-                                    size: Sizes.p5.sw,
-                                    obscureText
-                                        ? Icons.visibility_outlined
-                                        : Icons.visibility_off_outlined,
-                                  ),
-                                ),
-                          filled: true,
-                          fillColor: value
-                              ? AppColors.lightPurpleColor
-                              : AppColors.whiteColor,
-                          // labelText: label,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: AppColors.lightPurpleColor,
-                                width: Sizes.p03.sw),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(Sizes.p5.sw),
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: AppColors.lightPurpleColor,
-                                width: Sizes.p03.sw),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(Sizes.p5.sw),
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: AppColors.lightPurpleColor,
-                                width: Sizes.p03.sw),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(Sizes.p5.sw),
-                            ),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: AppColors.grayColor,
-                                width: Sizes.p03.sw),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(Sizes.p5.sw),
-                            ),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: Sizes.p4.sw,
-                            vertical: Sizes.p1.sh,
-                          ),
-                        ),
-                        style: CustomTextStyle.textFieldTitleStyle(),
-                        validator: (value) => widget.validator != null
-                            ? widget.validator!(value)
-                            : null),
-                  ],
+        valueListenable: _textFiledIsFocused,
+        builder: (context, value, child) => Padding(
+          padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.p1_5.sh),
+                child: Text(
+                  widget.label ?? '',
+                  textAlign: TextAlign.left,
+                  style: CustomTextStyle.textFieldLabelStyle(),
                 ),
-              )),
+              ),
+              Box.gapH1,
+              TextFormField(
+                  focusNode: textFieldFocus,
+                  onChanged: widget.onChanged,
+                  onEditingComplete: widget.onEditingCompleted,
+                  autofocus: widget.autoFocus,
+                  minLines: widget.isMultiline ? Sizes.pInt4 : Sizes.pInt1,
+                  maxLines: widget.isMultiline ? null : Sizes.pInt1,
+                  onTap: widget.onTap,
+                  enabled: widget.enabled,
+                  readOnly: widget.readOnly,
+                  obscureText: !obscureText ? obscureText : widget.obscure,
+                  keyboardType: widget.keyboardType,
+                  controller: widget.controller,
+                  textInputAction: widget.textInputAction,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: buildInputDecoration(value),
+                  style: CustomTextStyle.textFieldTitleStyle(),
+                  validator: (value) => widget.validator != null
+                      ? widget.validator!(value)
+                      : null),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  InputDecoration buildInputDecoration(bool value) {
+    return InputDecoration(
+      errorText: widget.errorText,
+      prefixIcon: widget.prefix,
+      suffixIcon: !widget.obscure
+          ? widget.suffix
+          : GestureDetector(
+              onTap: () {
+                toggleVisibility();
+              },
+              child: Icon(
+                color: textFieldFocus.hasFocus
+                    ? AppColors.darkPurpleColor
+                    : AppColors.thinPurpleColor,
+                size: Sizes.p5.sw,
+                obscureText
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+              ),
+            ),
+      filled: true,
+      fillColor: value ? AppColors.lightPurpleColor : AppColors.whiteColor,
+      // labelText: label,
+      border: buildBorder(AppColors.lightPurpleColor),
+      enabledBorder: buildBorder(AppColors.lightPurpleColor),
+      focusedBorder: buildBorder(AppColors.lightPurpleColor),
+      disabledBorder: buildBorder(AppColors.grayColor),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: Sizes.p4.sw,
+        vertical: Sizes.p1.sh,
+      ),
     );
   }
 }

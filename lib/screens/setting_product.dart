@@ -9,9 +9,10 @@ import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/widgets/all_widgets.dart';
-import 'package:daily_dairy_diary/widgets/loader.dart';
+import 'package:daily_dairy_diary/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 class SettingProduct extends ConsumerStatefulWidget {
   const SettingProduct({super.key});
@@ -40,16 +41,16 @@ class SettingProductState extends ConsumerState<SettingProduct> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(Strings.setting),
-        ),
-        body: getBody());
+    return ScaffoldAppBar(
+      barTitle: Strings.setting,
+      child: getBody(),
+    );
   }
 
   @override
   void initState() {
     super.initState();
+    // ref.read(settingControllerProvider.notifier).fetchData();
     final group = GroupControllers();
     groupControllers.add(group);
   }
@@ -65,40 +66,46 @@ class SettingProductState extends ConsumerState<SettingProduct> {
     print('state112 $settingList');
     settingList.whenData((setting) {
       if (setting.isNotEmpty) {
-        final settingItem = setting[0]!;
+        final settingItem = setting[Sizes.pInt0]!;
         settingData = settingItem;
         selectedValue = settingItem.type;
-        groupControllers[0].name.text = settingItem.name!;
-        groupControllers[0].price.text = settingItem.price.toString();
-        groupControllers[0].quantity.text = settingItem.quantity.toString();
+        groupControllers[Sizes.pInt0].name.text = settingItem.name!;
+        groupControllers[Sizes.pInt0].price.text = settingItem.price.toString();
+        groupControllers[Sizes.pInt0].quantity.text =
+            settingItem.quantity.toString();
       }
     });
-    return SingleChildScrollView(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minHeight: 100.0, //viewportConstraints.maxHeight,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-              "",
-              style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
-            ),
-            buildStartDate(),
-            buildDropDownFiled(indexForSingleView, selectedValue, (value) {
-              setState(() {
-                selectedValue = value!.type;
-                groupControllers[0].price.text = value.price.toString();
-              });
-            }),
-            buildSettingForm(_formKey),
-            gapH12,
-            buildSaveButton(),
-            buildRemoveButton(),
-          ],
+    return Container(
+      height: ResponsiveAppUtil.height * Sizes.p01.sh,
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius:
+            BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
+      ),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(
+            bottom: Sizes.p4.sh, left: Sizes.p5.sw, right: Sizes.p5.sw),
+        child: buildRoundedContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildStartDate(),
+              buildDropDownFiled(indexForSingleView, selectedValue, (value) {
+                setState(() {
+                  selectedValue = value!.type;
+                  groupControllers[Sizes.pInt0].price.text =
+                      value.price.toString();
+                });
+              }),
+              buildSettingForm(_formKey),
+              Box.gapH2,
+              buildSaveButton(),
+              Box.gapH2,
+              buildRemoveButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -168,10 +175,10 @@ class SettingProductState extends ConsumerState<SettingProduct> {
           final now = DateTime.now();
           if (settingData != null) {
             final updateSettingData = settingData!.copyWith(
-              name: groupControllers[0].name.text,
-              price: groupControllers[0].price.text.parseInt(),
+              name: groupControllers[Sizes.pInt0].name.text,
+              price: groupControllers[Sizes.pInt0].price.text.parseInt(),
               type: selectedValue,
-              quantity: groupControllers[0].quantity.text.parseInt(),
+              quantity: groupControllers[Sizes.pInt0].quantity.text.parseInt(),
               date: TemporalDateTime(now),
               userID: userID,
               isDefault: true,
@@ -181,10 +188,10 @@ class SettingProductState extends ConsumerState<SettingProduct> {
                 .editSetting(updateSettingData);
           } else {
             var setting = Setting(
-              name: groupControllers[0].name.text,
-              price: groupControllers[0].price.text.parseInt(),
+              name: groupControllers[Sizes.pInt0].name.text,
+              price: groupControllers[Sizes.pInt0].price.text.parseInt(),
               type: selectedValue,
-              quantity: groupControllers[0].quantity.text.parseInt(),
+              quantity: groupControllers[Sizes.pInt0].quantity.text.parseInt(),
               date: TemporalDateTime(now),
               userID: userID,
               isDefault: true,

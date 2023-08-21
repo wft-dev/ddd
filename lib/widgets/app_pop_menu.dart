@@ -2,6 +2,7 @@ import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class AppPopMenu extends StatefulWidget {
@@ -17,39 +18,46 @@ class AppPopMenuState extends State<AppPopMenu> {
   var popupMenuItemIndex = 0;
   Color changeColorAccordingToMenuItem = Colors.red;
 
-  buildPopUpMenu() {
+  // This is used to display [PopupMenuButton].
+  PopupMenuButton buildPopUpMenu() {
     return PopupMenuButton<int>(
-      splashRadius: 0.2,
+      tooltip: '',
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Sizes.p10.sw)),
+          borderRadius: BorderRadius.circular(Sizes.p7.sw)),
       icon: Image.asset(AppImages.dotMoreImage),
       onSelected: (value) {
         onMenuItemSelected(value);
         widget.onSelected(value, Options.values[value].name);
       },
       itemBuilder: (ctx) => [
-        buildClosePopupMenuItem(Icons.close, Options.close.index),
+        buildPopupMenuSpace(),
+        buildClosePopupMenuItem(Icons.close, Options.close.index, ctx),
         buildPopupMenuItem(
             Options.edit.name.capitalizeFirst(), Options.edit.index),
         buildPopupMenuItem(
             Options.delete.name.capitalizeFirst(), Options.delete.index),
+        buildPopupMenuSpace(),
       ],
     );
   }
 
   // This [PopupMenuItem] is used to show close button.
-  PopupMenuItem<int> buildClosePopupMenuItem(IconData iconData, int position) {
+  PopupMenuItem<int> buildClosePopupMenuItem(
+      IconData iconData, int position, BuildContext context) {
     return PopupMenuItem(
-      height: Sizes.p2.sh,
+      height: Sizes.p3.sh,
       value: position,
-      child: IconButton(
-        iconSize: Sizes.p4.sw,
-        splashRadius: Sizes.p5.sw,
-        color: AppColors.darkPurpleColor,
-        onPressed: () {
-          onMenuItemSelected(position);
-        },
-        icon: Icon(iconData),
+      onTap: () {
+        if (context.canPop()) {
+          context.pop();
+        }
+      },
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Icon(
+          iconData,
+          size: Sizes.p2_5.sh,
+        ),
       ),
     );
   }
@@ -57,7 +65,6 @@ class AppPopMenuState extends State<AppPopMenu> {
   // This [PopupMenuItem] is used to show text.
   PopupMenuItem<int> buildPopupMenuItem(String title, int position) {
     return PopupMenuItem(
-      // padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
       height: Sizes.p4.sh,
       value: position,
       textStyle: CustomTextStyle.buttonTitleStyle().copyWith(
@@ -65,15 +72,30 @@ class AppPopMenuState extends State<AppPopMenu> {
         fontSize: Sizes.p3_5.sw,
         fontWeight: Fonts.fontWeightSemiBold,
       ),
-      child: Text(textAlign: TextAlign.left, title),
+      child: Padding(
+        padding: EdgeInsets.only(left: Sizes.p3.sw),
+        child: Text(
+          textAlign: TextAlign.left,
+          title,
+        ),
+      ),
     );
   }
 
-  // Handle
+  // This [PopupMenuItem] is used to top and bottom space.
+  PopupMenuItem<int> buildPopupMenuSpace() {
+    return PopupMenuItem(
+      enabled: false,
+      height: Sizes.p1.sh,
+      value: Sizes.pIntN1,
+      child: Container(),
+    );
+  }
+
+  // Set menu item index on menu item selected.
   onMenuItemSelected(int value) {
     setState(() {
       popupMenuItemIndex = value;
-      // widget.onCanceled?.call();
     });
   }
 
