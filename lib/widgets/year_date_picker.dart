@@ -1,41 +1,42 @@
+import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:daily_dairy_diary/widgets/app_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-typedef PickerConfirmCallback = void Function(String year);
+typedef YdPickerConfirmCallback = void Function(String year);
 
-final int currentYear = DateTime.now().year;
-final List<int> years =
-    List.generate(currentYear - 1949, (index) => 1950 + index)
-        .reversed
-        .toList();
-
-class YearDatePicker {
+class YearDatePicker<T> {
   final String title;
   final String doneText;
   final String cancelText;
+  String? initialText;
 
   final VoidCallback? onCancel;
-  final PickerConfirmCallback? onConfirm;
+  final YdPickerConfirmCallback? onConfirm;
+  final List<T>? pickerList;
 
   YearDatePicker({
     Key? key,
-    this.title = "Year",
-    this.doneText = "Done",
-    this.cancelText = "Cancel",
+    this.title = '',
+    this.doneText = Strings.done,
+    this.cancelText = Strings.cancel,
+    this.initialText,
     this.onCancel,
     this.onConfirm,
+    this.pickerList,
   });
 
   void showPicker(BuildContext context) {
+    initialText ??= pickerList?[Sizes.pInt0].toString();
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
           return FractionallySizedBox(
-            widthFactor: 1,
-            heightFactor: 0.8,
-            child: PickerWidget(
+            widthFactor: Sizes.p1,
+            heightFactor: Sizes.p09,
+            child: PickerYdWidget(
               [
                 Tab(text: title),
               ],
@@ -43,36 +44,43 @@ class YearDatePicker {
               onConfirm,
               doneText,
               cancelText,
+              initialText,
+              pickerList,
             ),
           );
         });
   }
 }
 
-class PickerWidget extends StatefulWidget {
+class PickerYdWidget<T> extends StatefulWidget {
   final List<Tab> _tabs;
   final VoidCallback? _onCancel;
-  final PickerConfirmCallback? _onConfirm;
+  final YdPickerConfirmCallback? _onConfirm;
 
   final String _doneText;
   final String _cancelText;
+  final String? _initialText;
 
-  const PickerWidget(this._tabs, this._onCancel, this._onConfirm,
-      this._doneText, this._cancelText,
+  final List<T>? _pickerList;
+
+  const PickerYdWidget(this._tabs, this._onCancel, this._onConfirm,
+      this._doneText, this._cancelText, this._initialText, this._pickerList,
       {Key? key})
       : super(key: key);
 
   @override
-  PickerWidgetState createState() => PickerWidgetState();
+  PickerYdWidgetState createState() => PickerYdWidgetState();
 }
 
-class PickerWidgetState extends State<PickerWidget>
+class PickerYdWidgetState extends State<PickerYdWidget>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
+  String? selectedText;
 
   @override
   void initState() {
     super.initState();
+    selectedText = widget._initialText;
     _tabController = TabController(vsync: this, length: widget._tabs.length);
   }
 
@@ -92,52 +100,52 @@ class PickerWidgetState extends State<PickerWidget>
         title: TabBar(
           controller: _tabController,
           tabs: widget._tabs,
-          labelColor: Theme.of(context).primaryColor,
+          labelStyle: CustomTextStyle.textFieldLabelStyle()
+              .copyWith(fontSize: Sizes.p5.sw),
+          labelColor: AppColors.darkPurpleColor,
+          indicatorColor: AppColors.darkPurpleColor,
         ),
       ),
       body: Stack(
         children: <Widget>[
           Container(
-            height: 320,
+            height: Sizes.p180,
             alignment: Alignment.topCenter,
             child: Column(
               children: [
                 Container(
+                  alignment: Alignment.center,
                   width: ResponsiveAppUtil.width,
-                  height: Sizes.p4.sh,
+                  height: Sizes.p6.sh,
                   margin: EdgeInsets.symmetric(
                       horizontal: Sizes.p4.sw, vertical: Sizes.p2.sh),
-                  color: bgColor,
-                  // decoration: BoxDecoration(
-                  //     borderRadius: BorderRadius.circular(50),
-                  //     border:
-                  //         Border.all(color: Colors.redAccent, width: 1)),
-                  child: const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  color: AppColors.alphaPurpleColor,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Sizes.p8, vertical: Sizes.p4),
                     child: Text(
-                      'tes',
+                      selectedText ?? '',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22,
-                      ),
+                      style: CustomTextStyle.textFieldLabelStyle()
+                          .copyWith(fontSize: Sizes.p4.sw),
                     ),
                   ),
                 ),
                 Expanded(
                   child: CupertinoPicker(
-                    itemExtent:
-                        32.0, // Set the height of each item in the picker
+                    looping: true,
+                    itemExtent: Sizes.p32,
                     onSelectedItemChanged: (int index) {
-                      // Handle the selected year here (e.g., save it to a variable)
-                      int selectedYear = years[index];
-                      print(selectedYear);
+                      setState(() {
+                        selectedText = widget._pickerList?[index].toString();
+                      });
                     },
                     children: List<Widget>.generate(years.length, (index) {
                       return Center(
                         child: Text(
-                          '${years[index]}',
-                          style: const TextStyle(fontSize: 20.0),
+                          '${widget._pickerList?[index]}',
+                          style: CustomTextStyle.textFieldLabelStyle()
+                              .copyWith(fontSize: Sizes.p4.sw),
                         ),
                       );
                     }),
@@ -147,28 +155,37 @@ class PickerWidgetState extends State<PickerWidget>
             ),
           ),
           Container(
+            padding: EdgeInsets.only(bottom: Sizes.p1.sh),
             alignment: Alignment.bottomCenter,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    if (widget._onCancel != null) {
-                      widget._onCancel!();
-                    }
-                  },
-                  child: Text(widget._cancelText),
+                Flexible(
+                  child: AppButton(
+                    width: Sizes.p20.sw,
+                    text: widget._cancelText,
+                    onPress: () {
+                      Navigator.pop(context);
+                      if (widget._onCancel != null) {
+                        widget._onCancel!();
+                      }
+                    },
+                  ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    if (widget._onConfirm != null) {
-                      widget._onConfirm!('');
-                    }
-                  },
-                  child: Text(widget._doneText),
-                )
+                Box.gapW2,
+                Flexible(
+                  child: AppButton(
+                    width: Sizes.p20.sw,
+                    text: widget._doneText,
+                    onPress: () {
+                      Navigator.of(context).pop();
+                      if (widget._onConfirm != null) {
+                        widget._onConfirm!(selectedText!);
+                      }
+                    },
+                  ),
+                ),
+                Box.gapW2,
               ],
             ),
           ),

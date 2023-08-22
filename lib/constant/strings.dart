@@ -67,7 +67,7 @@ class Strings {
   static const String quantity = 'Quantity';
   static const String date = 'Date';
   static const String time = 'Time';
-  static const String addMore = 'Add More';
+  static const String addMore = 'Add More Additional Items';
   static const String reset = 'Reset';
   static const String remove = 'Remove';
   static const markDefault = 'Do you want to mark this entry as default?';
@@ -89,6 +89,9 @@ class Strings {
   static const String search = 'Search...';
   static const String productList = 'Product list';
   static const String viewAll = 'View all';
+  static const String done = 'Done';
+  static const String startDate = 'Start Date';
+  static const String endDate = 'End Date';
 
   static String confirmationMessage(String? destination, String name) {
     return 'A confirmation code has been sent to $destination. '
@@ -101,4 +104,8 @@ class Strings {
   }
 }
 
+// An enum representing the menu type.
 enum Options { close, edit, delete }
+
+// An enum representing the filter type.
+enum ProductFilterType { all, week, month, year, range }

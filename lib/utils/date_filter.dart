@@ -1,5 +1,5 @@
+import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/filter_date.dart';
-import 'package:daily_dairy_diary/screens/report.dart';
 
 FilterDate setFilterDate(
   ProductFilterType filterType, {
@@ -11,6 +11,11 @@ FilterDate setFilterDate(
   final now = DateTime.now();
   FilterDate date;
   switch (filterType) {
+    case ProductFilterType.all:
+      final startOfMonth = DateTime(now.year, month ?? now.month, 1);
+      final endOfMonth = DateTime(now.year, ((month ?? now.month) + 1), 0);
+      date = FilterDate(startDate: startOfMonth, endsDate: endOfMonth);
+      break;
     case ProductFilterType.week:
       final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
       final endOfWeek = startOfWeek.add(const Duration(days: 6));
@@ -26,7 +31,7 @@ FilterDate setFilterDate(
       final endOfYear = DateTime(year ?? now.year, 12, 31);
       date = FilterDate(startDate: startOfYear, endsDate: endOfYear);
       break;
-    case ProductFilterType.dateRange:
+    case ProductFilterType.range:
       final startOfYear = startDateRange;
       final endOfYear = endDateRange;
       date = FilterDate(startDate: startOfYear!, endsDate: endOfYear!);

@@ -15,12 +15,10 @@ import 'package:daily_dairy_diary/widgets/app_drop_down_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 import '../constant/strings.dart';
 import '../widgets/all_widgets.dart';
-
-// An enum representing the filter type
-enum ProductFilterType { week, month, year, dateRange }
 
 class Report extends ConsumerStatefulWidget {
   const Report({super.key});
@@ -32,6 +30,8 @@ class Report extends ConsumerStatefulWidget {
 class ReportState extends ConsumerState<Report> {
   late final ValueNotifier<List<Product?>> selectedEvents;
   bool isRefreshing = false;
+  int selectedIndex = Sizes.pIntN1;
+  String selectedFilterData = ProductFilterType.all.name.capitalizeFirst();
 
   @override
   void initState() {
@@ -47,35 +47,41 @@ class ReportState extends ConsumerState<Report> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(Strings.report),
-          actions: [
-            IconButton(
-              onPressed: () {
-                // method to show the search bar
-                showSearch(
-                    context: context,
-                    // delegate to customize the search bar
-                    delegate: CustomSearchDelegate(
-                        productList: selectedEvents.value));
-              },
-              icon: const Icon(Icons.search),
-            )
-          ],
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.elliptical(400, 16.0),
-            ),
-          ),
-        ),
-        body: getBody());
+    return ScaffoldAppBar(
+      barTitle: Strings.report,
+      barActions: [
+        buildSearchIconButton(),
+      ],
+      child: getBody(),
+    );
   }
 
+  // This search [IconButton] display on app bar and used for searching the products.
+  buildSearchIconButton() {
+    return Padding(
+      padding: EdgeInsets.only(right: Sizes.p5.sw),
+      child: IconButton(
+        onPressed: () {
+          // method to show the search bar
+          showSearch(
+              context: context,
+              // delegate to customize the search bar
+              delegate:
+                  CustomSearchDelegate(productList: selectedEvents.value));
+        },
+        icon: Icon(
+          Icons.search,
+          size: Sizes.p35,
+          color: AppColors.darkPurpleColor,
+        ),
+      ),
+    );
+  }
+
+  // This is used to display all widgets.
   Widget getBody() {
     ref.listen<AsyncValue>(productFilterControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
-
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(
           (result) async {
@@ -88,26 +94,38 @@ class ReportState extends ConsumerState<Report> {
     ref.watch(productFilterWithDateProvider);
 
     return Container(
-      color: bgColor,
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
+      height: ResponsiveAppUtil.height * Sizes.p01.sh,
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius:
+            BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
+      ),
+      padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              buildAllButton(),
-              buildWeekButton(),
-              buildMonthButton(),
-              buildDateRangePicker(),
-            ],
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.alphaPurpleColor,
+                borderRadius: BorderRadius.all(Radius.circular(Sizes.p12.sw)),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: Sizes.p3.sw),
+              child: Text(
+                textAlign: TextAlign.center,
+                selectedFilterData,
+                style: CustomTextStyle.textFieldLabelStyle()
+                    .copyWith(fontSize: Sizes.p4_5.sw),
+              ),
+            ),
           ),
-          const SizedBox(height: 8.0),
           Expanded(
             child: ValueListenableBuilder<List<Product?>>(
               valueListenable: selectedEvents,
               builder: (context, value, _) {
                 return RefreshIndicator(
+                    color: AppColors.darkPurpleColor,
                     onRefresh: (() async {
                       setState(() {
                         isRefreshing = true;
@@ -119,14 +137,91 @@ class ReportState extends ConsumerState<Report> {
               },
             ),
           ),
+          buildFilterTypeButton(),
+          Box.gapH4,
         ],
       ),
     );
   }
 
+  // This is used display fitter type buttons.
+  Widget buildFilterTypeButton() {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: Sizes.p6.sh,
+        minHeight: Sizes.p5.sh,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.alphaPurpleColor,
+              blurRadius: Sizes.p3,
+              spreadRadius: Sizes.p1,
+              offset: const Offset(
+                Sizes.p0,
+                Sizes.p2,
+              ),
+            ),
+          ],
+          color: AppColors.alphaPurpleColor,
+          shape: BoxShape.rectangle,
+          border: Border.all(
+            width: Sizes.p02.sw,
+            color: AppColors.alphaPurpleColor,
+          ),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(Sizes.p4.sw),
+              bottomLeft: Radius.circular(Sizes.p4.sw),
+              topRight: Radius.circular(Sizes.p4.sw),
+              bottomRight: Radius.circular(Sizes.p4.sw)),
+        ),
+        margin: EdgeInsets.only(
+          left: Sizes.p2.sw,
+          right: Sizes.p2.sw,
+        ),
+        padding: EdgeInsets.only(
+          // top: Sizes.p01.sh,
+          // bottom: Sizes.p01.sh,
+          left: Sizes.p02.sw,
+          right: Sizes.p02.sw,
+        ),
+        child: AppSegmentButton(
+          labels: enumToStringList(ProductFilterType.values),
+          selectedIndex: selectedIndex,
+          onIndexChanged: handleAppSegmentButtonClick,
+        ),
+      ),
+    );
+  }
+
+  // [AppSegmentButton] selection for all [ProductFilterType].
+  handleAppSegmentButtonClick(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+    if (index == Sizes.p0.toInt()) {
+      setState(() {
+        selectedFilterData =
+            ProductFilterType.values[index].name.capitalizeFirst();
+      });
+      // ref.invalidate(productFilterControllerProvider);
+    } else if (index == Sizes.p1.toInt()) {
+      ref
+          .read(filterDateControllerProvider.notifier)
+          .updateFilterType(ProductFilterType.week);
+    } else if (index == Sizes.p2.toInt()) {
+      buildMonthPicker();
+    } else if (index == Sizes.p3.toInt()) {
+      buildYearPicker();
+    } else if (index == Sizes.p4.toInt()) {
+      buildDateRangePicker();
+    }
+  }
+
   AppButton buildAllButton() {
     return AppButton(
-      width: 80,
+      // width: 80,
       text: Strings.all,
       onPress: () async {
         ref.invalidate(productFilterControllerProvider);
@@ -138,25 +233,54 @@ class ReportState extends ConsumerState<Report> {
     );
   }
 
-  AppButton buildDateRangePicker() {
-    return AppButton(
-      width: 80,
-      text: Strings.dateRange,
-      onPress: () async {
-        DateTimeRangePicker(
-            initialStartTime: DateTime.now(),
-            initialEndTime: DateTime.now().add(const Duration(days: 1)),
-            mode: DateTimeRangePickerMode.date,
-            onConfirm: (start, end) {
-              print(start);
-              print(end);
-              ref.read(filterDateControllerProvider.notifier).updateFilterType(
-                  ProductFilterType.dateRange,
-                  startDateRange: start,
-                  endDateRange: end);
-            }).showPicker(context);
-      },
-    );
+// This is used to display [DateTimeRangePicker].
+  void buildMonthPicker() {
+    return YearDatePicker(
+        title: ProductFilterType.month.name.capitalizeFirst(),
+        pickerList: months,
+        // initialStartTime: DateTime.now(),
+        // initialEndTime: DateTime.now().add(const Duration(days: 1)),
+        // mode: DateTimeRangePickerMode.date,
+        onConfirm: (selectedText) {
+          setState(() {
+            selectedFilterData = selectedText;
+          });
+        }).showPicker(context);
+  }
+
+// This is used to display [DateTimeRangePicker].
+  void buildYearPicker() {
+    return YearDatePicker(
+        title: ProductFilterType.year.name.capitalizeFirst(),
+        pickerList: years,
+        // initialStartTime: DateTime.now(),
+        // initialEndTime: DateTime.now().add(const Duration(days: 1)),
+        // mode: DateTimeRangePickerMode.date,
+        onConfirm: (selectedText) {
+          setState(() {
+            selectedFilterData = selectedText;
+          });
+        }).showPicker(context);
+  }
+
+  // This is used to display [DateTimeRangePicker].
+  void buildDateRangePicker() {
+    return DateTimeRangePicker(
+        initialStartTime: DateTime.now(),
+        initialEndTime: DateTime.now().add(const Duration(days: 1)),
+        mode: DateTimeRangePickerMode.date,
+        onConfirm: (start, end) {
+          print(start);
+          print(end);
+          setState(() {
+            selectedFilterData =
+                '${FormatDate.dateToString(start)} - ${FormatDate.dateToString(end)}';
+          });
+          // ref.read(filterDateControllerProvider.notifier).updateFilterType(
+          //     ProductFilterType.range,
+          //     startDateRange: start,
+          //     endDateRange: end);
+        }).showPicker(context);
   }
 
   // [AppDropDownButton]
@@ -172,7 +296,7 @@ class ReportState extends ConsumerState<Report> {
 
   AppButton buildWeekButton() {
     return AppButton(
-      width: 80,
+      // width: 80,
       text: Strings.week,
       onPress: () async {
         // productListWithFilterType(ProductFilterType.week);
@@ -185,7 +309,7 @@ class ReportState extends ConsumerState<Report> {
 
   AppButton buildMonthButton() {
     return AppButton(
-      width: 80,
+      // width: 80,
       text: Strings.month,
       onPress: () async {
         // productListWithFilterType(ProductFilterType.month);

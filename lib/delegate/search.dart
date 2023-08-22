@@ -3,12 +3,14 @@ import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
   CustomSearchDelegate({required this.productList})
       : super(
-          searchFieldStyle: TextStyle(color: blackColor, fontSize: Sizes.p4.sw),
+          searchFieldStyle: TextStyle(
+              color: AppColors.darkPurpleColor, fontSize: Sizes.p4.sw),
         );
   late final List<Product?> productList;
 
@@ -19,27 +21,27 @@ class CustomSearchDelegate extends SearchDelegate {
   ThemeData appBarTheme(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return theme.copyWith(
-      appBarTheme: const AppBarTheme(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.elliptical(400, 16.0),
-          ),
-        ),
+      appBarTheme: AppBarTheme(
+        iconTheme: IconThemeData(color: AppColors.darkPurpleColor),
+        elevation: Sizes.p0,
+        backgroundColor: AppColors.lightPurpleColor,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       inputDecorationTheme: theme.inputDecorationTheme.copyWith(
         hintStyle: theme.textTheme.titleLarge!
-            .copyWith(color: grayColor, fontSize: Sizes.p3_3.sw),
-        fillColor: whiteColor,
+            .copyWith(color: AppColors.grayColor, fontSize: Sizes.p3_3.sw),
+        fillColor: AppColors.whiteColor,
         filled: true,
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        contentPadding: const EdgeInsets.symmetric(
+            vertical: Sizes.p4, horizontal: Sizes.p8),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: bgColor, width: 0),
+          borderSide: BorderSide(color: AppColors.bgColor, width: Sizes.p0),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: bgColor, width: 0),
+          borderSide: BorderSide(color: AppColors.bgColor, width: Sizes.p0),
         ),
       ),
       // textTheme: theme.textTheme.copyWith(
@@ -98,8 +100,22 @@ class CustomSearchDelegate extends SearchDelegate {
         matchQuery.add(item);
       }
     }
-    return ProductList(matchQuery,
-        message:
-            matchQuery.isEmpty ? null : Strings.noSearchResultMessage(query));
+    return Container(
+      height: ResponsiveAppUtil.height,
+      color: AppColors.alphaPurpleColor,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.whiteColor,
+          borderRadius:
+              BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
+        ),
+        padding: EdgeInsets.symmetric(vertical: Sizes.p2.sh),
+        child: ProductList(
+          matchQuery,
+          message:
+              matchQuery.isEmpty ? null : Strings.noSearchResultMessage(query),
+        ),
+      ),
+    );
   }
 }

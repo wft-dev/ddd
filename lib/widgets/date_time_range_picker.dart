@@ -1,4 +1,6 @@
+import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:daily_dairy_diary/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -31,10 +33,10 @@ class DateTimeRangePicker {
 
   DateTimeRangePicker({
     Key? key,
-    this.startText = "Start Date",
-    this.endText = "End Date",
-    this.doneText = "Done",
-    this.cancelText = "Cancel",
+    this.startText = Strings.startDate,
+    this.endText = Strings.endDate,
+    this.doneText = Strings.done,
+    this.cancelText = Strings.cancel,
     this.mode = DateTimeRangePickerMode.dateAndTime,
     this.interval = 15,
     this.use24hFormat = false,
@@ -96,8 +98,8 @@ class DateTimeRangePicker {
         context: context,
         builder: (BuildContext context) {
           return FractionallySizedBox(
-            widthFactor: 1,
-            heightFactor: 1,
+            widthFactor: Sizes.p1,
+            heightFactor: Sizes.p09,
             child: PickerWidget([
               Tab(text: startText),
               Tab(text: endText),
@@ -185,68 +187,77 @@ class PickerWidgetState extends State<PickerWidget>
           title: TabBar(
             controller: _tabController,
             tabs: widget._tabs,
-            labelColor: Theme.of(context).primaryColor,
+            labelStyle: CustomTextStyle.textFieldLabelStyle()
+                .copyWith(fontSize: Sizes.p4.sw),
+            labelColor: AppColors.darkPurpleColor,
+            indicatorColor: AppColors.darkPurpleColor,
           ),
         ),
         body: Stack(
           children: <Widget>[
             Container(
-              height: 320,
+              height: Sizes.p180,
               alignment: Alignment.topCenter,
               child: TabBarView(
                 controller: _tabController,
                 children: widget._tabs.map((Tab tab) {
                   return Column(children: [
                     Container(
+                      alignment: Alignment.center,
                       width: ResponsiveAppUtil.width,
-                      height: Sizes.p4.sh,
+                      height: Sizes.p6.sh,
                       margin: EdgeInsets.symmetric(
                           horizontal: Sizes.p4.sw, vertical: Sizes.p2.sh),
-                      color: bgColor,
-                      // decoration: BoxDecoration(
-                      //     borderRadius: BorderRadius.circular(50),
-                      //     border:
-                      //         Border.all(color: Colors.redAccent, width: 1)),
+                      color: AppColors.alphaPurpleColor,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 4.0),
+                            horizontal: Sizes.p8, vertical: Sizes.p4),
                         child: Text(
                           tab.text == widget._tabs.first.text
                               ? FormatDate.dateToString(_start!)
                               : FormatDate.dateToString(_end!),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 22,
-                          ),
+                          style: CustomTextStyle.textFieldLabelStyle()
+                              .copyWith(fontSize: Sizes.p4.sw),
                         ),
                       ),
                     ),
                     Expanded(
-                      child: CupertinoDatePicker(
-                        mode: widget._mode,
-                        use24hFormat: widget._use24hFormat,
-                        minuteInterval: widget._interval,
-                        minimumDate: widget._minimumTime != null &&
-                                tab.text == widget._tabs.first.text
-                            ? widget._minimumTime
-                            : null,
-                        maximumDate: widget._maximumTime != null &&
-                                tab.text == widget._tabs.last.text
-                            ? widget._maximumTime
-                            : null,
-                        initialDateTime:
-                            tab.text == widget._tabs.first.text ? _start : _end,
-                        onDateTimeChanged: (DateTime newDateTime) {
-                          if (tab.text == widget._tabs.first.text) {
-                            setState(() {
-                              _start = newDateTime;
-                            });
-                          } else {
-                            setState(() {
-                              _end = newDateTime;
-                            });
-                          }
-                        },
+                      child: CupertinoTheme(
+                        data: CupertinoThemeData(
+                          textTheme: CupertinoTextThemeData(
+                            dateTimePickerTextStyle:
+                                CustomTextStyle.textFieldLabelStyle()
+                                    .copyWith(fontSize: Sizes.p4.sw),
+                          ),
+                        ),
+                        child: CupertinoDatePicker(
+                          mode: widget._mode,
+                          use24hFormat: widget._use24hFormat,
+                          minuteInterval: widget._interval,
+                          minimumDate: widget._minimumTime != null &&
+                                  tab.text == widget._tabs.first.text
+                              ? widget._minimumTime
+                              : null,
+                          maximumDate: widget._maximumTime != null &&
+                                  tab.text == widget._tabs.last.text
+                              ? widget._maximumTime
+                              : null,
+                          initialDateTime: tab.text == widget._tabs.first.text
+                              ? _start
+                              : _end,
+                          onDateTimeChanged: (DateTime newDateTime) {
+                            if (tab.text == widget._tabs.first.text) {
+                              setState(() {
+                                _start = newDateTime;
+                              });
+                            } else {
+                              setState(() {
+                                _end = newDateTime;
+                              });
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ]);
@@ -254,28 +265,37 @@ class PickerWidgetState extends State<PickerWidget>
               ),
             ),
             Container(
+              padding: EdgeInsets.only(bottom: Sizes.p1.sh),
               alignment: Alignment.bottomCenter,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      if (widget._onCancel != null) {
-                        widget._onCancel!();
-                      }
-                    },
-                    child: Text(widget._cancelText),
+                  Flexible(
+                    child: AppButton(
+                      width: Sizes.p20.sw,
+                      text: widget._cancelText,
+                      onPress: () {
+                        Navigator.pop(context);
+                        if (widget._onCancel != null) {
+                          widget._onCancel!();
+                        }
+                      },
+                    ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      if (widget._onConfirm != null) {
-                        widget._onConfirm!(_start!, _end!);
-                      }
-                    },
-                    child: Text(widget._doneText),
-                  )
+                  Box.gapW2,
+                  Flexible(
+                    child: AppButton(
+                      width: Sizes.p20.sw,
+                      text: widget._doneText,
+                      onPress: () {
+                        Navigator.of(context).pop();
+                        if (widget._onConfirm != null) {
+                          widget._onConfirm!(_start!, _end!);
+                        }
+                      },
+                    ),
+                  ),
+                  Box.gapW2,
                 ],
               ),
             )
