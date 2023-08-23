@@ -73,3 +73,8 @@ BoxDecoration buildBoxDecoration(
       ),
       color: fillColor);
 }
+
+// [CircularProgressIndicator]
+CircularProgressIndicator buildCircularProgressIndicator() {
+  return CircularProgressIndicator(color: AppColors.darkPurpleColor);
+}

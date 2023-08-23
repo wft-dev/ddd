@@ -20,31 +20,39 @@ class ChangePasswordState extends ConsumerState<ChangePassword> {
       TextEditingController(text: "");
   final TextEditingController newPasswordController =
       TextEditingController(text: "");
+  final TextEditingController confirmPasswordController =
+      TextEditingController(text: "");
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(Strings.changePassword),
-        ),
-        body: getBody());
+    return ScaffoldAppBar(
+      barTitle: Strings.changePassword,
+      child: getBody(),
+    );
   }
 
+  // This is used for display all widgets.
   Widget getBody() {
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "",
-              style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
-            ),
-            SizedBox(height: Sizes.p2.sh),
-            buildChangePasswordForm(),
-            buildSaveButton(),
-          ],
+    return Container(
+      height: ResponsiveAppUtil.height * Sizes.p01.sh,
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius:
+            BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
+      ),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(
+            bottom: Sizes.p4.sh, left: Sizes.p5.sw, right: Sizes.p5.sw),
+        child: buildRoundedContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Box.gapH2,
+              buildChangePasswordForm(),
+              Box.gapH2,
+              buildSaveButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -58,6 +66,7 @@ class ChangePasswordState extends ConsumerState<ChangePassword> {
           AppTextFormField(
             controller: oldPasswordController,
             label: Strings.oldPassword,
+            obscure: true,
             validator: (value) => Validations.validatePassword(
                 value, Strings.oldPassword.toLowerCase()),
             textInputAction: TextInputAction.next,
@@ -65,8 +74,17 @@ class ChangePasswordState extends ConsumerState<ChangePassword> {
           AppTextFormField(
             controller: newPasswordController,
             label: Strings.newPassword,
+            obscure: true,
             validator: (value) => Validations.validatePassword(
                 value, Strings.newPassword.toLowerCase()),
+            textInputAction: TextInputAction.next,
+          ),
+          AppTextFormField(
+            controller: confirmPasswordController,
+            label: Strings.confirmPassword,
+            obscure: true,
+            validator: (value) => Validations.validateConfirmPassword(
+                value, newPasswordController.text),
             textInputAction: TextInputAction.done,
           ),
         ],

@@ -9,6 +9,7 @@ class AppCheckbox extends StatefulWidget {
   final String errorText;
   final String? title;
   final Function onChange;
+  final TextStyle? style;
 
   const AppCheckbox({
     Key? key,
@@ -17,6 +18,7 @@ class AppCheckbox extends StatefulWidget {
     this.isTitle,
     this.errorText = '',
     this.title,
+    this.style,
   }) : super(key: key);
 
   @override
@@ -67,18 +69,24 @@ class AppCheckboxState extends State<AppCheckbox> {
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    isSelected = !isSelected;
-                    widget.onChange(isSelected);
-                  });
-                },
-                child: Text(
-                  textAlign: TextAlign.left,
-                  widget.title ?? '',
-                  style: CustomTextStyle.textFieldLabelStyle()
-                      .copyWith(fontWeight: Fonts.fontWeightMedium),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        isSelected = !isSelected;
+                        widget.onChange(isSelected);
+                      });
+                    },
+                    child: Text(
+                      textAlign: TextAlign.left,
+                      widget.title ?? '',
+                      style: widget.style ??
+                          CustomTextStyle.textFieldLabelStyle()
+                              .copyWith(fontWeight: Fonts.fontWeightMedium),
+                    ),
+                  ),
                 ),
               ),
             ],

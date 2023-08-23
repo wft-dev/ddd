@@ -5,6 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/event.dart';
+import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/provider/calendar_event_provider.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/update_user_controller.dart';
@@ -39,7 +40,6 @@ class DashboardState extends ConsumerState<Dashboard> {
   Map<DateTime, List<Product>> events = {};
   Map<String, List<Product>> productByType = {};
 
-  String? userName;
   int activeButtonIndex = Sizes.pIntN1;
 
   @override
@@ -75,35 +75,36 @@ class DashboardState extends ConsumerState<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<String>>(
-        updateUseControllerProvider.select<AsyncValue<String>>(
-            (user) => user.whenData((value) => value.name)),
-        (previousName, newName) {
-      setState(() {
-        userName = newName.value;
-      });
-    });
-    ref.watch(updateUseControllerProvider.notifier);
+    final userName = ref.watch(updateUserControllerProvider
+        .select((user) => user.whenData((value) => value.name)));
     return Scaffold(
+      backgroundColor: AppColors.whiteColor,
+      appBar: CustomAppBar(
+        isCenterTitle: false,
+        userName: userName.value,
         backgroundColor: AppColors.whiteColor,
-        appBar: CustomAppBar(
-          userName: userName,
-          backgroundColor: AppColors.whiteColor,
-          title: Strings.dashboard,
-          actions: [
-            IconButton(
+        title: Strings.dashboard,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: Sizes.p5.sw),
+            child: IconButton(
+              color: AppColors.alphaPurpleColor,
               icon: Image.asset(AppImages.addMoreBtnImage),
+              iconSize: Sizes.p40,
               onPressed: () {
                 AddProductRoute().push(context);
               },
             ),
-          ],
-        ),
-        body: Container(
-            height: ResponsiveAppUtil.height,
-            // width: ResponsiveAppUtil.width,
-            color: AppColors.alphaPurpleColor,
-            child: getBody()));
+          ),
+        ],
+      ),
+      body: Container(
+        height: ResponsiveAppUtil.height,
+        // width: ResponsiveAppUtil.width,
+        color: AppColors.alphaPurpleColor,
+        child: getBody(),
+      ),
+    );
   }
 
   // This is used for display all widgets.
@@ -138,7 +139,7 @@ class DashboardState extends ConsumerState<Dashboard> {
               ),
             ),
             buildProductType(),
-            Box.gapH3,
+            Box.gapH2,
             buildListOfProducts(),
           ],
         ),

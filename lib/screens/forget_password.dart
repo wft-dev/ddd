@@ -29,8 +29,9 @@ class ForgetPasswordState extends ConsumerState<ForgetPassword> {
           extendBodyBehindAppBar:
               true, // This makes the body extend behind the app bar
           appBar: AppBar(
-            elevation: 0, // Remove the shadow
+            elevation: Sizes.p0, // Remove the shadow
             backgroundColor: AppColors.transparentColor,
+            iconTheme: IconThemeData(color: AppColors.darkPurpleColor),
           ),
           body: getBody()),
     );

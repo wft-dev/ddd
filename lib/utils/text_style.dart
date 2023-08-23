@@ -23,7 +23,7 @@ class CustomTextStyle {
 
   static TextStyle textFieldTitleStyle({bool isWidth = true}) {
     return TextStyle(
-      fontSize: checkSize(Sizes.p4_5, isWidth),
+      fontSize: checkSize(Sizes.p4_3, isWidth),
       color: AppColors.darkPurpleColor,
       fontWeight: Fonts.fontWeightMedium,
     );
@@ -40,7 +40,7 @@ class CustomTextStyle {
   static TextStyle titleStyle({bool isWidth = true}) {
     return TextStyle(
       fontSize: checkSize(Sizes.p4_5, isWidth),
-      color: Colors.black,
+      color: AppColors.darkPurpleColor,
       fontWeight: Fonts.fontWeightMedium,
     );
   }

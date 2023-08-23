@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 
 class CircularImage extends StatelessWidget {
@@ -48,10 +50,11 @@ class CircularImage extends StatelessWidget {
                     placeholder: (context, url) => Container(
                       alignment: Alignment.center,
                       child:
-                          const CircularProgressIndicator(), // you can add pre loader iamge as well to show loading.
+                          buildCircularProgressIndicator(), // you can add pre loader image as well to show loading.
                     ),
-                    errorWidget: (context, url, dynamic error) =>
-                        const Icon(Icons.camera_alt_rounded),
+                    errorWidget: (context, url, dynamic error) => Icon(
+                        Icons.camera_alt_rounded,
+                        color: AppColors.darkPurpleColor),
                   ),
           ),
         ),

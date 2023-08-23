@@ -1,3 +1,4 @@
+import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
 
 class HideKeyboardWidget extends StatelessWidget {
@@ -12,9 +13,7 @@ class HideKeyboardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          if (FocusScope.of(context).isFirstFocus) {
-            FocusScope.of(context).unfocus();
-          }
+          hideKeyboard(context);
         },
         child: child);
   }

@@ -1,4 +1,5 @@
 import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:daily_dairy_diary/widgets/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -23,27 +24,33 @@ class PhoneNumberTextField extends StatefulWidget {
   final Widget? prefix;
   final TextInputAction? textInputAction;
   final FocusNode? focus;
+  final Color? borderColor;
+  final Color? fillColor;
+  final String? countyCode;
 
-  const PhoneNumberTextField(
-      {Key? key,
-      this.controller,
-      this.validator,
-      this.keyboardType = TextInputType.text,
-      this.obscure = false,
-      this.onTap,
-      this.isMultiline = false,
-      this.readOnly = false,
-      this.autoFocus = false,
-      this.errorText,
-      this.label,
-      this.suffix,
-      this.prefix,
-      this.enabled = true,
-      this.onEditingCompleted,
-      this.textInputAction,
-      this.onInputChanged,
-      this.focus})
-      : super(key: key);
+  const PhoneNumberTextField({
+    Key? key,
+    this.controller,
+    this.validator,
+    this.keyboardType = TextInputType.text,
+    this.obscure = false,
+    this.onTap,
+    this.isMultiline = false,
+    this.readOnly = false,
+    this.autoFocus = false,
+    this.errorText,
+    this.label,
+    this.suffix,
+    this.prefix,
+    this.enabled = true,
+    this.onEditingCompleted,
+    this.textInputAction,
+    this.onInputChanged,
+    this.focus,
+    this.borderColor,
+    this.fillColor,
+    this.countyCode,
+  }) : super(key: key);
 
   @override
   State<PhoneNumberTextField> createState() => PhoneNumberTextFieldState();
@@ -61,6 +68,7 @@ class PhoneNumberTextFieldState extends State<PhoneNumberTextField> {
     if (widget.focus != null) {
       focus = widget.focus;
     }
+
     focus?.addListener(() {
       _textFiledIsFocused.value = focus!.hasFocus;
     });
@@ -74,6 +82,9 @@ class PhoneNumberTextFieldState extends State<PhoneNumberTextField> {
 
   @override
   Widget build(BuildContext context) {
+    phoneNumber = PhoneNumber(
+        phoneNumber: widget.controller!.text,
+        isoCode: (widget.countyCode ?? Strings.countyCode));
     return Container(
       margin: EdgeInsets.symmetric(vertical: Sizes.p1.sh),
       child: ValueListenableBuilder<bool>(
@@ -93,7 +104,14 @@ class PhoneNumberTextFieldState extends State<PhoneNumberTextField> {
               ),
               Box.gapH1,
               Container(
-                decoration: buildBoxDecoration(AppColors.alphaPurpleColor),
+                decoration: buildBoxDecoration(
+                  borderColor: widget.borderColor == null
+                      ? AppColors.alphaPurpleColor
+                      : AppColors.whiteColor,
+                  fillColor: widget.borderColor == null
+                      ? AppColors.alphaPurpleColor
+                      : AppColors.whiteColor,
+                ),
                 child: Padding(
                   padding: EdgeInsets.only(left: Sizes.p3.sw),
                   child: InternationalPhoneNumberInput(
@@ -180,25 +198,5 @@ class PhoneNumberTextFieldState extends State<PhoneNumberTextField> {
         vertical: Sizes.p1.sh,
       ),
     );
-  }
-
-  // [OutlineInputBorder] is used for field borders.
-  OutlineInputBorder buildBorder(Color borderColor) {
-    return OutlineInputBorder(
-      borderSide: BorderSide(color: borderColor, width: Sizes.p03.sw),
-      borderRadius: BorderRadius.all(
-        Radius.circular(Sizes.p5.sw),
-      ),
-    );
-  }
-
-  // [BoxDecoration] is used for [Container].
-  BoxDecoration buildBoxDecoration(Color borderColor) {
-    return BoxDecoration(
-        border: Border.all(color: borderColor, width: Sizes.p03.sw),
-        borderRadius: BorderRadius.all(
-          Radius.circular(Sizes.p5.sw),
-        ),
-        color: AppColors.alphaPurpleColor);
   }
 }

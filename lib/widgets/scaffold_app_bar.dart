@@ -16,20 +16,18 @@ class ScaffoldAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: HideKeyboardWidget(
-        child: Scaffold(
+    return HideKeyboardWidget(
+      child: Scaffold(
+        backgroundColor: AppColors.whiteColor,
+        appBar: CustomAppBar(
           backgroundColor: AppColors.whiteColor,
-          appBar: CustomAppBar(
-            backgroundColor: AppColors.whiteColor,
-            title: barTitle ?? '',
-            actions: barActions,
-          ),
-          body: Container(
-              height: ResponsiveAppUtil.height,
-              color: AppColors.alphaPurpleColor,
-              child: child),
+          title: barTitle ?? '',
+          actions: barActions,
         ),
+        body: Container(
+            height: ResponsiveAppUtil.height,
+            color: AppColors.alphaPurpleColor,
+            child: child),
       ),
     );
   }

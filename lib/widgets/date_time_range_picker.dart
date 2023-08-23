@@ -180,10 +180,10 @@ class PickerWidgetState extends State<PickerWidget>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.whiteColor,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.whiteColor,
           title: TabBar(
             controller: _tabController,
             tabs: widget._tabs,
@@ -273,6 +273,7 @@ class PickerWidgetState extends State<PickerWidget>
                   Flexible(
                     child: AppButton(
                       width: Sizes.p20.sw,
+                      height: Sizes.p6.sh,
                       text: widget._cancelText,
                       onPress: () {
                         Navigator.pop(context);
@@ -286,6 +287,7 @@ class PickerWidgetState extends State<PickerWidget>
                   Flexible(
                     child: AppButton(
                       width: Sizes.p20.sw,
+                      height: Sizes.p6.sh,
                       text: widget._doneText,
                       onPress: () {
                         Navigator.of(context).pop();

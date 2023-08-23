@@ -1,6 +1,8 @@
 import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/models/Inventory.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 // Let's find [Inventory] object for [AppDropDownFiled] value.
 Inventory? findInventory(String type) {
@@ -28,7 +30,7 @@ List<String> enumToStringList<T>(List<T> values) {
 final int currentYear = DateTime.now().year;
 
 // Get year from current [DateTime].
-final int currentMonth = DateTime.now().month;
+final int currentMonth = DateTime.now().month - 1;
 
 // Get [List] of years.
 final List<int> years =
@@ -37,4 +39,21 @@ final List<int> years =
         .toList();
 
 // Get [List] of months.
-final List<int> months = List.generate(10, (index) => 1 + index);
+final List<String> months = DateFormat.MMMM().dateSymbols.MONTHS;
+
+List<String> sortedMonths() {
+  List<String> sorted = [];
+  sorted.addAll(months.sublist(currentMonth));
+  sorted.addAll(months.sublist(0, currentMonth));
+  return sorted;
+}
+
+// Get [List] of Weeks.
+List<String> weeks = ['Week One', 'Week Two', 'Week Three', 'Week Four'];
+
+// Get phone number with country detail.
+Future<PhoneNumber> getPhoneNumber(String phoneNumber) async {
+  PhoneNumber number =
+      await PhoneNumber.getRegionInfoFromPhoneNumber(phoneNumber);
+  return number;
+}

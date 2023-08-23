@@ -157,9 +157,12 @@ class AddProductState extends ConsumerState<AddProduct> {
                     child: buildMoreProductListView(),
                   ),
                 ),
-                Box.gapH1,
-                buildAddMoreButton(),
-                Box.gapH1,
+                Box.gapH2,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
+                  child: buildAddMoreButton(),
+                ),
+                Box.gapH2,
               ]
             ],
           ),
