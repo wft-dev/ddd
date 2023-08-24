@@ -113,8 +113,6 @@ class DashboardState extends ConsumerState<Dashboard> {
     if (activeButtonIndex == Sizes.pIntN1) {
       selectedEvents.value = getEventsForDay(_selectedDay!);
     }
-    print(productByType);
-
     return Container(
       height: ResponsiveAppUtil.height * Sizes.p01.sh,
       // width: ResponsiveAppUtil.width,
@@ -147,6 +145,7 @@ class DashboardState extends ConsumerState<Dashboard> {
     );
   }
 
+  //[List] of all product type button like milk, bread etc.
   Widget buildProductType() {
     productByType = ref.watch(getProductByTypeProvider);
     final productKeyList = productByType.keys.toList();
@@ -275,7 +274,7 @@ class DashboardState extends ConsumerState<Dashboard> {
           rightChevronIcon: Icon(
             Icons.chevron_right,
             color: AppColors
-                .darkPurpleColor, // Change the color of the left chevron here
+                .darkPurpleColor, // Change the color of the chevron_right chevron here
           ),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
@@ -291,8 +290,8 @@ class DashboardState extends ConsumerState<Dashboard> {
         calendarStyle: CalendarStyle(
           cellMargin: const EdgeInsets.only(
               top: Sizes.p3, bottom: Sizes.p3, left: Sizes.p2, right: Sizes.p2),
-          markersMaxCount: 1,
-          markersAnchor: 1,
+          markersMaxCount: Sizes.pInt1,
+          markersAnchor: Sizes.p1,
           todayTextStyle: CustomTextStyle.calendarTitleStyle().copyWith(
               color: AppColors.whiteColor, fontWeight: Fonts.fontWeightMedium),
           defaultTextStyle: CustomTextStyle.calendarTitleStyle()
@@ -304,29 +303,16 @@ class DashboardState extends ConsumerState<Dashboard> {
           rowDecoration: BoxDecoration(
             color: AppColors.alphaPurpleColor,
           ),
-          todayDecoration: BoxDecoration(
-            color: AppColors.darkPurpleColor,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(Sizes.p3.sw),
-          ),
-          selectedDecoration: BoxDecoration(
-            color: AppColors.pinkColor,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(Sizes.p3.sw),
-          ),
-          disabledDecoration: BoxDecoration(
-            color: AppColors.pinkColor,
-            shape: BoxShape.circle,
-            borderRadius: BorderRadius.circular(Sizes.p3.sw),
-          ),
-          weekendDecoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(Sizes.p3.sw),
-          ),
-          defaultDecoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(Sizes.p1.sw),
-          ),
+          todayDecoration:
+              buildCalendarBoxDecoration(color: AppColors.darkPurpleColor),
+          selectedDecoration:
+              buildCalendarBoxDecoration(color: AppColors.pinkColor),
+          disabledDecoration:
+              buildCalendarBoxDecoration(color: AppColors.pinkColor),
+          weekendDecoration: buildCalendarBoxDecoration(),
+          defaultDecoration: buildCalendarBoxDecoration(),
+          holidayDecoration: buildCalendarBoxDecoration(),
+          outsideDecoration: buildCalendarBoxDecoration(),
         ),
         onDaySelected: onDaySelected,
         // onRangeSelected: _onRangeSelected,
@@ -370,49 +356,17 @@ class DashboardState extends ConsumerState<Dashboard> {
               ),
             );
           },
-          // markerBuilder: (BuildContext context, date, events) {
-          //   if (events.isEmpty) return const SizedBox();
-          //   return ListView.builder(
-          //       shrinkWrap: true,
-          //       scrollDirection: Axis.horizontal,
-          //       itemCount: events.length,
-          //       itemBuilder: (context, index) {
-          //         return Container(
-          //           margin: const EdgeInsets.only(top: 20),
-          //           padding: const EdgeInsets.all(1),
-          //           child: Container(
-          //             height: 7, // for vertical axis
-          //             width: 5, //for horizontal axis
-          //             decoration: BoxDecoration(
-          //                 shape: BoxShape.circle,
-          //                 color: Colors.primaries[
-          //                     Random().nextInt(Colors.primaries.length)]),
-          //           ),
-          //         );
-          //       });
-          // },
         ),
       ),
-      // Container(
-      //   padding: EdgeInsets.only(top: Sizes.p4.sh),
-      //   decoration: BoxDecoration(
-      //     color: AppColors.transparentColor,
-      //     shape: BoxShape.rectangle,
-      //     borderRadius: BorderRadius.only(
-      //       bottomLeft: Radius.circular(Sizes.p8.sw),
-      //       bottomRight: Radius.circular(Sizes.p8.sw),
-      //     ),
-      //   ),
-      // ),
     );
   }
 
-  AppButton buildSettingButton() {
-    return AppButton(
-      text: Strings.setting,
-      onPress: () async {
-        AddProductRoute().push(context);
-      },
+  // [BoxDecoration] for calendar day rows.
+  BoxDecoration buildCalendarBoxDecoration({Color? color}) {
+    return BoxDecoration(
+      shape: BoxShape.rectangle,
+      color: color,
+      borderRadius: BorderRadius.circular(Sizes.p3.sw),
     );
   }
 }

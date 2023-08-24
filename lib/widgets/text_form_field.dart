@@ -1,9 +1,7 @@
+import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/widgets/common_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
-import '../utils/common_utils.dart';
 
 class AppTextFormField extends StatefulWidget {
   final TextEditingController? controller;

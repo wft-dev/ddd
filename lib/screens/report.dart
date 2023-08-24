@@ -205,11 +205,9 @@ class ReportState extends ConsumerState<Report> {
         selectedFilterData =
             ProductFilterType.values[index].name.capitalizeFirst();
       });
-      // ref.invalidate(productFilterControllerProvider);
+      ref.invalidate(productFilterControllerProvider);
     } else if (index == Sizes.p1.toInt()) {
-      ref
-          .read(filterDateControllerProvider.notifier)
-          .updateFilterType(ProductFilterType.week);
+      buildWeeksPicker();
     } else if (index == Sizes.p2.toInt()) {
       buildMonthPicker();
     } else if (index == Sizes.p3.toInt()) {
@@ -219,51 +217,54 @@ class ReportState extends ConsumerState<Report> {
     }
   }
 
-  AppButton buildAllButton() {
-    return AppButton(
-      // width: 80,
-      text: Strings.all,
-      onPress: () async {
-        ref.invalidate(productFilterControllerProvider);
-        // showModalBottomSheet(
-        //   context: context,
-        //   builder: (BuildContext context) => yearDatePicker(),
-        // );
-      },
-    );
-  }
-
-// This is used to display [DateTimeRangePicker].
-  void buildMonthPicker() {
-    return YearDatePicker(
-        title: ProductFilterType.month.name.capitalizeFirst(),
-        pickerList: months,
-        // initialStartTime: DateTime.now(),
-        // initialEndTime: DateTime.now().add(const Duration(days: 1)),
-        // mode: DateTimeRangePickerMode.date,
+  // This is used to display week [AppPicker].
+  void buildWeeksPicker() {
+    return AppPicker(
+        title: ProductFilterType.week.name.capitalizeFirst(),
+        pickerList: weeks,
         onConfirm: (selectedText) {
           setState(() {
             selectedFilterData = selectedText;
           });
+          int selectedIndex = weeks.indexOf(selectedText) + Sizes.pInt1;
+          ref.read(filterDateControllerProvider.notifier).updateFilterType(
+              ProductFilterType.week,
+              week: (selectedIndex * Sizes.p7.toInt() - Sizes.pInt1));
         }).showPicker(context);
   }
 
-// This is used to display [DateTimeRangePicker].
+  // This is used to display month [AppPicker].
+  void buildMonthPicker() {
+    return AppPicker(
+        title: ProductFilterType.month.name.capitalizeFirst(),
+        pickerList: sortedMonths(),
+        onConfirm: (selectedText) {
+          setState(() {
+            selectedFilterData = selectedText;
+          });
+          int selectedIndex = months.indexOf(selectedText) + Sizes.pInt1;
+          ref
+              .read(filterDateControllerProvider.notifier)
+              .updateFilterType(ProductFilterType.month, month: selectedIndex);
+        }).showPicker(context);
+  }
+
+// This is used to display year [AppPicker].
   void buildYearPicker() {
-    return YearDatePicker(
+    return AppPicker(
         title: ProductFilterType.year.name.capitalizeFirst(),
         pickerList: years,
-        // initialStartTime: DateTime.now(),
-        // initialEndTime: DateTime.now().add(const Duration(days: 1)),
-        // mode: DateTimeRangePickerMode.date,
         onConfirm: (selectedText) {
           setState(() {
             selectedFilterData = selectedText;
           });
+          ref.read(filterDateControllerProvider.notifier).updateFilterType(
+              ProductFilterType.year,
+              year: selectedText.parseInt());
         }).showPicker(context);
   }
 
-  // This is used to display [DateTimeRangePicker].
+  // This is used to display range [DateTimeRangePicker].
   void buildDateRangePicker() {
     return DateTimeRangePicker(
         initialStartTime: DateTime.now(),
@@ -276,47 +277,10 @@ class ReportState extends ConsumerState<Report> {
             selectedFilterData =
                 '${FormatDate.dateToString(start)} - ${FormatDate.dateToString(end)}';
           });
-          // ref.read(filterDateControllerProvider.notifier).updateFilterType(
-          //     ProductFilterType.range,
-          //     startDateRange: start,
-          //     endDateRange: end);
+          ref.read(filterDateControllerProvider.notifier).updateFilterType(
+              ProductFilterType.range,
+              startDateRange: start,
+              endDateRange: end);
         }).showPicker(context);
-  }
-
-  // [AppDropDownButton]
-  AppDropDownButton buildDropDownButton(int index, String? value,
-      [ValueChanged<String?>? onChanged]) {
-    return AppDropDownButton(
-      onChangedMonth: onChanged,
-      showMonth: true,
-      hint: Strings.selectType,
-      value: value,
-    );
-  }
-
-  AppButton buildWeekButton() {
-    return AppButton(
-      // width: 80,
-      text: Strings.week,
-      onPress: () async {
-        // productListWithFilterType(ProductFilterType.week);
-        ref
-            .read(filterDateControllerProvider.notifier)
-            .updateFilterType(ProductFilterType.week);
-      },
-    );
-  }
-
-  AppButton buildMonthButton() {
-    return AppButton(
-      // width: 80,
-      text: Strings.month,
-      onPress: () async {
-        // productListWithFilterType(ProductFilterType.month);
-        ref
-            .read(filterDateControllerProvider.notifier)
-            .updateFilterType(ProductFilterType.month, month: 5);
-      },
-    );
   }
 }

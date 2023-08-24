@@ -62,9 +62,11 @@ class ProfileState extends ConsumerState<Profile> {
       if (!isImageSelected) {
         pickedImage = user.picture;
       }
-      List splitUserName = user.name.splitSpaceString();
-      firstNameController.text = splitUserName[Sizes.pInt0];
-      lastNameController.text = splitUserName[Sizes.pInt1];
+      if (user.name.isNotEmpty) {
+        List splitUserName = user.name.splitSpaceString();
+        firstNameController.text = splitUserName[Sizes.pInt0];
+        lastNameController.text = splitUserName[Sizes.pInt1];
+      }
       String phoneNumber = user.phoneNumber.toString();
       if (phoneNumber.isNotEmpty) {
         PhoneNumber number =
@@ -80,6 +82,12 @@ class ProfileState extends ConsumerState<Profile> {
 
   // This is used for display all widgets.
   Widget getBody() {
+    ref.listen<AsyncValue>(updateUserControllerProvider, (_, state) {
+      state.showAlertDialogOnError(context);
+    });
+    final profileData = ref.watch(updateUserControllerProvider);
+    // profileData.isLoadingShow(context);
+
     getProfileData();
     return Container(
       height: ResponsiveAppUtil.height * Sizes.p01.sh,
@@ -241,7 +249,7 @@ class ProfileState extends ConsumerState<Profile> {
           // ref.read(routerListenableProvider.notifier);
           // ref.watch(currentUserRepositoryProvider).value;
           if (mounted) {
-            ref.read(routerListenableProvider.notifier).userLogout();
+            ref.read(routerListenableProvider.notifier).userIsLogin(false);
             const LoginRoute().go(context);
           }
         }

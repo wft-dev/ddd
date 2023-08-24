@@ -23,7 +23,7 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width ?? ResponsiveAppUtil.width * Sizes.p1.sw,
-      height: height ?? Sizes.p6.sh,
+      height: height ?? Sizes.p7.sh,
       child: TextButton(
         onPressed: onPress,
         style: ButtonStyle(

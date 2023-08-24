@@ -48,9 +48,7 @@ class AppPopMenuState extends State<AppPopMenu> {
       height: Sizes.p3.sh,
       value: position,
       onTap: () {
-        if (context.canPop()) {
-          context.pop();
-        }
+        Navigator.of(context).maybePop();
       },
       child: Align(
         alignment: Alignment.topRight,
