@@ -1,7 +1,11 @@
 import 'dart:io';
 
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_dairy_diary/models/auth_results.dart';
 import 'package:daily_dairy_diary/models/user.dart';
+import 'package:daily_dairy_diary/provider/fetch_user_controller.dart';
 import 'package:daily_dairy_diary/router/router_listenable.dart';
 import 'package:daily_dairy_diary/utils/show_alert_dialog.dart';
 import 'package:daily_dairy_diary/widgets/app_alert.dart';
@@ -33,8 +37,10 @@ class ProfileState extends ConsumerState<Profile> {
       TextEditingController(text: "");
   final TextEditingController lastNameController =
       TextEditingController(text: "");
+  final TextEditingController emailController = TextEditingController(text: "");
   final TextEditingController phoneNumberController =
       TextEditingController(text: "");
+
   String? pickedImage;
   bool isImageSelected = false;
   final focusPhoneNumber = FocusNode();
@@ -56,7 +62,7 @@ class ProfileState extends ConsumerState<Profile> {
 
   // Get profile data from update user provider.
   void getProfileData() {
-    final profileData = ref.watch(updateUserControllerProvider);
+    final profileData = ref.watch(fetchUserControllerProvider);
     profileData.whenData((result) async {
       User user = result;
       if (!isImageSelected) {
@@ -64,9 +70,14 @@ class ProfileState extends ConsumerState<Profile> {
       }
       if (user.name.isNotEmpty) {
         List splitUserName = user.name.splitSpaceString();
-        firstNameController.text = splitUserName[Sizes.pInt0];
-        lastNameController.text = splitUserName[Sizes.pInt1];
+        if (splitUserName.isNotEmpty) {
+          firstNameController.text = splitUserName[Sizes.pInt0];
+        }
+        if (splitUserName.length == Sizes.p2.toInt()) {
+          lastNameController.text = splitUserName[Sizes.pInt1] ?? '';
+        }
       }
+      emailController.text = user.email;
       String phoneNumber = user.phoneNumber.toString();
       if (phoneNumber.isNotEmpty) {
         PhoneNumber number =
@@ -84,6 +95,38 @@ class ProfileState extends ConsumerState<Profile> {
   Widget getBody() {
     ref.listen<AsyncValue>(updateUserControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
+      if (!state.hasError && state.hasValue && !state.isLoading) {
+        state.whenData(
+          (result) async {
+            final AuthResults updateUserResultValue = result;
+            if (updateUserResultValue is UpdateUserResultValue) {
+              if (updateUserResultValue.result != null) {
+                final updateUserResult = updateUserResultValue.result!;
+                bool isUpdateProfile = false;
+                updateUserResult.forEach((key, value) {
+                  switch (value.nextStep.updateAttributeStep) {
+                    case AuthUpdateAttributeStep.confirmAttributeWithCode:
+                      isUpdateProfile = false;
+                      final destination =
+                          value.nextStep.codeDeliveryDetails?.destination;
+                      // safePrint(
+                      //     'Confirmation code sent to $destination for $key');
+                      break;
+                    case AuthUpdateAttributeStep.done:
+                      isUpdateProfile = true;
+                      safePrint('Update completed for $key');
+                      break;
+                  }
+                });
+                if (isUpdateProfile) {
+                  ShowSnackBar.showSnackBar(
+                      context, Strings.updateMessage(Strings.profile));
+                }
+              }
+            }
+          },
+        );
+      }
     });
     final profileData = ref.watch(updateUserControllerProvider);
     // profileData.isLoadingShow(context);
@@ -181,6 +224,12 @@ class ProfileState extends ConsumerState<Profile> {
               FocusScope.of(context).requestFocus(focusPhoneNumber);
             },
           ),
+          AppTextFormField(
+            controller: emailController,
+            label: Strings.email,
+            validator: Validations.validateEmail,
+            textInputAction: TextInputAction.next,
+          ),
           PhoneNumberTextField(
             focus: focusPhoneNumber,
             controller: phoneNumberController,
@@ -213,6 +262,7 @@ class ProfileState extends ConsumerState<Profile> {
         await ref.read(updateUserControllerProvider.notifier).updateUser(
             firstNameController.text,
             lastNameController.text,
+            emailController.text,
             phoneNumberController.text.isEmpty ? '' : phoneNumber,
             pickedImageFile);
       },

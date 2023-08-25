@@ -19,4 +19,8 @@ class AuthResults with _$AuthResults {
 
   const factory AuthResults.resetPasswordResultValue(
       {required ResetPasswordResult? result}) = ResetPasswordResultValue;
+
+  const factory AuthResults.updateUserResultValue(
+      {required Map<AuthUserAttributeKey, UpdateUserAttributeResult>?
+          result}) = UpdateUserResultValue;
 }

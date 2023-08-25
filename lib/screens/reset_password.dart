@@ -28,33 +28,49 @@ class ResetPasswordState extends ConsumerState<ResetPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return HideKeyboardWidget(
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          title: const Text(Strings.changePassword),
+          elevation: Sizes.p0,
+          backgroundColor: AppColors.transparentColor,
+          iconTheme: IconThemeData(color: AppColors.darkPurpleColor),
         ),
-        body: getBody());
+        body: getBody(),
+      ),
+    );
   }
 
   Widget getBody() {
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
+    return CircularContainer(
+      child: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              Strings.confirmationMessage(widget.destination, widget.name),
-              style: CustomTextStyle.loginTitleStyle().copyWith(fontSize: 36),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Box.gapH2,
+                Text(
+                  textAlign: TextAlign.center,
+                  Strings.confirmationMessage(widget.destination, widget.name),
+                  style: CustomTextStyle.titleHeaderStyle()
+                      .copyWith(fontSize: Sizes.p5.sw),
+                ),
+                Box.gapH2,
+                buildChangePasswordForm(),
+                Box.gapH2,
+                buildSaveButton(),
+                Box.gapH2,
+              ],
             ),
-            SizedBox(height: Sizes.p2.sh),
-            buildChangePasswordForm(),
-            buildSaveButton(),
           ],
         ),
       ),
     );
   }
 
+  // This [Form] is used for enter code and new password for reset the password.
   Form buildChangePasswordForm() {
     return Form(
       key: _formKey,
@@ -69,6 +85,7 @@ class ResetPasswordState extends ConsumerState<ResetPassword> {
           AppTextFormField(
             controller: newPasswordController,
             label: Strings.newPassword,
+            obscure: true,
             validator: (value) => Validations.validatePassword(
                 value, Strings.newPassword.toLowerCase()),
             textInputAction: TextInputAction.done,
@@ -78,6 +95,7 @@ class ResetPasswordState extends ConsumerState<ResetPassword> {
     );
   }
 
+  // This [AppButton] is used for confirm the reset password.
   AppButton buildSaveButton() {
     ref.listen<AsyncValue>(confirmResetPasswordControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
@@ -105,7 +123,7 @@ class ResetPasswordState extends ConsumerState<ResetPassword> {
         await ref
             .read(confirmResetPasswordControllerProvider.notifier)
             .confirmUserResetPassword(
-                widget.email, codeController.text, newPasswordController.text);
+                widget.email, newPasswordController.text, codeController.text);
       },
     );
   }

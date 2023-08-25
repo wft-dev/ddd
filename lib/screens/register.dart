@@ -1,5 +1,6 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:daily_dairy_diary/constant/constant.dart';
+import 'package:daily_dairy_diary/router/router_listenable.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +21,8 @@ class Register extends ConsumerStatefulWidget {
 
 class RegisterState extends ConsumerState<Register> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeySecond = GlobalKey<FormState>();
+
   final TextEditingController firstNameController =
       TextEditingController(text: "");
   final TextEditingController lastNameController =
@@ -35,6 +38,9 @@ class RegisterState extends ConsumerState<Register> {
   bool? success;
   String? userEmail;
   bool isTermConditionChecked = false;
+  bool isTermConditionError = false;
+  String phoneNumber = '';
+  final focusPhoneNumber = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +49,9 @@ class RegisterState extends ConsumerState<Register> {
           extendBodyBehindAppBar:
               true, // This makes the body extend behind the app bar
           appBar: AppBar(
-            elevation: 0, // Remove the shadow
+            elevation: Sizes.p0, // Remove the shadow
             backgroundColor: AppColors.transparentColor,
+            iconTheme: IconThemeData(color: AppColors.darkPurpleColor),
           ),
           body: getBody()),
     );
@@ -56,7 +63,7 @@ class RegisterState extends ConsumerState<Register> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Box.gapH3,
+            Box.gapH2,
             Text(
               Strings.createAnAccount,
               style: CustomTextStyle.titleHeaderStyle(),
@@ -112,12 +119,28 @@ class RegisterState extends ConsumerState<Register> {
             validator: (value) => Validations.validateConfirmPassword(
                 value, passwordController.text),
             textInputAction: TextInputAction.next,
+            onEditingCompleted: () {
+              FocusScope.of(context).requestFocus(focusPhoneNumber);
+            },
           ),
-          AppTextFormField(
+          PhoneNumberTextField(
+            focus: focusPhoneNumber,
             controller: phoneNumberController,
             label: Strings.phoneNumber,
+            // validator: (value) {
+            //   print(value);
+            //   return null;
+            // },
+            onInputChanged: (number) {
+              phoneNumber = '${number.phoneNumber}';
+            },
             textInputAction: TextInputAction.done,
           ),
+          // AppTextFormField(
+          //   controller: phoneNumberController,
+          //   label: Strings.phoneNumber,
+          //   textInputAction: TextInputAction.done,
+          // ),
         ],
       ),
     );
@@ -140,11 +163,11 @@ class RegisterState extends ConsumerState<Register> {
                         email: emailController.text,
                         destination: codeDetail?.destination,
                         name: codeDetail!.deliveryMedium.name)
-                    .go(context);
+                    .push(context);
               } else if (signUpStep == AuthSignUpStep.done) {
+                ref.read(routerListenableProvider.notifier).userIsLogin(true);
                 const DashboardRoute().go(context);
               }
-              print("user122 ${signUpResult.result?.nextStep.signUpStep}");
             }
           },
         );
@@ -153,24 +176,36 @@ class RegisterState extends ConsumerState<Register> {
     return AppButton(
       text: Strings.register,
       onPress: () async {
-        if (!_formKey.currentState!.validate()) return;
+        if (!_formKey.currentState!.validate() ||
+            (isTermConditionChecked == false)) {
+          if (!isTermConditionChecked) {
+            setState(() {
+              isTermConditionError = !isTermConditionChecked;
+            });
+          }
+          return;
+        }
         await ref.read(registerControllerProvider.notifier).registerUser(
             firstNameController.text,
             lastNameController.text,
             emailController.text,
             passwordController.text,
-            phoneNumberController.text);
+            phoneNumberController.text.isEmpty ? '' : phoneNumber);
       },
     );
   }
 
   AppCheckbox buildTermCondition() {
     return AppCheckbox(
+      errorText: isTermConditionChecked != true && isTermConditionError
+          ? Strings.selectTermAndCondition
+          : '',
       listTileCheckBox: isTermConditionChecked,
       title: Strings.termAndCondition,
       onChange: (value) async {
         setState(() {
           isTermConditionChecked = !isTermConditionChecked;
+          isTermConditionError = !isTermConditionChecked;
         });
       },
     );

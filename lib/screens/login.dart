@@ -1,5 +1,8 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:daily_dairy_diary/constant/constant.dart';
+import 'package:daily_dairy_diary/provider/login_resend_code_controller.dart';
+import 'package:daily_dairy_diary/provider/providers.dart';
+import 'package:daily_dairy_diary/router/router_listenable.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,7 +41,9 @@ class LoginState extends ConsumerState<Login> {
   @override
   Widget build(BuildContext context) {
     return HideKeyboardWidget(
-      child: Scaffold(body: getBody()),
+      child: Scaffold(
+        body: getBody(),
+      ),
     );
   }
 
@@ -58,7 +63,7 @@ class LoginState extends ConsumerState<Login> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Box.gapH3,
+                Box.gapH2,
                 Text(
                   Strings.signInAccount,
                   style: CustomTextStyle.titleHeaderStyle(),
@@ -69,20 +74,22 @@ class LoginState extends ConsumerState<Login> {
                 buildButton(),
                 Box.gapH4,
                 Align(
-                    alignment: Alignment.center,
-                    child: GestureDetector(
-                      onTap: () {
-                        const ForgetPasswordRoute().push(context);
-                      },
-                      child: Text(Strings.forgetPassword,
-                          style: CustomTextStyle.buttonTitleStyle().copyWith(
-                              color: AppColors.pinkColor,
-                              fontSize: Sizes.p3_3.sw,
-                              fontWeight: FontWeight.w600)),
-                    )),
+                  alignment: Alignment.center,
+                  child: GestureDetector(
+                    onTap: () {
+                      const ForgetPasswordRoute().push(context);
+                    },
+                    child: Text(Strings.forgetPassword,
+                        style: CustomTextStyle.buttonTitleStyle().copyWith(
+                            color: AppColors.pinkColor,
+                            fontSize: Sizes.p3_3.sw,
+                            fontWeight: FontWeight.w600)),
+                  ),
+                ),
                 Box.gapH2,
                 loginSignUpButton(
                     context, Strings.doNotAccount, Strings.signUp),
+                Box.gapH4,
               ],
             ),
           ],
@@ -91,6 +98,7 @@ class LoginState extends ConsumerState<Login> {
     );
   }
 
+  // This [Form] is used for enter email, password.
   Form buildEmailSignUpForm() {
     return Form(
       key: _formKey,
@@ -115,6 +123,7 @@ class LoginState extends ConsumerState<Login> {
     );
   }
 
+  // This [AppButton] is used for login.
   AppButton buildButton() {
     ref.listen<AsyncValue>(loginControllerProvider, (_, state) {
       print('loginControllerProvider state, $state');
@@ -133,12 +142,12 @@ class LoginState extends ConsumerState<Login> {
                 );
               } else if (signInStep == AuthSignInStep.confirmSignUp) {
                 await ref
-                    .read(resendCodeControllerProvider.notifier)
+                    .read(loginResendCodeControllerProvider.notifier)
                     .resendSignUpUserCode(emailController.text);
               } else if (signInStep == AuthSignInStep.done) {
-                const ProfileRoute().go(context);
+                ref.read(routerListenableProvider.notifier).userIsLogin(true);
+                const DashboardRoute().go(context);
               }
-              print("user122 ${signInResult.result?.nextStep.signInStep}");
             }
           },
         );
@@ -148,7 +157,7 @@ class LoginState extends ConsumerState<Login> {
       //         print("user ${result?.nextStep.signInStep}"),
       //     signUpResult: (AuthSignInStep result) {});
     });
-    ref.listen<AsyncValue>(resendCodeControllerProvider, (_, state) {
+    ref.listen<AsyncValue>(loginResendCodeControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData((result) async {
@@ -159,11 +168,12 @@ class LoginState extends ConsumerState<Login> {
                     email: emailController.text,
                     destination: codeDetail.destination,
                     name: codeDetail.deliveryMedium.name)
-                .go(context);
+                .push(context);
           }
         });
       }
     });
+
     // final AuthResults? user = ref.watch(loginControllerProvider).value;
     // user?.when(
     //     signInResultValue: (result) =>
@@ -179,6 +189,7 @@ class LoginState extends ConsumerState<Login> {
     );
   }
 
+  // This [AppCheckbox] is used for save login detail.
   AppCheckbox buildRememberCheckbox() {
     return AppCheckbox(
       listTileCheckBox: isRememberMeChecked,
