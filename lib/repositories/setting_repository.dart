@@ -1,6 +1,8 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
+import 'package:daily_dairy_diary/models/result.dart';
 import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -8,7 +10,7 @@ part 'setting_repository.g.dart';
 
 class SettingRepository {
   // This [GraphQL] mutation is used for create [Setting].
-  Future<void> createSetting(Setting setting) async {
+  Future<Result> createSetting(Setting setting) async {
     try {
       final request = ModelMutations.create(setting);
       final response = await Amplify.API.mutate(request: request).response;
@@ -18,6 +20,8 @@ class SettingRepository {
         throw response.errors;
       }
       safePrint('Mutation result: ${createSetting.name}');
+      return Result(
+          actionType: response.data != null ? ActionType.add : ActionType.none);
     } on ApiException catch (e) {
       safePrint('Mutation failed: $e');
       rethrow;
@@ -25,11 +29,15 @@ class SettingRepository {
   }
 
   // This [GraphQL] mutation is used for update the [Setting].
-  Future<void> updateSetting(Setting setting) async {
+  Future<Result> updateSetting(Setting setting) async {
     try {
       final request = ModelMutations.update(setting);
       final response = await Amplify.API.mutate(request: request).response;
-      safePrint('Response: $response');
+      final updatedSetting = response.data;
+      if (updatedSetting == null) {
+        throw response.errors;
+      }
+      return const Result(actionType: ActionType.update);
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
       rethrow;
@@ -37,11 +45,14 @@ class SettingRepository {
   }
 
   // This [GraphQL] mutation is used for delete the [Setting].
-  Future<void> deleteSetting(Setting settingToDelete) async {
+  Future<Result> deleteSetting(Setting settingToDelete) async {
     try {
       final request = ModelMutations.delete(settingToDelete);
       final response = await Amplify.API.mutate(request: request).response;
       safePrint('Response: $response');
+      return Result(
+          actionType:
+              response.data != null ? ActionType.delete : ActionType.none);
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
       rethrow;

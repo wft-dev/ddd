@@ -30,6 +30,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   String? selectedValue;
   static const int indexForSingleView = 0;
   bool isDefault = false;
+  bool isAddMoreSelected = false;
   bool isDateTimeSelected = false;
 
   Setting? settingData;
@@ -64,7 +65,7 @@ class AddProductState extends ConsumerState<AddProduct> {
     if (item is Setting) {
       setAutofillData(
         item.type,
-        item.name!,
+        item.name ?? '',
         item.price.toString(),
         item.quantity.toString(),
       );
@@ -138,11 +139,15 @@ class AddProductState extends ConsumerState<AddProduct> {
                       });
                     }),
                     buildSettingForm(_formKey),
-                    if (widget.productData == null) ...[
-                      buildIsDefaultCheckbox(),
+                    if ((widget.productData == null) &&
+                        (settingData != null)) ...[
                       Box.gapH2,
                       buildSaveAndResetButton(),
                     ] else ...[
+                      if ((settingData == null) &&
+                          (widget.productData == null)) ...[
+                        buildIsDefaultCheckbox(),
+                      ],
                       Box.gapH2,
                       buildSaveButton(),
                     ]
@@ -150,13 +155,15 @@ class AddProductState extends ConsumerState<AddProduct> {
                 ),
               ),
               if (widget.productData == null) ...[
-                Form(
-                  key: _moreFormKey,
-                  child: Flexible(
-                    // height: 400,
-                    child: buildMoreProductListView(),
-                  ),
-                ),
+                if (isAddMoreSelected) ...[
+                  Form(
+                    key: _moreFormKey,
+                    child: Flexible(
+                      // height: 400,
+                      child: buildMoreProductListView(),
+                    ),
+                  )
+                ],
                 Box.gapH2,
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
@@ -270,19 +277,12 @@ class AddProductState extends ConsumerState<AddProduct> {
     // final q = ref.watch(settingControllerProvider);
     ref.listen<AsyncValue>(productControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
-      state.whenData((value) {
-        showExceptionAlertDialog(
-          context: context,
-          title: Strings.success,
-          exception: Strings.success,
-        );
-      });
-      // ShowSnackBar.showSnackBar(context, 'message');
+      state.whenData((value) {});
     });
     return AppButton(
       text: Strings.save,
       onPress: () async {
-        if (widget.productData == null) {
+        if (isAddMoreSelected) {
           if (!_formKey.currentState!.validate() ||
               !_moreFormKey.currentState!.validate()) return;
         } else {
@@ -321,6 +321,7 @@ class AddProductState extends ConsumerState<AddProduct> {
             await ref
                 .read(productControllerProvider.notifier)
                 .addProduct(productList);
+            productList.clear();
           } else if (widget.productData != null) {
             final updatedProductData = widget.productData!.copyWith(
               name: groupControllers[Sizes.pInt0].name.text,
@@ -333,10 +334,18 @@ class AddProductState extends ConsumerState<AddProduct> {
             await ref
                 .read(productControllerProvider.notifier)
                 .editProduct(updatedProductData);
+            if (context.mounted) {
+              ShowSnackBar.showSnackBar(
+                  context, Strings.updateMessage(Strings.profile));
+            }
           } else {
             await ref
                 .read(productControllerProvider.notifier)
                 .addProduct(productList);
+            if (context.mounted) {
+              ShowSnackBar.showSnackBar(
+                  context, Strings.addMessage(Strings.profile));
+            }
           }
         }
       },
@@ -350,6 +359,7 @@ class AddProductState extends ConsumerState<AddProduct> {
       onPress: () {
         final group = GroupControllers();
         setState(() {
+          isAddMoreSelected = true;
           groupControllers.add(group);
           productList.add(Product(userID: ''));
         });
@@ -416,10 +426,12 @@ class AddProductState extends ConsumerState<AddProduct> {
                 AppButton(
                   text: Strings.remove,
                   onPress: () {
-                    final group = GroupControllers();
                     setState(() {
-                      groupControllers.add(group);
+                      groupControllers.removeAt(indexForList);
                       productList.removeAt(index);
+                      if (productList.length == Sizes.pInt0) {
+                        isAddMoreSelected = false;
+                      }
                     });
                   },
                 ),

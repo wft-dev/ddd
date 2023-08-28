@@ -7,6 +7,7 @@ import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/event.dart';
 import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/provider/calendar_event_provider.dart';
+import 'package:daily_dairy_diary/provider/fetch_user_controller.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/update_user_controller.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
@@ -75,7 +76,7 @@ class DashboardState extends ConsumerState<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final userName = ref.watch(updateUserControllerProvider
+    final userName = ref.watch(fetchUserControllerProvider
         .select((user) => user.whenData((value) => value.name)));
     return Scaffold(
       backgroundColor: AppColors.whiteColor,

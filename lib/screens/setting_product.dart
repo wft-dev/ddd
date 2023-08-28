@@ -4,6 +4,7 @@ import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/Inventory.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
+import 'package:daily_dairy_diary/models/result.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
@@ -29,8 +30,8 @@ class SettingProductState extends ConsumerState<SettingProduct> {
   late DateTime _endDate;
   late TimeOfDay _endTime;
   String? selectedValue;
-  static const int indexForSingleView = 0;
   bool isDefault = false;
+  bool skipValidation = false;
 
   Setting? settingData;
 
@@ -50,7 +51,6 @@ class SettingProductState extends ConsumerState<SettingProduct> {
   @override
   void initState() {
     super.initState();
-    // ref.read(settingControllerProvider.notifier).fetchData();
     final group = GroupControllers();
     groupControllers.add(group);
   }
@@ -65,14 +65,28 @@ class SettingProductState extends ConsumerState<SettingProduct> {
     final settingList = ref.watch(settingControllerProvider);
     print('state112 $settingList');
     settingList.whenData((setting) {
-      if (setting.isNotEmpty) {
-        final settingItem = setting[Sizes.pInt0]!;
+      final Result settingResult = setting;
+      if (settingResult.items != null && settingResult.items!.isNotEmpty) {
+        Setting? settingItem = settingResult.items!.isNotEmpty
+            ? settingResult.items![Sizes.pInt0]!
+            : null;
         settingData = settingItem;
-        selectedValue = settingItem.type;
-        groupControllers[Sizes.pInt0].name.text = settingItem.name!;
-        groupControllers[Sizes.pInt0].price.text = settingItem.price.toString();
+        selectedValue = settingItem?.type ?? '';
+        groupControllers[Sizes.pInt0].name.text = settingItem?.name ?? '';
+        groupControllers[Sizes.pInt0].price.text =
+            settingItem?.price.toString() ?? '';
         groupControllers[Sizes.pInt0].quantity.text =
-            settingItem.quantity.toString();
+            settingItem?.quantity.toString() ?? '';
+      }
+
+      if (settingResult.actionType != ActionType.none) {
+        if (settingResult.actionType == ActionType.delete) {
+          clearData();
+        }
+        ShowSnackBar.showSnackBar(
+            context,
+            Strings.successMessage(
+                Strings.setting, settingResult.actionType.name));
       }
     });
     return Container(
@@ -92,13 +106,6 @@ class SettingProductState extends ConsumerState<SettingProduct> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               buildStartDate(),
-              buildDropDownFiled(indexForSingleView, selectedValue, (value) {
-                setState(() {
-                  selectedValue = value!.type;
-                  groupControllers[Sizes.pInt0].price.text =
-                      value.price.toString();
-                });
-              }),
               buildSettingForm(_formKey),
               Box.gapH2,
               buildSaveButton(),
@@ -118,7 +125,8 @@ class SettingProductState extends ConsumerState<SettingProduct> {
     return AppTextFormField(
       controller: controller,
       label: label,
-      validator: (value) => Validations.validateString(value, label),
+      validator: (value) =>
+          !skipValidation ? Validations.validateString(value, label) : null,
       textInputAction: textInputAction,
       onChanged: onChanged,
     );
@@ -140,9 +148,16 @@ class SettingProductState extends ConsumerState<SettingProduct> {
   AppDropDownFiled buildDropDownFiled(int index, String? value,
       [ValueChanged<Inventory?>? onChanged]) {
     return AppDropDownFiled<Inventory>(
+      label: Strings.type,
       dropdownItems: inventoryList,
       onChanged: onChanged,
       hint: Strings.selectType,
+      validator: (value) {
+        if (value == null) {
+          return Validations.validateString('', Strings.type);
+        }
+        return null;
+      },
       value: findInventory(selectedValue ?? ''),
     );
   }
@@ -153,11 +168,17 @@ class SettingProductState extends ConsumerState<SettingProduct> {
       key: key,
       child: Column(
         children: <Widget>[
-          generateTextField(groupControllers[indexForSingleView].name,
-              Strings.name, TextInputAction.next),
-          generateTextField(groupControllers[indexForSingleView].price,
-              Strings.price, TextInputAction.next),
-          generateTextField(groupControllers[indexForSingleView].quantity,
+          buildDropDownFiled(Sizes.pInt0, selectedValue, (value) {
+            setState(() {
+              selectedValue = value!.type;
+              groupControllers[Sizes.pInt0].price.text = value.price.toString();
+            });
+          }),
+          generateTextField(groupControllers[Sizes.pInt0].name, Strings.name,
+              TextInputAction.next),
+          generateTextField(groupControllers[Sizes.pInt0].price, Strings.price,
+              TextInputAction.next),
+          generateTextField(groupControllers[Sizes.pInt0].quantity,
               Strings.quantity, TextInputAction.done),
         ],
       ),
@@ -206,12 +227,26 @@ class SettingProductState extends ConsumerState<SettingProduct> {
   // This [AppButton] is used for remove the setting product.
   AppButton buildRemoveButton() {
     return AppButton(
+        isEnabled: settingData != null ? true : false,
         text: Strings.remove,
         onPress: () async {
-          ref
+          await ref
               .read(settingControllerProvider.notifier)
               .removeSetting(settingData!);
+          // clearData();
+          // _formKey.currentState?.reset();
         });
+  }
+
+  // Clear all data after remove.
+  void clearData() {
+    skipValidation = true;
+    settingData = null;
+    groupControllers[Sizes.pInt0].name.clear();
+    groupControllers[Sizes.pInt0].price.clear();
+    groupControllers[Sizes.pInt0].quantity.clear();
+
+    skipValidation = false;
   }
 
   @override

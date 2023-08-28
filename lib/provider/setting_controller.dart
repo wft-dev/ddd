@@ -1,4 +1,6 @@
+import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
+import 'package:daily_dairy_diary/models/result.dart';
 import 'package:daily_dairy_diary/repositories/setting_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -6,15 +8,25 @@ part 'setting_controller.g.dart';
 
 @riverpod
 class SettingController extends _$SettingController {
-  Future<List<Setting?>> fetchSetting() async {
+  Future<Result> fetchSetting({actionType = ActionType.none}) async {
     final settingList =
-        ref.watch(settingRepositoryProvider).querySettingItems();
-    return settingList;
+        await ref.watch(settingRepositoryProvider).querySettingItems();
+    return Result(items: settingList, actionType: actionType);
   }
 
   @override
-  FutureOr<List<Setting?>> build() async {
+  FutureOr<Result> build() async {
     return fetchSetting();
+  }
+
+  // Let's allow add setting.
+  Future<void> fetchData() async {
+    final settingRepository = ref.watch(settingRepositoryProvider);
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await settingRepository.querySettingItems();
+      return fetchSetting();
+    });
   }
 
   // Let's allow add setting.
@@ -22,8 +34,8 @@ class SettingController extends _$SettingController {
     final settingRepository = ref.watch(settingRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await settingRepository.createSetting(setting);
-      return fetchSetting();
+      final result = await settingRepository.createSetting(setting);
+      return fetchSetting(actionType: result.actionType);
     });
   }
 
@@ -32,8 +44,8 @@ class SettingController extends _$SettingController {
     final settingRepository = ref.watch(settingRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await settingRepository.deleteSetting(settingId);
-      return fetchSetting();
+      final result = await settingRepository.deleteSetting(settingId);
+      return fetchSetting(actionType: result.actionType);
     });
   }
 
@@ -42,8 +54,8 @@ class SettingController extends _$SettingController {
     final settingRepository = ref.watch(settingRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await settingRepository.updateSetting(setting);
-      return fetchSetting();
+      final result = await settingRepository.updateSetting(setting);
+      return fetchSetting(actionType: result.actionType);
     });
   }
 }
