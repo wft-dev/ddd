@@ -36,3 +36,35 @@ Future<bool?> showAlertDialog({
     ),
   );
 }
+
+Future<bool?> showAlertActionDialog({
+  required BuildContext context,
+  required String title,
+  String? content,
+  String cancelActionText = Strings.cancel,
+  required VoidCallback onYesPress,
+  bool isShowCancel = false,
+  String defaultActionText = Strings.ok,
+}) async {
+  return showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(title),
+      content: content != null ? Text(content) : null,
+      actions: <Widget>[
+        TextButton(
+            child: Text(defaultActionText),
+            onPressed: () {
+              context.pop(false);
+              onYesPress();
+            }),
+        if (isShowCancel)
+          TextButton(
+              child: Text(cancelActionText),
+              onPressed: () {
+                context.pop(false);
+              }),
+      ],
+    ),
+  );
+}

@@ -1,6 +1,8 @@
+import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/MoreProduct.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/models/filter_date.dart';
+import 'package:daily_dairy_diary/models/result.dart';
 import 'package:daily_dairy_diary/provider/calendar_event_provider.dart';
 import 'package:daily_dairy_diary/provider/filter_date_controller.dart';
 import 'package:daily_dairy_diary/provider/product_filter_controller.dart';
@@ -15,20 +17,19 @@ part 'product_controller.g.dart';
 @riverpod
 class ProductController extends _$ProductController {
   // Let's allow get all products.
-  Future<List<Product?>> fetchProduct() async {
+  Future<Result> fetchProduct({actionType = ActionType.none}) async {
+    final productList = await fetchProductList();
+    return Result(items: productList, actionType: actionType);
+  }
+
+  Future<List<Product?>> fetchProductList() async {
     final productList =
         ref.watch(productRepositoryProvider).queryProductItems();
     return productList;
   }
 
-  Future<List<MoreProduct?>> fetchMoreProduct() async {
-    final productList =
-        ref.watch(productRepositoryProvider).queryMoreProductItems();
-    return productList;
-  }
-
   @override
-  FutureOr<List<Product?>> build() async {
+  FutureOr<Result> build() async {
     return fetchProduct();
   }
 
@@ -37,8 +38,8 @@ class ProductController extends _$ProductController {
     final productRepository = ref.watch(productRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await productRepository.createProduct(product);
-      return fetchProduct();
+      final result = await productRepository.createProduct(product);
+      return fetchProduct(actionType: result.actionType);
     });
   }
 
@@ -57,9 +58,9 @@ class ProductController extends _$ProductController {
     final productRepository = ref.watch(productRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await productRepository.deleteProduct(productId);
+      final result = await productRepository.deleteProduct(productId);
       reportDataUpdate();
-      return fetchProduct();
+      return fetchProduct(actionType: result.actionType);
     });
   }
 
@@ -68,9 +69,9 @@ class ProductController extends _$ProductController {
     final productRepository = ref.watch(productRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await productRepository.updateProduct(product);
+      final result = await productRepository.updateProduct(product);
       reportDataUpdate();
-      return fetchProduct();
+      return fetchProduct(actionType: result.actionType);
     });
   }
 

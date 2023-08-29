@@ -147,9 +147,15 @@ class ProductList extends ConsumerWidget {
             child: AppPopMenu(
               onSelected: (value, type) async {
                 if (type == Options.delete.name) {
-                  await ref
-                      .read(productControllerProvider.notifier)
-                      .removeProduct(productItem);
+                  showAlertActionDialog(
+                    context: context,
+                    title: Strings.delete,
+                    isShowCancel: true,
+                    content: Strings.deleteMessage(Strings.product),
+                    onYesPress: () async => await ref
+                        .read(productControllerProvider.notifier)
+                        .removeProduct(productItem),
+                  );
                 } else if (type == Options.edit.name) {
                   AddProductRoute($extra: productItem).push(context);
                 }

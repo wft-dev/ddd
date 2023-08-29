@@ -6,6 +6,7 @@ class AppButton extends StatelessWidget {
   final String? text;
   final VoidCallback onPress;
   final bool isIcon;
+  final bool isEnabled;
   final double? width;
   final double? height;
   final Widget? icon;
@@ -16,6 +17,7 @@ class AppButton extends StatelessWidget {
     this.width,
     this.height,
     this.isIcon = false,
+    this.isEnabled = true,
     this.icon,
   }) : super(key: key);
 
@@ -25,7 +27,7 @@ class AppButton extends StatelessWidget {
       width: width ?? ResponsiveAppUtil.width * Sizes.p1.sw,
       height: height ?? Sizes.p7.sh,
       child: TextButton(
-        onPressed: onPress,
+        onPressed: isEnabled ? onPress : null,
         style: ButtonStyle(
           shape: !isIcon
               ? MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -34,8 +36,12 @@ class AppButton extends StatelessWidget {
                   ),
                 )
               : null,
-          backgroundColor:
-              !isIcon ? MaterialStateProperty.all(AppColors.pinkColor) : null,
+          foregroundColor: isEnabled
+              ? MaterialStateProperty.all(AppColors.pinkColor)
+              : MaterialStateProperty.all(AppColors.dimPurpleColor),
+          backgroundColor: isEnabled
+              ? MaterialStateProperty.all(AppColors.pinkColor)
+              : MaterialStateProperty.all(AppColors.dimPurpleColor),
         ),
         child: isIcon
             ? Container(child: icon)

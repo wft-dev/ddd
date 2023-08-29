@@ -137,14 +137,19 @@ class AppDropDownFiledState<T> extends State<AppDropDownFiled<T>> {
                       ),
                     );
                   }).toList(),
-                  validator: widget.validator,
+                  validator: (value) => widget.validator != null
+                      ? (value is Inventory)
+                          ? widget.validator!(value)
+                          : widget.validator!(null)
+                      : null,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   onChanged: widget.onChanged,
                   selectedItemBuilder: widget.selectedItemBuilder,
                   buttonStyleData: ButtonStyleData(
                     // height: buttonHeight ?? 40,
                     // width: buttonWidth ?? 140,
                     padding: widget.buttonPadding ??
-                        EdgeInsets.only(right: Sizes.p4.sw),
+                        EdgeInsets.only(right: Sizes.p1.sw),
                     // decoration: buttonDecoration ??
                     //     BoxDecoration(
                     //       borderRadius: BorderRadius.circular(Sizes.p2.sw),
@@ -212,6 +217,10 @@ class AppDropDownFiledState<T> extends State<AppDropDownFiled<T>> {
   InputDecoration buildInputDecoration(bool value) {
     return InputDecoration(
       // errorText: errorText,
+      errorStyle: Theme.of(context)
+          .textTheme
+          .bodySmall!
+          .copyWith(color: Theme.of(context).colorScheme.error),
       filled: true,
       fillColor: value ? AppColors.lightPurpleColor : AppColors.whiteColor,
       // labelText: label,
@@ -220,7 +229,7 @@ class AppDropDownFiledState<T> extends State<AppDropDownFiled<T>> {
       focusedBorder: buildBorder(AppColors.lightPurpleColor),
       disabledBorder: buildBorder(AppColors.grayColor),
       contentPadding: EdgeInsets.symmetric(
-        horizontal: Sizes.p1.sw,
+        horizontal: Sizes.p2.sw,
         vertical: Sizes.p2.sh,
       ),
     );

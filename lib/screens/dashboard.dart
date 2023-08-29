@@ -47,7 +47,7 @@ class DashboardState extends ConsumerState<Dashboard> {
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
-    ref.read(getCalendarEventProvider);
+    // ref.read(getCalendarEventProvider);
     selectedEvents = ValueNotifier(getEventsForDay(_selectedDay!));
   }
 
@@ -110,10 +110,11 @@ class DashboardState extends ConsumerState<Dashboard> {
 
   // This is used for display all widgets.
   Widget getBody() {
-    events = ref.watch(getCalendarEventProvider);
+    events = ref.watch(getCalendarEventProvider(context: context));
     if (activeButtonIndex == Sizes.pIntN1) {
       selectedEvents.value = getEventsForDay(_selectedDay!);
     }
+
     return Container(
       height: ResponsiveAppUtil.height * Sizes.p01.sh,
       // width: ResponsiveAppUtil.width,

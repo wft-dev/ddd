@@ -16,7 +16,7 @@ class ProductFilterController extends _$ProductFilterController {
   // Let's allow get all products.
   Future<List<Product?>> getAllProducts() async {
     final productList =
-        ref.watch(productControllerProvider.notifier).fetchProduct();
+        ref.watch(productControllerProvider.notifier).fetchProductList();
     return productList;
   }
 

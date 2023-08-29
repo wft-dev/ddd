@@ -3,7 +3,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/api_service/queries.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
-import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/models/filter_date.dart';
 import 'package:daily_dairy_diary/models/result.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,7 +11,7 @@ part 'product_repository.g.dart';
 
 class ProductRepository {
   // This [GraphQL] mutation is used for create [Product].
-  Future<void> createProduct(List<Product> products) async {
+  Future<Result> createProduct(List<Product> products) async {
     try {
       for (var productData in products) {
         final request = ModelMutations.create(productData);
@@ -24,6 +23,7 @@ class ProductRepository {
         }
         safePrint('Mutation result: ${createdProduct.name}');
       }
+      return const Result(actionType: ActionType.add);
     } on ApiException catch (e) {
       safePrint('Mutation failed: $e');
       rethrow;

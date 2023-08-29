@@ -57,19 +57,27 @@ class SettingProductState extends ConsumerState<SettingProduct> {
 
   // This is used for display all widgets.
   Widget getBody() {
+    final settingList = ref.watch(settingControllerProvider);
     ref.listen<AsyncValue>(settingControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
-      print('state ${state.value}');
+      state.whenData((setting) {
+        final Result settingResult = setting;
+        if (settingResult.actionType != ActionType.none) {
+          if (settingResult.actionType == ActionType.delete) {
+            clearData();
+          }
+          ShowSnackBar.showSnackBar(
+              context,
+              Strings.successMessage(
+                  Strings.setting, settingResult.actionType.name));
+        }
+      });
     });
 
-    final settingList = ref.watch(settingControllerProvider);
-    print('state112 $settingList');
     settingList.whenData((setting) {
-      final Result settingResult = setting;
-      if (settingResult.items != null && settingResult.items!.isNotEmpty) {
-        Setting? settingItem = settingResult.items!.isNotEmpty
-            ? settingResult.items![Sizes.pInt0]!
-            : null;
+      final List? settingResult = setting.items;
+      if (settingResult != null && settingResult.isNotEmpty) {
+        Setting? settingItem = settingResult[Sizes.pInt0];
         settingData = settingItem;
         selectedValue = settingItem?.type ?? '';
         groupControllers[Sizes.pInt0].name.text = settingItem?.name ?? '';
@@ -78,17 +86,10 @@ class SettingProductState extends ConsumerState<SettingProduct> {
         groupControllers[Sizes.pInt0].quantity.text =
             settingItem?.quantity.toString() ?? '';
       }
-
-      if (settingResult.actionType != ActionType.none) {
-        if (settingResult.actionType == ActionType.delete) {
-          clearData();
-        }
-        ShowSnackBar.showSnackBar(
-            context,
-            Strings.successMessage(
-                Strings.setting, settingResult.actionType.name));
-      }
     });
+
+    settingList.isLoadingShow(context);
+
     return Container(
       height: ResponsiveAppUtil.height * Sizes.p01.sh,
       decoration: BoxDecoration(
@@ -153,7 +154,7 @@ class SettingProductState extends ConsumerState<SettingProduct> {
       onChanged: onChanged,
       hint: Strings.selectType,
       validator: (value) {
-        if (value == null) {
+        if (value == null && !skipValidation) {
           return Validations.validateString('', Strings.type);
         }
         return null;
@@ -190,6 +191,9 @@ class SettingProductState extends ConsumerState<SettingProduct> {
     return AppButton(
       text: settingData != null ? Strings.update : Strings.save,
       onPress: () async {
+        setState(() {
+          skipValidation = false;
+        });
         if (!_formKey.currentState!.validate()) return;
         final userID = ref.read(currentUserRepositoryProvider).value;
         if (userID != null) {
@@ -230,23 +234,28 @@ class SettingProductState extends ConsumerState<SettingProduct> {
         isEnabled: settingData != null ? true : false,
         text: Strings.remove,
         onPress: () async {
-          await ref
-              .read(settingControllerProvider.notifier)
-              .removeSetting(settingData!);
-          // clearData();
-          // _formKey.currentState?.reset();
+          showAlertActionDialog(
+            context: context,
+            title: Strings.delete,
+            isShowCancel: true,
+            content: Strings.deleteMessage(Strings.setting),
+            onYesPress: () async => await ref
+                .read(settingControllerProvider.notifier)
+                .removeSetting(settingData!),
+          );
         });
   }
 
   // Clear all data after remove.
   void clearData() {
-    skipValidation = true;
+    setState(() {
+      skipValidation = true;
+    });
     settingData = null;
+    selectedValue = '';
     groupControllers[Sizes.pInt0].name.clear();
     groupControllers[Sizes.pInt0].price.clear();
     groupControllers[Sizes.pInt0].quantity.clear();
-
-    skipValidation = false;
   }
 
   @override

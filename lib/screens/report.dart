@@ -91,7 +91,7 @@ class ReportState extends ConsumerState<Report> {
         );
       }
     });
-    ref.watch(productFilterWithDateProvider);
+    ref.watch(productFilterWithDateProvider(context));
 
     return Container(
       height: ResponsiveAppUtil.height * Sizes.p01.sh,

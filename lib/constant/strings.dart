@@ -38,7 +38,7 @@ class Strings {
   static const String update = 'Update';
   // Profile Screen
   static const String profile = 'Profile';
-  static const String wantToLogout = 'Do you want to logout';
+  static const String wantToLogout = 'Do you want to logout?';
   static const String dashboard = 'Dashboard';
   // Change Password Screen
   static const String changePassword = 'Change Password';
@@ -92,6 +92,9 @@ class Strings {
   static const String done = 'Done';
   static const String startDate = 'Start Date';
   static const String endDate = 'End Date';
+  static const String google = 'Google';
+  static const String product = 'Product';
+  static const String delete = 'Delete';
 
   static String confirmationMessage(String? destination, String name) {
     return 'A confirmation code has been sent to $destination. '
@@ -102,6 +105,17 @@ class Strings {
     return 'There was no match found for "$query". '
         'Please try another search.';
   }
+
+  static String successMessage(String name, String actionType) {
+    final type = (actionType == ActionType.add.name)
+        ? '${actionType}ed'
+        : '${actionType}d';
+    return '$name has been successfully $type.';
+  }
+
+  static String deleteMessage(String name) {
+    return 'Do you want to remove this $name.';
+  }
 }
 
 // An enum representing the menu type.
@@ -109,3 +123,6 @@ enum Options { close, edit, delete }
 
 // An enum representing the filter type.
 enum ProductFilterType { all, week, month, year, range }
+
+// An enum representing the add update delete actions.
+enum ActionType { add, update, delete, none }

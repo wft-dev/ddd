@@ -23,58 +23,6 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
     this.isCenterTitle = true,
   });
 
-  // @override
-  // Widget build(BuildContext context, WidgetRef ref) {
-  //   return Stack(
-  //     children: [
-  //       CustomPaint(
-  //         painter:
-  //             AppBarCurvePainter(), // Use a custom painter to create the curve
-  //         child: SizedBox(
-  //           height: navigationBarHeight + Sizes.p10,
-  //           // width: ResponsiveAppUtil.width,
-  //           child: Column(
-  //             children: [
-  //               Expanded(
-  //                 child: Image.asset(AppImages.appBarImage, fit: BoxFit.fill),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //       AppBar(
-  //         title: Row(
-  //           children: [
-  //             Box.gapW5,
-  //             Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Text(
-  //                   Strings.welcome,
-  //                   style: CustomTextStyle.titleStyle().copyWith(
-  //                       fontSize: Sizes.p6.sw,
-  //                       fontWeight: Fonts.fontWeightBold),
-  //                 ),
-  //                 Text(
-  //                   userName ?? '',
-  //                   style: CustomTextStyle.titleStyle().copyWith(
-  //                       fontSize: Sizes.p4.sw,
-  //                       fontWeight: Fonts.fontWeightMedium),
-  //                 ),
-  //               ],
-  //             ),
-  //           ],
-  //         ),
-  //         actions: actions,
-  //         backgroundColor:
-  //             AppColors.transparentColor, // Make the AppBar transparent
-  //         elevation: 0, // Remove the elevation shadow
-  //         // title: const Text('Custom AppBar with Curve'),
-  //       ),
-  //     ],
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
@@ -150,30 +98,3 @@ class CurveClipper extends CustomClipper<Path> {
     return false;
   }
 }
-
-// class AppBarCurvePainter extends CustomPainter {
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     final paint = Paint()
-//       ..color = AppColors.lightPurpleColor // Change the color of the curve
-//       ..style = PaintingStyle.fill;
-
-//     double height = size.height;
-//     double width = size.width;
-
-//     final path = Path()
-//       ..moveTo(0, height) // Move to the bottom-left corner
-//       ..quadraticBezierTo(
-//           width / 2, height + 30, width, height) // Create the curve
-//       ..lineTo(width, 0) // Line to the top-right corner
-//       ..lineTo(0, 0) // Line to the top-left corner
-//       ..close(); // Close the path
-
-//     canvas.drawPath(path, paint);
-//   }
-
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-//     return false; // The AppBar's appearance doesn't change
-//   }
-// }

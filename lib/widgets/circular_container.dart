@@ -22,6 +22,7 @@ class CircularContainer extends StatelessWidget {
           fit: BoxFit.fill,
         ),
       ),
+      padding: EdgeInsets.symmetric(vertical: Sizes.p5.sh),
       child: Center(
         child: Container(
             height: ResponsiveAppUtil.height * heightSize,

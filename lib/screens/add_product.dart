@@ -2,13 +2,16 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
+import 'package:daily_dairy_diary/models/result.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:daily_dairy_diary/utils/show_alert_dialog.dart';
 import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -71,7 +74,7 @@ class AddProductState extends ConsumerState<AddProduct> {
       );
     }
     if (item is Product) {
-      setAutofillData(item.type, item.name!, item.price.toString(),
+      setAutofillData(item.type, item.name ?? '', item.price.toString(),
           item.quantity.toString(), item.date!.getDateTimeInUtc());
     }
   }
@@ -93,14 +96,15 @@ class AddProductState extends ConsumerState<AddProduct> {
 
   // This is used for display all widgets.
   Widget getBody() {
+    ref.watch(settingControllerProvider).isLoadingShow(context);
     ref.listen<AsyncValue>(settingControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData((result) {
-          final List<Setting?> settings = result;
+          final List? settingResult = result.items;
           if (widget.productData == null) {
-            if (settings.isNotEmpty) {
-              final settingItem = settings[Sizes.pInt0];
+            if (settingResult != null && settingResult.isNotEmpty) {
+              final settingItem = settingResult[Sizes.pInt0];
               settingData = settingItem;
               autofillData(settingItem);
             }
@@ -130,14 +134,6 @@ class AddProductState extends ConsumerState<AddProduct> {
                 child: Column(
                   children: [
                     buildDatePicker(),
-                    buildDropDownFiled(indexForSingleView, selectedValue,
-                        (value) {
-                      setState(() {
-                        selectedValue = value!.type;
-                        groupControllers[Sizes.pInt0].price.text =
-                            value.price.toString();
-                      });
-                    }),
                     buildSettingForm(_formKey),
                     if ((widget.productData == null) &&
                         (settingData != null)) ...[
@@ -251,7 +247,13 @@ class AddProductState extends ConsumerState<AddProduct> {
       dropdownItems: inventoryList,
       onChanged: onChanged,
       hint: Strings.selectType,
-      value: findInventory(selectedValue ?? ''),
+      validator: (value) {
+        if (value == null) {
+          return Validations.validateString('', Strings.type);
+        }
+        return null;
+      },
+      value: findInventory(value ?? ''),
     );
   }
 
@@ -261,6 +263,12 @@ class AddProductState extends ConsumerState<AddProduct> {
       key: key,
       child: Column(
         children: <Widget>[
+          buildDropDownFiled(Sizes.pInt0, selectedValue, (value) {
+            setState(() {
+              selectedValue = value!.type;
+              groupControllers[Sizes.pInt0].price.text = value.price.toString();
+            });
+          }),
           generateTextField(groupControllers[Sizes.pInt0].name, Strings.name,
               TextInputAction.next),
           generateTextField(groupControllers[Sizes.pInt0].price, Strings.price,
@@ -277,7 +285,24 @@ class AddProductState extends ConsumerState<AddProduct> {
     // final q = ref.watch(settingControllerProvider);
     ref.listen<AsyncValue>(productControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
-      state.whenData((value) {});
+      state.whenData((product) {
+        final Result productResult = product;
+        if (productResult.actionType == ActionType.add) {
+          showAlertActionDialog(
+            context: context,
+            title: Strings.success,
+            content: Strings.successMessage(
+                Strings.product, productResult.actionType.name),
+            onYesPress: () => context.pop(),
+          );
+        }
+        if (productResult.actionType == ActionType.update) {
+          ShowSnackBar.showSnackBar(
+              context,
+              Strings.successMessage(
+                  Strings.product, productResult.actionType.name));
+        }
+      });
     });
     return AppButton(
       text: Strings.save,
@@ -334,18 +359,10 @@ class AddProductState extends ConsumerState<AddProduct> {
             await ref
                 .read(productControllerProvider.notifier)
                 .editProduct(updatedProductData);
-            if (context.mounted) {
-              ShowSnackBar.showSnackBar(
-                  context, Strings.updateMessage(Strings.profile));
-            }
           } else {
             await ref
                 .read(productControllerProvider.notifier)
                 .addProduct(productList);
-            if (context.mounted) {
-              ShowSnackBar.showSnackBar(
-                  context, Strings.addMessage(Strings.profile));
-            }
           }
         }
       },
@@ -394,10 +411,13 @@ class AddProductState extends ConsumerState<AddProduct> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildDropDownFiled(index, productList[index].type, (value) {
+                buildDropDownFiled(indexForList, productList[index].type,
+                    (value) {
                   setState(() {
                     productList[index] = productByIndex.copyWith(
-                        type: value!.type, date: TemporalDateTime(buyDateTime));
+                        type: value!.type,
+                        date: TemporalDateTime(buyDateTime),
+                        price: value.price);
                     groupControllers[indexForList].price.text =
                         value.price.toString();
                   });
