@@ -93,7 +93,10 @@ class ProductRepository {
   // This [GraphQL] mutation is used for delete the [Product].
   Future<Result> deleteProduct(Product productToDelete) async {
     try {
-      final request = ModelMutations.delete(productToDelete);
+      final request = ModelMutations.deleteById(
+        Product.classType,
+        ProductModelIdentifier(id: productToDelete.id),
+      );
       final response = await Amplify.API.mutate(request: request).response;
       return Result(
           actionType:

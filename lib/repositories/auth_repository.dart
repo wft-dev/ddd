@@ -3,6 +3,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/repositories/storage_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../models/auth_results.dart';
 
@@ -107,9 +108,9 @@ class AuthRepository {
     }
   }
 
-  Future<void> signInWithWebUI() async {
+  Future<AuthResults> signInWithWebUI() async {
     try {
-      await Amplify.Auth.signInWithWebUI(
+      final result = await Amplify.Auth.signInWithWebUI(
         provider: AuthProvider.google,
         options: const SignInWithWebUIOptions(
           pluginOptions: CognitoSignInWithWebUIPluginOptions(
@@ -117,8 +118,15 @@ class AuthRepository {
           ),
         ),
       );
+
+      return AuthResults.signInResultValue(result: result);
     } on AmplifyException catch (e) {
-      print(e.message);
+      if (e is UserCancelledException) {
+        return const AuthResults.signInResultValue(result: null);
+      } else {
+        safePrint('Error signing in: ${e.message}');
+        rethrow;
+      }
     }
   }
 
@@ -129,6 +137,8 @@ class AuthRepository {
       String email = '';
       String phoneNumber = '';
       String picture = '';
+      String providerType = '';
+
       for (final element in result) {
         // safePrint('key: ${element.userAttributeKey}; value: ${element.value}');
         if (element.userAttributeKey.toString() == 'name') {
@@ -143,22 +153,34 @@ class AuthRepository {
         if (element.userAttributeKey.toString() == 'picture') {
           picture = element.value;
         }
+        if (element.userAttributeKey.toString() == 'providerType') {
+          providerType = element.value;
+        }
       }
+
       return User(
-          name: name, email: email, phoneNumber: phoneNumber, picture: picture);
+          name: name,
+          email: email,
+          phoneNumber: phoneNumber,
+          picture: picture,
+          providerType: providerType);
     } on AuthException catch (e) {
       safePrint('Error fetching user attributes: ${e.message}');
       rethrow;
     }
   }
 
-  Future<void> updateUser(String firstName, String lastName,
-      String? phoneNumber, String? picture) async {
+  Future<AuthResults> updateUser(String firstName, String lastName,
+      String email, String? phoneNumber, String? picture) async {
     try {
       final attributes = [
         AuthUserAttribute(
           userAttributeKey: AuthUserAttributeKey.name,
           value: "$firstName $lastName",
+        ),
+        AuthUserAttribute(
+          userAttributeKey: AuthUserAttributeKey.email,
+          value: email,
         ),
         AuthUserAttribute(
           userAttributeKey: AuthUserAttributeKey.phoneNumber,
@@ -170,9 +192,10 @@ class AuthRepository {
             value: picture,
           ),
       ];
-      await Amplify.Auth.updateUserAttributes(
+      final result = await Amplify.Auth.updateUserAttributes(
         attributes: attributes,
       );
+      return AuthResults.updateUserResultValue(result: result);
     } on AuthException catch (e) {
       safePrint('Error updating user attribute: ${e.message}');
       rethrow;

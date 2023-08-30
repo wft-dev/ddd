@@ -42,6 +42,7 @@ class DashboardState extends ConsumerState<Dashboard> {
   Map<String, List<Product>> productByType = {};
 
   int activeButtonIndex = Sizes.pIntN1;
+  String selectedProductType = '';
 
   @override
   void initState() {
@@ -147,10 +148,31 @@ class DashboardState extends ConsumerState<Dashboard> {
     );
   }
 
+  //Update product list based on product type.
+  updateProductListByType(List<String> productKeyList, int index,
+      Map<String, List<Product>> productType) {
+    if (index != Sizes.pIntN1) {
+      if (productKeyList.isEmpty) {
+        selectedEvents.value = [];
+      } else {
+        if (productKeyList.contains(selectedProductType)) {
+          String typeName = productKeyList[index];
+          List<Product> productList = productType[typeName]!;
+          selectedEvents.value = productList;
+        } else {
+          selectedEvents.value = [];
+          activeButtonIndex = Sizes.pIntN1;
+        }
+      }
+    }
+  }
+
   //[List] of all product type button like milk, bread etc.
   Widget buildProductType() {
     productByType = ref.watch(getProductByTypeProvider);
     final productKeyList = productByType.keys.toList();
+    productKeyList.sort();
+    updateProductListByType(productKeyList, activeButtonIndex, productByType);
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: Sizes.p6.sh,
@@ -177,7 +199,9 @@ class DashboardState extends ConsumerState<Dashboard> {
                 value: productList.length.toString(),
                 onPress: (int index) {
                   setState(() {
+                    selectedProductType = typeName;
                     activeButtonIndex = index;
+                    _selectedDay = null;
                     selectedEvents.value = productList;
                   });
                 },

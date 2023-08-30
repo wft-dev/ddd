@@ -1,3 +1,4 @@
+import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -32,9 +33,10 @@ class LoadingIndicatorDialog {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(left: 16, top: 16, right: 16),
-                        child: CircularProgressIndicator(),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 16, top: 16, right: 16),
+                        child: buildCircularProgressIndicator(),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(16),
@@ -51,7 +53,7 @@ class LoadingIndicatorDialog {
 
   dismiss(BuildContext context) {
     if (isDisplayed) {
-      context.pop(true);
+      context.pop();
       isDisplayed = false;
     }
   }

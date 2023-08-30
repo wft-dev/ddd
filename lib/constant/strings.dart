@@ -2,6 +2,8 @@ class Strings {
   // Alert strings
   static const String ok = 'OK';
   static const String cancel = 'Cancel';
+  static const String yes = 'Yes';
+
   // Error
   static const String error = 'Error';
   static const String success = 'Success';
@@ -126,3 +128,5 @@ enum ProductFilterType { all, week, month, year, range }
 
 // An enum representing the add update delete actions.
 enum ActionType { add, update, delete, none }
+
+enum ProviderType { email, google }

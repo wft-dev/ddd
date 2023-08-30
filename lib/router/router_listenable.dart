@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:daily_dairy_diary/provider/providers.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
 import 'package:daily_dairy_diary/router/routes.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +27,7 @@ part 'router_listenable.g.dart';
 ///   1. It doesn't require us to pass [Ref](s) around
 ///   2. It works as a complete replacement for [ChangeNotifier], as it still implements [Listenable]
 ///   3. It allows for listening to multiple providers, or add more logic if needed
-@Riverpod
+@riverpod
 class RouterListenable extends _$RouterListenable implements Listenable {
   VoidCallback? _routerListener;
   bool _isAuth = false; // Useful for our global redirect function
@@ -42,6 +45,10 @@ class RouterListenable extends _$RouterListenable implements Listenable {
     });
   }
 
+  void userIsLogin(bool isLogin) {
+    _isAuth = isLogin;
+  }
+
   /// Redirects the user when our authentication changes
   String? redirect(BuildContext context, GoRouterState state) {
     if (this.state.isLoading || this.state.hasError) return null;
@@ -49,7 +56,8 @@ class RouterListenable extends _$RouterListenable implements Listenable {
     final isSplash = state.location == SplashRoute.path;
 
     if (isSplash) {
-      return _isAuth ? DashboardRoute.path : LoginRoute.path;
+      Timer(const Duration(seconds: 1),
+          () => _isAuth ? DashboardRoute.path : LoginRoute.path);
     }
 
     final isLoggingIn = state.location == LoginRoute.path;

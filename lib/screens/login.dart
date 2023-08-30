@@ -90,6 +90,8 @@ class LoginState extends ConsumerState<Login> {
                 loginSignUpButton(
                     context, Strings.doNotAccount, Strings.signUp),
                 Box.gapH4,
+                buildGoogleButton(),
+                Box.gapH2,
               ],
             ),
           ],
@@ -132,7 +134,8 @@ class LoginState extends ConsumerState<Login> {
         state.whenData(
           (result) async {
             final AuthResults signInResult = result;
-            if (signInResult is SignInResultValue) {
+            if ((signInResult is SignInResultValue) &&
+                (signInResult.result != null)) {
               final signInStep = signInResult.result!.nextStep.signInStep;
               if (signInStep == AuthSignInStep.confirmSignInWithNewPassword) {
                 showExceptionAlertDialog(
@@ -162,7 +165,8 @@ class LoginState extends ConsumerState<Login> {
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData((result) async {
           final AuthResults resendCodeResult = result;
-          if (resendCodeResult is ResendSignUpCodeResultValue) {
+          if ((resendCodeResult is ResendSignUpCodeResultValue) &&
+              (resendCodeResult.result != null)) {
             final codeDetail = resendCodeResult.result!.codeDeliveryDetails;
             ConfirmCodeRoute(
                     email: emailController.text,
@@ -185,6 +189,16 @@ class LoginState extends ConsumerState<Login> {
         await ref
             .read(loginControllerProvider.notifier)
             .logInUser(emailController.text, passwordController.text);
+      },
+    );
+  }
+
+  // This [AppButton] is used for google login.
+  AppButton buildGoogleButton() {
+    return AppButton(
+      text: Strings.google,
+      onPress: () async {
+        await ref.read(loginControllerProvider.notifier).googleLogInUser();
       },
     );
   }

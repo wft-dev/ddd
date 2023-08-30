@@ -47,6 +47,7 @@ Future<bool?> showAlertActionDialog({
   String defaultActionText = Strings.ok,
 }) async {
   return showDialog(
+    barrierDismissible: false,
     context: context,
     builder: (context) => AlertDialog(
       title: Text(title),

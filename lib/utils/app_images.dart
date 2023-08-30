@@ -17,4 +17,5 @@ class AppImages {
   static const String reportsImage = '${imagesPath}reports.png';
   static const String settingsImage = '${imagesPath}settings.png';
   static const String userImage = '${imagesPath}user.png';
+  static const String logoImage = '${imagesPath}logo.png';
 }
