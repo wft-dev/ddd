@@ -4,6 +4,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_dairy_diary/models/auth_results.dart';
+import 'package:daily_dairy_diary/models/auth_results.dart';
 import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/provider/fetch_user_controller.dart';
 import 'package:daily_dairy_diary/router/router_listenable.dart';
@@ -18,7 +19,6 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../constant/strings.dart';
-import '../provider/product_controller.dart';
 import '../provider/update_user_controller.dart';
 import '../repositories/auth_repository.dart';
 import '../router/routes.dart';
@@ -46,6 +46,7 @@ class ProfileState extends ConsumerState<Profile> {
   final focusPhoneNumber = FocusNode();
   String phoneNumber = '';
   String? countyCode;
+  bool isHidePassword = false;
 
   @override
   void initState() {
@@ -62,39 +63,11 @@ class ProfileState extends ConsumerState<Profile> {
 
   // Get profile data from update user provider.
   void getProfileData() {
-    final profileData = ref.watch(fetchUserControllerProvider);
-    profileData.whenData((result) async {
-      User user = result;
-      if (!isImageSelected) {
-        pickedImage = user.picture;
-      }
-      if (user.name.isNotEmpty) {
-        List splitUserName = user.name.splitSpaceString();
-        if (splitUserName.isNotEmpty) {
-          firstNameController.text = splitUserName[Sizes.pInt0];
-        }
-        if (splitUserName.length == Sizes.p2.toInt()) {
-          lastNameController.text = splitUserName[Sizes.pInt1] ?? '';
-        }
-      }
-      emailController.text = user.email;
-      String phoneNumber = user.phoneNumber.toString();
-      if (phoneNumber.isNotEmpty) {
-        PhoneNumber number =
-            await PhoneNumber.getRegionInfoFromPhoneNumber(phoneNumber);
-        String parsableNumber = await PhoneNumber.getParsableNumber(number);
-        setState(() {
-          countyCode = number.isoCode;
-        });
-        phoneNumberController.text = parsableNumber;
-      }
-    });
-  }
+    final profileData = ref.watch(updateUserControllerProvider);
 
-  // This is used for display all widgets.
-  Widget getBody() {
     ref.listen<AsyncValue>(updateUserControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
+      state.isLoadingShow(context);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(
           (result) async {
@@ -120,7 +93,9 @@ class ProfileState extends ConsumerState<Profile> {
                 });
                 if (isUpdateProfile) {
                   ShowSnackBar.showSnackBar(
-                      context, Strings.updateMessage(Strings.profile));
+                      context,
+                      Strings.successMessage(
+                          Strings.profile, ActionType.update.name));
                 }
               }
             }
@@ -128,10 +103,51 @@ class ProfileState extends ConsumerState<Profile> {
         );
       }
     });
-    final profileData = ref.watch(updateUserControllerProvider);
-    // profileData.isLoadingShow(context);
+    profileData.isLoadingShow(context);
 
+    profileData.whenData((result) async {
+      final AuthResults updateUserResultValue = result;
+      if (updateUserResultValue is UpdateUserResultValue) {
+        if (updateUserResultValue.user != null) {
+          User user = updateUserResultValue.user!;
+
+          print(user);
+          if (!isImageSelected) {
+            pickedImage = user.picture;
+          }
+          if (user.name.isNotEmpty) {
+            List splitUserName = user.name.splitSpaceString();
+            if (splitUserName.isNotEmpty) {
+              firstNameController.text = splitUserName[Sizes.pInt0];
+            }
+            if (splitUserName.length == Sizes.p2.toInt()) {
+              lastNameController.text = splitUserName[Sizes.pInt1] ?? '';
+            }
+          }
+          emailController.text = user.email;
+          String phoneNumber = user.phoneNumber.toString();
+
+          if (user.phoneNumber.isNotEmpty) {
+            PhoneNumber number =
+                await PhoneNumber.getRegionInfoFromPhoneNumber(phoneNumber);
+            String parsableNumber = await PhoneNumber.getParsableNumber(number);
+            // setState(() {
+            //   countyCode = number.isoCode;
+            // });
+            phoneNumberController.text = parsableNumber;
+          }
+          if (user.providerType == ProviderType.google.name) {
+            isHidePassword = true;
+          }
+        }
+      }
+    });
+  }
+
+  // This is used for display all widgets.
+  Widget getBody() {
     getProfileData();
+
     return Container(
       height: ResponsiveAppUtil.height * Sizes.p01.sh,
       decoration: BoxDecoration(
@@ -180,7 +196,7 @@ class ProfileState extends ConsumerState<Profile> {
                       Box.gapH2,
                       buildProfileForm(),
                       Box.gapH2,
-                      buildSaveButton(),
+                      buildUpdateButton(),
                     ],
                   ),
                 ),
@@ -188,8 +204,10 @@ class ProfileState extends ConsumerState<Profile> {
                   padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
                   child: Column(
                     children: [
-                      Box.gapH2,
-                      buildChangePasswordButton(),
+                      if (!isHidePassword) ...[
+                        Box.gapH2,
+                        buildChangePasswordButton(),
+                      ],
                       Box.gapH2,
                       buildLogoutButton(),
                     ],
@@ -252,9 +270,9 @@ class ProfileState extends ConsumerState<Profile> {
   }
 
   // This [AppButton] is used to save profile data.
-  AppButton buildSaveButton() {
+  AppButton buildUpdateButton() {
     return AppButton(
-      text: Strings.save,
+      text: Strings.update,
       onPress: () async {
         if (!_formKey.currentState!.validate()) return;
         File? pickedImageFile =
@@ -284,25 +302,20 @@ class ProfileState extends ConsumerState<Profile> {
     return AppButton(
       text: Strings.logout,
       onPress: () async {
-        var value = await showDialog<bool>(
+        showAlertActionDialog(
           context: context,
-          builder: (BuildContext context) {
-            return const AppAlert(
-              title: Strings.logout,
-              content: Strings.wantToLogout,
-            );
+          title: Strings.logout,
+          content: Strings.wantToLogout,
+          isShowCancel: true,
+          defaultActionText: Strings.yes,
+          onYesPress: () async {
+            await ref.read(authRepositoryProvider).signOut();
+            if (mounted) {
+              ref.read(routerListenableProvider.notifier).userIsLogin(false);
+              const LoginRoute().go(context);
+            }
           },
         );
-        value ??= false;
-        if (value) {
-          await ref.read(authRepositoryProvider).signOut();
-          // ref.read(routerListenableProvider.notifier);
-          // ref.watch(currentUserRepositoryProvider).value;
-          if (mounted) {
-            ref.read(routerListenableProvider.notifier).userIsLogin(false);
-            const LoginRoute().go(context);
-          }
-        }
       },
     );
   }

@@ -1,12 +1,10 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
 import '../constant/strings.dart';
 import '../models/auth_results.dart';
 import '../provider/reset_password_controller.dart';
-import '../repositories/auth_repository.dart';
 import '../router/routes.dart';
 import '../utils/common_utils.dart';
 import '../widgets/all_widgets.dart';
@@ -37,6 +35,7 @@ class ForgetPasswordState extends ConsumerState<ForgetPassword> {
     );
   }
 
+  // This is used for display all widgets.
   Widget getBody() {
     return CircularContainer(
       heightSize: Sizes.p05,
@@ -50,7 +49,7 @@ class ForgetPasswordState extends ConsumerState<ForgetPassword> {
               style: CustomTextStyle.titleHeaderStyle(),
             ),
             Box.gapH2,
-            buildChangePasswordForm(),
+            buildEmailForm(),
             Box.gapH2,
             buildSaveButton(),
           ],
@@ -59,7 +58,8 @@ class ForgetPasswordState extends ConsumerState<ForgetPassword> {
     );
   }
 
-  Form buildChangePasswordForm() {
+  // This [Form] is used for enter email.
+  Form buildEmailForm() {
     return Form(
       key: _formKey,
       child: Column(
@@ -69,13 +69,14 @@ class ForgetPasswordState extends ConsumerState<ForgetPassword> {
             controller: emailController,
             label: Strings.email,
             validator: Validations.validateEmail,
-            textInputAction: TextInputAction.next,
+            textInputAction: TextInputAction.done,
           ),
         ],
       ),
     );
   }
 
+  // This [AppButton] is used for send code to email for reset the password.
   AppButton buildSaveButton() {
     ref.listen<AsyncValue>(resetPasswordControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
@@ -84,24 +85,26 @@ class ForgetPasswordState extends ConsumerState<ForgetPassword> {
           (result) async {
             final AuthResults resetResult = result;
             if (resetResult is ResetPasswordResultValue) {
-              final updateStep = resetResult.result!.nextStep.updateStep;
-              switch (updateStep) {
-                case AuthResetPasswordStep.confirmResetPasswordWithCode:
-                  final codeDetail =
-                      resetResult.result!.nextStep.codeDeliveryDetails;
-                  ResetPasswordRoute(
-                          email: emailController.text,
-                          destination: codeDetail?.destination,
-                          name: codeDetail!.deliveryMedium.name)
-                      .push(context);
-                  break;
-                case AuthResetPasswordStep.done:
-                  showExceptionAlertDialog(
-                    context: context,
-                    title: Strings.success,
-                    exception: Strings.resetPasswordSuccess,
-                  );
-                  break;
+              if (resetResult.result != null) {
+                final updateStep = resetResult.result!.nextStep.updateStep;
+                switch (updateStep) {
+                  case AuthResetPasswordStep.confirmResetPasswordWithCode:
+                    final codeDetail =
+                        resetResult.result!.nextStep.codeDeliveryDetails;
+                    ResetPasswordRoute(
+                            email: emailController.text,
+                            destination: codeDetail?.destination,
+                            name: codeDetail!.deliveryMedium.name)
+                        .push(context);
+                    break;
+                  case AuthResetPasswordStep.done:
+                    showExceptionAlertDialog(
+                      context: context,
+                      title: Strings.success,
+                      exception: Strings.resetPasswordSuccess,
+                    );
+                    break;
+                }
               }
             }
           },

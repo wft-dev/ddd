@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:daily_dairy_diary/models/auth_results.dart';
 import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
@@ -12,7 +13,15 @@ part 'update_user_controller.g.dart';
 class UpdateUserController extends _$UpdateUserController {
   @override
   FutureOr<AuthResults> build() {
-    return const AuthResults.updateUserResultValue(result: null);
+    return fetchUser();
+  }
+
+  // Fetch user detail.
+  Future<AuthResults> fetchUser(
+      {Map<AuthUserAttributeKey, UpdateUserAttributeResult>? result}) async {
+    final authRepository = ref.watch(authRepositoryProvider);
+    final userData = await authRepository.fetchCurrentUserAttributes();
+    return AuthResults.updateUserResultValue(result: result, user: userData);
   }
 
   // Upload user image into amplify storage and get image url.
@@ -31,14 +40,18 @@ class UpdateUserController extends _$UpdateUserController {
       String phoneNumber, File? imageFile) async {
     final authRepository = ref.watch(authRepositoryProvider);
 
-    state = const AsyncLoading();
+    state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       String? imageUrl;
       if (imageFile != null) {
         imageUrl = await uploadFile(imageFile);
       }
-      return await authRepository.updateUser(
+      AuthResults data = await authRepository.updateUser(
           firstName, lastName, email, phoneNumber, imageUrl);
+      if (data is UpdateUserResultValue) {
+        return fetchUser(result: data.result);
+      }
+      return fetchUser();
     });
   }
 }
