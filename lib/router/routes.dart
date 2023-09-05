@@ -6,6 +6,7 @@ import 'package:daily_dairy_diary/screens/dashboard.dart';
 import 'package:daily_dairy_diary/screens/profile.dart';
 import 'package:daily_dairy_diary/screens/report.dart';
 import 'package:daily_dairy_diary/screens/reset_password.dart';
+import 'package:daily_dairy_diary/screens/change_email.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
@@ -209,22 +210,22 @@ class MyShellRouteScreen extends StatelessWidget {
   BottomNavigationBarItem buildBottomBarItem(
       bool isBarSelected, String imageName) {
     return BottomNavigationBarItem(
-        icon: Container(
-          height: Sizes.p8.sh,
-          width: Sizes.p11.sw,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isBarSelected
-                ? AppColors.darkPurpleColor
-                : AppColors.alphaPurpleColor,
-          ),
-          child: ImageIcon(
-            AssetImage(imageName),
-            size: Sizes.p10,
-          ),
+      icon: Container(
+        height: Sizes.p8.sh,
+        width: Sizes.p11.sw,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isBarSelected
+              ? AppColors.darkPurpleColor
+              : AppColors.alphaPurpleColor,
         ),
-        label: '' //Strings.dashboard,
-        );
+        child: ImageIcon(
+          AssetImage(imageName),
+          size: Sizes.p10,
+        ),
+      ),
+      label: '',
+    );
   }
 }
 
@@ -282,5 +283,20 @@ class AddProductRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return AddProduct($extra);
+  }
+}
+
+//ChangeEmailRoute
+@TypedGoRoute<ChangeEmailRoute>(path: ChangeEmailRoute.path)
+class ChangeEmailRoute extends GoRouteData {
+  ChangeEmailRoute({this.destination, this.name = ''});
+  static const path = '/changeEmail';
+
+  final String? destination;
+  final String name;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ChangeEmail(destination, name);
   }
 }

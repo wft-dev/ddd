@@ -248,6 +248,31 @@ class AuthRepository {
       rethrow;
     }
   }
+
+  Future<void> verifyAttributeUpdate(
+    String confirmationCode,
+  ) async {
+    try {
+      await Amplify.Auth.confirmUserAttribute(
+        userAttributeKey: AuthUserAttributeKey.email,
+        confirmationCode: confirmationCode,
+      );
+    } on AuthException catch (e) {
+      safePrint('Error confirming attribute update: ${e.message}');
+    }
+  }
+
+  Future<AuthResults> resendUserAttributeVerificationCode() async {
+    try {
+      final result = await Amplify.Auth.resendUserAttributeConfirmationCode(
+        userAttributeKey: AuthUserAttributeKey.email,
+      );
+      return AuthResults.resendUserAttributeCodeResultValue(result: result);
+    } on AuthException catch (e) {
+      safePrint('Error resending code: ${e.message}');
+      rethrow;
+    }
+  }
 }
 
 @Riverpod(keepAlive: true)

@@ -2,21 +2,14 @@ import 'dart:io';
 
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:daily_dairy_diary/models/auth_results.dart';
 import 'package:daily_dairy_diary/models/auth_results.dart';
 import 'package:daily_dairy_diary/models/user.dart';
-import 'package:daily_dairy_diary/provider/fetch_user_controller.dart';
 import 'package:daily_dairy_diary/router/router_listenable.dart';
 import 'package:daily_dairy_diary/utils/show_alert_dialog.dart';
-import 'package:daily_dairy_diary/widgets/app_alert.dart';
-import 'package:daily_dairy_diary/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../constant/strings.dart';
 import '../provider/update_user_controller.dart';
@@ -40,12 +33,12 @@ class ProfileState extends ConsumerState<Profile> {
   final TextEditingController emailController = TextEditingController(text: "");
   final TextEditingController phoneNumberController =
       TextEditingController(text: "");
+  final countyCodeNotifier = ValueNotifier<String?>(null);
 
   String? pickedImage;
   bool isImageSelected = false;
   final focusPhoneNumber = FocusNode();
   String phoneNumber = '';
-  String? countyCode;
   bool isHidePassword = false;
 
   @override
@@ -76,22 +69,28 @@ class ProfileState extends ConsumerState<Profile> {
               if (updateUserResultValue.result != null) {
                 final updateUserResult = updateUserResultValue.result!;
                 bool isUpdateProfile = false;
+                bool isEmailChanged = false;
+
                 updateUserResult.forEach((key, value) {
                   switch (value.nextStep.updateAttributeStep) {
                     case AuthUpdateAttributeStep.confirmAttributeWithCode:
                       isUpdateProfile = false;
+                      isEmailChanged = true;
                       final destination =
                           value.nextStep.codeDeliveryDetails?.destination;
-                      // safePrint(
-                      //     'Confirmation code sent to $destination for $key');
+                      ChangeEmailRoute(
+                              destination: destination,
+                              name: value.nextStep.codeDeliveryDetails!
+                                  .deliveryMedium.name)
+                          .push(context);
+
                       break;
                     case AuthUpdateAttributeStep.done:
                       isUpdateProfile = true;
-                      safePrint('Update completed for $key');
                       break;
                   }
                 });
-                if (isUpdateProfile) {
+                if (isUpdateProfile && !isEmailChanged) {
                   ShowSnackBar.showSnackBar(
                       context,
                       Strings.successMessage(
@@ -127,17 +126,15 @@ class ProfileState extends ConsumerState<Profile> {
           emailController.text = user.email;
           String phoneNumber = user.phoneNumber.toString();
 
+          if (user.providerType == ProviderType.google.name) {
+            isHidePassword = true;
+          }
           if (user.phoneNumber.isNotEmpty) {
             PhoneNumber number =
                 await PhoneNumber.getRegionInfoFromPhoneNumber(phoneNumber);
             String parsableNumber = await PhoneNumber.getParsableNumber(number);
-            // setState(() {
-            //   countyCode = number.isoCode;
-            // });
             phoneNumberController.text = parsableNumber;
-          }
-          if (user.providerType == ProviderType.google.name) {
-            isHidePassword = true;
+            countyCodeNotifier.value = number.isoCode;
           }
         }
       }
@@ -248,22 +245,26 @@ class ProfileState extends ConsumerState<Profile> {
             validator: Validations.validateEmail,
             textInputAction: TextInputAction.next,
           ),
-          PhoneNumberTextField(
-            focus: focusPhoneNumber,
-            controller: phoneNumberController,
-            label: Strings.phoneNumber,
-            borderColor: AppColors.whiteColor,
-            fillColor: AppColors.whiteColor,
-            countyCode: countyCode,
-            // validator: (value) {
-            //   print(value);
-            //   return null;
-            // },
-            onInputChanged: (number) {
-              phoneNumber = '${number.phoneNumber}';
-            },
-            textInputAction: TextInputAction.done,
-          ),
+          ValueListenableBuilder(
+              valueListenable: countyCodeNotifier,
+              builder: (context, value, _) {
+                return PhoneNumberTextField(
+                  focus: focusPhoneNumber,
+                  controller: phoneNumberController,
+                  label: Strings.phoneNumber,
+                  borderColor: AppColors.whiteColor,
+                  fillColor: AppColors.whiteColor,
+                  countyCode: countyCodeNotifier.value,
+                  // validator: (value) {
+                  //   print(value);
+                  //   return null;
+                  // },
+                  onInputChanged: (number) {
+                    phoneNumber = '${number.phoneNumber}';
+                  },
+                  textInputAction: TextInputAction.done,
+                );
+              }),
         ],
       ),
     );
@@ -325,6 +326,8 @@ class ProfileState extends ConsumerState<Profile> {
     firstNameController.dispose();
     lastNameController.dispose();
     phoneNumberController.dispose();
+    countyCodeNotifier.dispose();
+
     super.dispose();
   }
 }

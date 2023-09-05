@@ -24,4 +24,8 @@ class AuthResults with _$AuthResults {
   const factory AuthResults.updateUserResultValue(
       {required Map<AuthUserAttributeKey, UpdateUserAttributeResult>? result,
       User? user}) = UpdateUserResultValue;
+
+  const factory AuthResults.resendUserAttributeCodeResultValue(
+          {required ResendUserAttributeConfirmationCodeResult? result}) =
+      ResendUserAttributeCodeResultValue;
 }
