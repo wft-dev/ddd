@@ -10,5 +10,6 @@ class User with _$User {
     required String email,
     required String phoneNumber,
     required String picture,
+    required String providerType,
   }) = _User;
 }

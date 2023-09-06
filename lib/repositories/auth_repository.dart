@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/repositories/storage_repository.dart';
+import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -140,7 +144,7 @@ class AuthRepository {
       String providerType = '';
 
       for (final element in result) {
-        // safePrint('key: ${element.userAttributeKey}; value: ${element.value}');
+        //safePrint('key: ${element.userAttributeKey}; value: ${element.value}');
         if (element.userAttributeKey.toString() == 'name') {
           name = element.value;
         }
@@ -153,8 +157,13 @@ class AuthRepository {
         if (element.userAttributeKey.toString() == 'picture') {
           picture = element.value;
         }
-        if (element.userAttributeKey.toString() == 'providerType') {
-          providerType = element.value;
+        if (element.userAttributeKey.toString() == 'identities') {
+          final List<dynamic> identities = json.decode(element.value);
+          if (identities.isNotEmpty) {
+            final String provider =
+                identities[Sizes.pInt0]['providerName'].toString();
+            providerType = provider;
+          }
         }
       }
 
@@ -249,16 +258,18 @@ class AuthRepository {
     }
   }
 
-  Future<void> verifyAttributeUpdate(
+  Future<AuthResults> verifyAttributeUpdate(
     String confirmationCode,
   ) async {
     try {
-      await Amplify.Auth.confirmUserAttribute(
+      final result = await Amplify.Auth.confirmUserAttribute(
         userAttributeKey: AuthUserAttributeKey.email,
         confirmationCode: confirmationCode,
       );
+      return AuthResults.confirmEmailResultValue(result: result);
     } on AuthException catch (e) {
       safePrint('Error confirming attribute update: ${e.message}');
+      rethrow;
     }
   }
 

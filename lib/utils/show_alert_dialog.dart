@@ -25,7 +25,8 @@ Future<bool?> showAlertDialog({
         TextButton(
             child: Text(defaultActionText),
             onPressed: () {
-              if (content == Strings.noUserSignedIn) {
+              if (content == Strings.noUserSignedIn ||
+                  content == Strings.noUserFound) {
                 context.pop(false);
                 const LoginRoute().go(context);
               } else {

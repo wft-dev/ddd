@@ -39,7 +39,7 @@ class ProfileState extends ConsumerState<Profile> {
   bool isImageSelected = false;
   final focusPhoneNumber = FocusNode();
   String phoneNumber = '';
-  bool isHidePassword = false;
+  bool isGoogleLogin = false;
 
   @override
   void initState() {
@@ -126,8 +126,8 @@ class ProfileState extends ConsumerState<Profile> {
           emailController.text = user.email;
           String phoneNumber = user.phoneNumber.toString();
 
-          if (user.providerType == ProviderType.google.name) {
-            isHidePassword = true;
+          if (user.providerType == ProviderType.google.name.capitalizeFirst()) {
+            isGoogleLogin = true;
           }
           if (user.phoneNumber.isNotEmpty) {
             PhoneNumber number =
@@ -201,7 +201,7 @@ class ProfileState extends ConsumerState<Profile> {
                   padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
                   child: Column(
                     children: [
-                      if (!isHidePassword) ...[
+                      if (!isGoogleLogin) ...[
                         Box.gapH2,
                         buildChangePasswordButton(),
                       ],
@@ -240,6 +240,7 @@ class ProfileState extends ConsumerState<Profile> {
             },
           ),
           AppTextFormField(
+            enabled: !isGoogleLogin,
             controller: emailController,
             label: Strings.email,
             validator: Validations.validateEmail,

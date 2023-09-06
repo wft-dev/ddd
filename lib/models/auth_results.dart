@@ -28,4 +28,7 @@ class AuthResults with _$AuthResults {
   const factory AuthResults.resendUserAttributeCodeResultValue(
           {required ResendUserAttributeConfirmationCodeResult? result}) =
       ResendUserAttributeCodeResultValue;
+
+  const factory AuthResults.confirmEmailResultValue(
+      {required ConfirmUserAttributeResult? result}) = ConfirmEmailResultValue;
 }

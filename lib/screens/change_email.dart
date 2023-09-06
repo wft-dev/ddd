@@ -1,6 +1,9 @@
+import 'package:daily_dairy_diary/provider/confirm_email_controller.dart';
 import 'package:daily_dairy_diary/provider/resend_email_code_controller.dart';
+import 'package:daily_dairy_diary/provider/update_user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../constant/strings.dart';
@@ -101,17 +104,20 @@ class ChangeEmailState extends ConsumerState<ChangeEmail> {
 
   // This [AppButton] is used for confirm the code.
   AppButton buildConfirmCodeButton() {
-    ref.listen<AsyncValue>(updatePasswordControllerProvider, (_, state) {
+    ref.listen<AsyncValue>(confirmEmailControllerProvider, (_, state) {
       state.showAlertDialogOnError(context);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(
           (result) async {
-            final AuthResults passwordResult = result;
-            if (passwordResult is UpdatePasswordResultValue) {
-              showExceptionAlertDialog(
+            final AuthResults confirmEmailResult = result;
+            if (confirmEmailResult is ConfirmEmailResultValue) {
+              ref.invalidate(updateUserControllerProvider);
+              showAlertActionDialog(
                 context: context,
                 title: Strings.success,
-                exception: Strings.passwordUpdate,
+                content: Strings.successMessage(
+                    Strings.email, ActionType.update.name),
+                onYesPress: () => context.pop(),
               );
             }
           },
@@ -122,10 +128,9 @@ class ChangeEmailState extends ConsumerState<ChangeEmail> {
       text: Strings.confirm,
       onPress: () async {
         if (!_formKey.currentState!.validate()) return;
-        // await ref
-        //     .read(updatePasswordControllerProvider.notifier)
-        //     .updateUserPassword(
-        //         oldPasswordController.text, newPasswordController.text);
+        await ref
+            .read(confirmEmailControllerProvider.notifier)
+            .confirmEmailWithCode(confirmCodeController.text);
       },
     );
   }
