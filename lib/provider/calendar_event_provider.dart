@@ -4,18 +4,24 @@ import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/utils/async_value_ui.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 part 'calendar_event_provider.g.dart';
 
 @riverpod
-LinkedHashMap<DateTime, List<Product>> getCalendarEvent(GetCalendarEventRef ref,
-    {BuildContext? context}) {
+LinkedHashMap<DateTime, List<Product>> getCalendarEvent(
+  GetCalendarEventRef ref, {
+  BuildContext? context,
+  WidgetRef? widgetRef,
+}) {
   final productRef = ref.watch(productControllerProvider);
   if (context != null) {
     productRef.isLoadingShow(context);
+    productRef.showAlertDialogOnError(context: context, ref: widgetRef);
   }
+
   final products = productRef.value;
   final events = LinkedHashMap<DateTime, List<Product>>(
     equals: isSameDay,

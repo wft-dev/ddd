@@ -98,7 +98,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   Widget getBody() {
     ref.watch(settingControllerProvider).isLoadingShow(context);
     ref.listen<AsyncValue>(settingControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData((result) {
           final List? settingResult = result.items;
@@ -284,7 +284,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   AppButton buildSaveButton() {
     // final q = ref.watch(settingControllerProvider);
     ref.listen<AsyncValue>(productControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       state.whenData((product) {
         final Result productResult = product;
         if (productResult.actionType == ActionType.add) {

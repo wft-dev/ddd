@@ -20,7 +20,7 @@ extension AsyncValueUI on AsyncValue {
     });
   }
 
-  void showAlertDialogOnError(BuildContext context) {
+  void showAlertDialogOnError({required BuildContext context, WidgetRef? ref}) {
     debugPrint(
         'isLoading: $isLoading, hasError: $hasError, hasValue: $hasValue');
     if (!isLoading && hasError) {
@@ -29,6 +29,7 @@ extension AsyncValueUI on AsyncValue {
         context: context,
         title: Strings.error,
         exception: message,
+        ref: ref,
       );
     }
   }

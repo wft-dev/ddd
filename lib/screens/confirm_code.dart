@@ -1,5 +1,4 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/provider/resend_code_controller.dart';
 import 'package:daily_dairy_diary/router/router_listenable.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +108,7 @@ class ConfirmCodeState extends ConsumerState<ConfirmCode> {
   // This [AppButton] is used for confirm the code.
   AppButton buildConfirmCodeButton() {
     ref.listen<AsyncValue>(confirmUserControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(
           (result) async {
@@ -139,7 +138,7 @@ class ConfirmCodeState extends ConsumerState<ConfirmCode> {
   // This [AppButton] is used for resend the confirmation the code.
   AppButton buildResendCodeButton() {
     ref.listen<AsyncValue>(resendCodeControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData((result) async {
           final AuthResults resendCodeResult = result;

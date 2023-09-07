@@ -105,7 +105,7 @@ class ChangeEmailState extends ConsumerState<ChangeEmail> {
   // This [AppButton] is used for confirm the code.
   AppButton buildConfirmCodeButton() {
     ref.listen<AsyncValue>(confirmEmailControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(
           (result) async {
@@ -138,7 +138,7 @@ class ChangeEmailState extends ConsumerState<ChangeEmail> {
   // This [AppButton] is used for resend the confirmation the code.
   AppButton buildResendCodeButton() {
     ref.listen<AsyncValue>(resendEmailCodeControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData((result) async {
           final AuthResults resendCodeResult = result;

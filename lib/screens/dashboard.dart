@@ -1,22 +1,15 @@
-import 'dart:async';
-import 'dart:collection';
-import 'dart:math';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/event.dart';
-import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/provider/calendar_event_provider.dart';
 import 'package:daily_dairy_diary/provider/fetch_user_controller.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
-import 'package:daily_dairy_diary/provider/update_user_controller.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/utils/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 import '../constant/strings.dart';

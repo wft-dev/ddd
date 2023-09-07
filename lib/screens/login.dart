@@ -129,7 +129,7 @@ class LoginState extends ConsumerState<Login> {
   AppButton buildButton() {
     ref.listen<AsyncValue>(loginControllerProvider, (_, state) {
       print('loginControllerProvider state, $state');
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(
           (result) async {
@@ -161,7 +161,7 @@ class LoginState extends ConsumerState<Login> {
       //     signUpResult: (AuthSignInStep result) {});
     });
     ref.listen<AsyncValue>(loginResendCodeControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData((result) async {
           final AuthResults resendCodeResult = result;
