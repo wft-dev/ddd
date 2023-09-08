@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 // Let's find [Inventory] object for [AppDropDownFiled] value.
-Inventory? findInventory(String type) {
+Inventory? findInventory(String type, List<Inventory> inventoryList) {
   for (var item in inventoryList) {
     if (item.type == type) {
       return item;

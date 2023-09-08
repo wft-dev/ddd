@@ -16,7 +16,7 @@ class InventoryController extends _$InventoryController {
 
   Future<List<Inventory?>> fetchInventoryList() async {
     final inventoryList =
-        ref.watch(inventoryRepositoryProvider).queryInventoryItems();
+        await ref.watch(inventoryRepositoryProvider).queryInventoryItems();
     return inventoryList;
   }
 
@@ -26,11 +26,21 @@ class InventoryController extends _$InventoryController {
   }
 
   // Let's allow add inventories.
-  Future<void> addProduct(List<Inventory> inventory) async {
+  Future<void> addInventory(List<Inventory> inventory) async {
     final inventoryRepository = ref.watch(inventoryRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       final result = await inventoryRepository.createInventory(inventory);
+      return fetchInventory(actionType: result.actionType);
+    });
+  }
+
+  // Let's allow removing inventories.
+  Future<void> removeInventory(Inventory inventoryId) async {
+    final inventoryRepository = ref.watch(inventoryRepositoryProvider);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final result = await inventoryRepository.deleteInventory(inventoryId);
       return fetchInventory(actionType: result.actionType);
     });
   }

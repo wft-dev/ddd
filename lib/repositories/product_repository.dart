@@ -30,22 +30,22 @@ class ProductRepository {
     }
   }
 
-  // This [GraphQL] mutation is used for create [MoreProduct].
-  Future<void> createMoreProduct(MoreProduct product) async {
-    try {
-      final request = ModelMutations.create(product);
-      final response = await Amplify.API.mutate(request: request).response;
-      final createdProduct = response.data;
-      if (createdProduct == null) {
-        safePrint('errors: ${response.errors}');
-        throw response.errors;
-      }
-      safePrint('Mutation result: $createdProduct');
-    } on ApiException catch (e) {
-      safePrint('Mutation failed: $e');
-      rethrow;
-    }
-  }
+  // // This [GraphQL] mutation is used for create [MoreProduct].
+  // Future<void> createMoreProduct(MoreProduct product) async {
+  //   try {
+  //     final request = ModelMutations.create(product);
+  //     final response = await Amplify.API.mutate(request: request).response;
+  //     final createdProduct = response.data;
+  //     if (createdProduct == null) {
+  //       safePrint('errors: ${response.errors}');
+  //       throw response.errors;
+  //     }
+  //     safePrint('Mutation result: $createdProduct');
+  //   } on ApiException catch (e) {
+  //     safePrint('Mutation failed: $e');
+  //     rethrow;
+  //   }
+  // }
 
   Future<void> createProductList(List<Product> product) async {
     try {
@@ -124,22 +124,22 @@ class ProductRepository {
     }
   }
 
-  // This [GraphQL] query is used for get the list of [MoreProduct].
-  Future<List<MoreProduct?>> queryMoreProductItems() async {
-    try {
-      final request = ModelQueries.list(MoreProduct.classType);
-      final response = await Amplify.API.query(request: request).response;
-      final products = response.data?.items;
-      if (products == null) {
-        safePrint('errors: ${response.errors}');
-        throw response.errors;
-      }
-      return products;
-    } on ApiException catch (e) {
-      safePrint('Query failed: $e');
-      rethrow;
-    }
-  }
+  // // This [GraphQL] query is used for get the list of [MoreProduct].
+  // Future<List<MoreProduct?>> queryMoreProductItems() async {
+  //   try {
+  //     final request = ModelQueries.list(MoreProduct.classType);
+  //     final response = await Amplify.API.query(request: request).response;
+  //     final products = response.data?.items;
+  //     if (products == null) {
+  //       safePrint('errors: ${response.errors}');
+  //       throw response.errors;
+  //     }
+  //     return products;
+  //   } on ApiException catch (e) {
+  //     safePrint('Query failed: $e');
+  //     rethrow;
+  //   }
+  // }
 
   Future<List<Product?>> queryProductsWithDateFiltration(
       FilterDate date) async {

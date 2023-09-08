@@ -59,7 +59,7 @@ class ProfileState extends ConsumerState<Profile> {
     final profileData = ref.watch(updateUserControllerProvider);
 
     ref.listen<AsyncValue>(updateUserControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       state.isLoadingShow(context);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(

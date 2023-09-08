@@ -27,11 +27,27 @@ class DateTimePicker extends StatelessWidget {
   final ValueChanged<TimeOfDay>? onSelectedTime;
 
   Future<void> _selectDate(BuildContext context) async {
+    final ThemeData customDatePickerTheme = ThemeData(
+      colorScheme: ColorScheme.light(
+          onPrimary: AppColors.whiteColor, onBackground: AppColors.whiteColor),
+      datePickerTheme: DatePickerThemeData(
+        headerBackgroundColor: AppColors.lightPurpleColor,
+        backgroundColor: AppColors.alphaPurpleColor,
+        headerForegroundColor: AppColors.whiteColor,
+        surfaceTintColor: AppColors.whiteColor,
+      ),
+    );
     final pickedDate = await showDatePicker(
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(2019, 1),
       lastDate: DateTime(2100),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: customDatePickerTheme,
+          child: child!,
+        );
+      },
     );
     if (pickedDate != null && pickedDate != selectedDate) {
       onSelectedDate?.call(pickedDate);
@@ -39,8 +55,23 @@ class DateTimePicker extends StatelessWidget {
   }
 
   Future<void> _selectTime(BuildContext context) async {
-    final pickedTime =
-        await showTimePicker(context: context, initialTime: selectedTime);
+    final ThemeData customTimePickerTheme = ThemeData(
+      colorScheme: ColorScheme.light(
+          onPrimary: AppColors.whiteColor, onBackground: AppColors.whiteColor),
+      timePickerTheme: TimePickerThemeData(
+        backgroundColor: AppColors.alphaPurpleColor,
+      ),
+    );
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: customTimePickerTheme,
+          child: child!,
+        );
+      },
+    );
     if (pickedTime != null && pickedTime != selectedTime) {
       onSelectedTime?.call(pickedTime);
     }

@@ -81,7 +81,7 @@ class ReportState extends ConsumerState<Report> {
   // This is used to display all widgets.
   Widget getBody() {
     ref.listen<AsyncValue>(productFilterControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(
           (result) async {

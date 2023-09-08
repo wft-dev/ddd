@@ -85,6 +85,8 @@ class Strings {
       'Search by name, type, price, quantity';
   static const String noData = 'No data found';
   static const String noUserSignedIn = 'No user is currently signed in';
+  static const String noUserFound = "UserNotFoundException";
+  static const String noUserExist = "User does not exist.";
   static const String signInAccount = 'Sign in to your account';
   static const String welcome = 'Welcome';
   static const String countyCode = 'IN';
@@ -97,6 +99,8 @@ class Strings {
   static const String google = 'Google';
   static const String product = 'Product';
   static const String delete = 'Delete';
+
+  static const String changeEmail = 'You are trying to change email.';
 
   static String confirmationMessage(String? destination, String name) {
     return 'A confirmation code has been sent to $destination. '
@@ -118,6 +122,8 @@ class Strings {
   static String deleteMessage(String name) {
     return 'Do you want to remove this $name.';
   }
+
+  static const String emailChanged = 'Email Changed';
 }
 
 // An enum representing the menu type.

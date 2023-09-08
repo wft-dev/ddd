@@ -5,6 +5,7 @@ import 'package:daily_dairy_diary/models/Inventory.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/models/result.dart';
+import 'package:daily_dairy_diary/provider/inventory_controller.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
@@ -34,6 +35,7 @@ class SettingProductState extends ConsumerState<SettingProduct> {
   bool skipValidation = false;
 
   Setting? settingData;
+  List<Inventory> inventoryList = [];
 
   DateTime get start => DateTime(_startDate.year, _startDate.month,
       _startDate.day, _startTime.hour, _startTime.minute);
@@ -55,11 +57,29 @@ class SettingProductState extends ConsumerState<SettingProduct> {
     groupControllers.add(group);
   }
 
+  //Get [Inventory] data for [AppDropDownFiled].
+  getInventoryData() {
+    final list = ref.watch(inventoryControllerProvider);
+    list.whenData((value) {
+      final inventoryResult = value;
+      if (inventoryResult.items != null) {
+        final List? inventoryItem = inventoryResult.items;
+        if (inventoryItem != null && inventoryItem.isNotEmpty) {
+          List<Inventory>? inventoryItems = inventoryItem.cast<Inventory>();
+          inventoryList = inventoryItems;
+        }
+      }
+    });
+    ref.listen<AsyncValue>(settingControllerProvider, (_, state) {
+      state.showAlertDialogOnError(context: context, ref: ref);
+    });
+  }
+
   // This is used for display all widgets.
   Widget getBody() {
     final settingList = ref.watch(settingControllerProvider);
     ref.listen<AsyncValue>(settingControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       state.whenData((setting) {
         final Result settingResult = setting;
         if (settingResult.actionType != ActionType.none) {
@@ -90,6 +110,7 @@ class SettingProductState extends ConsumerState<SettingProduct> {
 
     settingList.isLoadingShow(context);
 
+    getInventoryData();
     return Container(
       height: ResponsiveAppUtil.height * Sizes.p01.sh,
       decoration: BoxDecoration(
@@ -159,7 +180,7 @@ class SettingProductState extends ConsumerState<SettingProduct> {
         }
         return null;
       },
-      value: findInventory(selectedValue ?? ''),
+      value: findInventory(selectedValue ?? '', inventoryList),
     );
   }
 

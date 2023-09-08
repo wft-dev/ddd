@@ -24,7 +24,7 @@ class ProductController extends _$ProductController {
 
   Future<List<Product?>> fetchProductList() async {
     final productList =
-        ref.watch(productRepositoryProvider).queryProductItems();
+        await ref.watch(productRepositoryProvider).queryProductItems();
     return productList;
   }
 
@@ -43,15 +43,15 @@ class ProductController extends _$ProductController {
     });
   }
 
-  // Let's allow add more products.
-  Future<void> addMoreProduct(MoreProduct product) async {
-    final productRepository = ref.watch(productRepositoryProvider);
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      await productRepository.createMoreProduct(product);
-      return fetchProduct();
-    });
-  }
+  // // Let's allow add more products.
+  // Future<void> addMoreProduct(MoreProduct product) async {
+  //   final productRepository = ref.watch(productRepositoryProvider);
+  //   state = const AsyncValue.loading();
+  //   state = await AsyncValue.guard(() async {
+  //     await productRepository.createMoreProduct(product);
+  //     return fetchProduct();
+  //   });
+  // }
 
   // Let's allow removing products.
   Future<void> removeProduct(Product productId) async {

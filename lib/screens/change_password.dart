@@ -94,7 +94,7 @@ class ChangePasswordState extends ConsumerState<ChangePassword> {
 
   AppButton buildSaveButton() {
     ref.listen<AsyncValue>(updatePasswordControllerProvider, (_, state) {
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(
           (result) async {

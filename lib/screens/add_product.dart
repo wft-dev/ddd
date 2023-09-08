@@ -3,6 +3,7 @@ import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/result.dart';
+import 'package:daily_dairy_diary/provider/inventory_controller.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
@@ -31,7 +32,6 @@ class AddProductState extends ConsumerState<AddProduct> {
   late DateTime buyDate = DateTime.now();
   late TimeOfDay buyTime = TimeOfDay.now();
   String? selectedValue;
-  static const int indexForSingleView = 0;
   bool isDefault = false;
   bool isAddMoreSelected = false;
   bool isDateTimeSelected = false;
@@ -39,6 +39,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   Setting? settingData;
 
   List<Product> productList = [];
+  List<Inventory> inventoryList = [];
 
   DateTime get buyDateTime => DateTime(
       buyDate.year, buyDate.month, buyDate.day, buyTime.hour, buyTime.minute);
@@ -112,7 +113,7 @@ class AddProductState extends ConsumerState<AddProduct> {
         });
       }
     });
-
+    getInventoryData();
     return Container(
       height: ResponsiveAppUtil.height * Sizes.p01.sh,
       // width: ResponsiveAppUtil.width,
@@ -172,6 +173,24 @@ class AddProductState extends ConsumerState<AddProduct> {
         ),
       ),
     );
+  }
+
+  //Get [Inventory] data for [AppDropDownFiled].
+  getInventoryData() {
+    final list = ref.watch(inventoryControllerProvider);
+    list.whenData((value) {
+      final inventoryResult = value;
+      if (inventoryResult.items != null) {
+        final List? inventoryItem = inventoryResult.items;
+        if (inventoryItem != null && inventoryItem.isNotEmpty) {
+          List<Inventory>? inventoryItems = inventoryItem.cast<Inventory>();
+          inventoryList = inventoryItems;
+        }
+      }
+    });
+    ref.listen<AsyncValue>(settingControllerProvider, (_, state) {
+      state.showAlertDialogOnError(context: context, ref: ref);
+    });
   }
 
   // This [Row] is used show add, update and reset buttons.
@@ -253,7 +272,7 @@ class AddProductState extends ConsumerState<AddProduct> {
         }
         return null;
       },
-      value: findInventory(value ?? ''),
+      value: findInventory(value ?? '', inventoryList),
     );
   }
 

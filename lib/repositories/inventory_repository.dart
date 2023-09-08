@@ -42,6 +42,23 @@ class InventoryRepository {
       rethrow;
     }
   }
+
+  // This [GraphQL] mutation is used for delete the [Inventory].
+  Future<Result> deleteInventory(Inventory inventoryToDelete) async {
+    try {
+      final request = ModelMutations.deleteById(
+        Inventory.classType,
+        InventoryModelIdentifier(id: inventoryToDelete.id),
+      );
+      final response = await Amplify.API.mutate(request: request).response;
+      return Result(
+          actionType:
+              response.data != null ? ActionType.delete : ActionType.none);
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+      rethrow;
+    }
+  }
 }
 
 //[InventoryRepository] provider.

@@ -149,7 +149,7 @@ class RegisterState extends ConsumerState<Register> {
   AppButton buildRegisterButton() {
     ref.listen<AsyncValue>(registerControllerProvider, (_, state) {
       print('loginControllerProvider state, $state');
-      state.showAlertDialogOnError(context);
+      state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(
           (result) async {

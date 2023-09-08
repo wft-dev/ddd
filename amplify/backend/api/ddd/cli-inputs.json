@@ -4,12 +4,20 @@
     "apiName": "ddd",
     "serviceName": "AppSync",
     "defaultAuthType": {
-      "mode": "API_KEY",
-      "expirationTime": 365,
-      "apiKeyExpirationDate": "2024-08-03T04:24:15.002Z",
-      "keyDescription": "api_key"
+      "mode": "AMAZON_COGNITO_USER_POOLS",
+      "cognitoUserPoolId": "authddd607fbf72"
     },
     "conflictResolution": {},
-    "additionalAuthTypes": []
+    "additionalAuthTypes": [
+      {
+        "mode": "API_KEY",
+        "expirationTime": 365,
+        "apiKeyExpirationDate": "2024-08-25T11:34:13.589Z",
+        "keyDescription": "dddApiKey"
+      },
+      {
+        "mode": "AWS_IAM"
+      }
+    ]
   }
 }
