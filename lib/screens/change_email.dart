@@ -1,16 +1,14 @@
+import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:daily_dairy_diary/models/auth_results.dart';
 import 'package:daily_dairy_diary/provider/confirm_email_controller.dart';
 import 'package:daily_dairy_diary/provider/resend_email_code_controller.dart';
 import 'package:daily_dairy_diary/provider/update_user_controller.dart';
+import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
-import '../constant/strings.dart';
-import '../models/auth_results.dart';
-import '../provider/update_password_controller.dart';
-import '../utils/common_utils.dart';
-import '../widgets/all_widgets.dart';
 
 class ChangeEmail extends ConsumerStatefulWidget {
   const ChangeEmail(this.destination, this.name, {Key? key}) : super(key: key);
@@ -69,15 +67,15 @@ class ChangeEmailState extends ConsumerState<ChangeEmail> {
               Box.gapH2,
               buildConfirmCodeButton(),
               Box.gapH2,
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  Strings.resendVerifyCode,
-                  style: CustomTextStyle.textFieldLabelStyle(),
-                ),
-              ),
-              Box.gapH1,
-              buildResendCodeButton(),
+              // Align(
+              //   alignment: Alignment.center,
+              //   child: Text(
+              //     Strings.resendVerifyCode,
+              //     style: CustomTextStyle.textFieldLabelStyle(),
+              //   ),
+              // ),
+              // Box.gapH1,
+              // buildResendCodeButton(),
             ],
           ),
         ),

@@ -180,10 +180,10 @@ class PickerWidgetState extends State<PickerWidget>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: AppColors.alphaPurpleColor,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: AppColors.whiteColor,
+          backgroundColor: AppColors.lightPurpleColor,
           title: TabBar(
             controller: _tabController,
             tabs: widget._tabs,
@@ -196,32 +196,33 @@ class PickerWidgetState extends State<PickerWidget>
         body: Stack(
           children: <Widget>[
             Container(
+              color: AppColors.alphaPurpleColor,
               height: Sizes.p180,
               alignment: Alignment.topCenter,
               child: TabBarView(
                 controller: _tabController,
                 children: widget._tabs.map((Tab tab) {
                   return Column(children: [
-                    Container(
-                      alignment: Alignment.center,
-                      width: ResponsiveAppUtil.width,
-                      height: Sizes.p6.sh,
-                      margin: EdgeInsets.symmetric(
-                          horizontal: Sizes.p4.sw, vertical: Sizes.p2.sh),
-                      color: AppColors.alphaPurpleColor,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.p8, vertical: Sizes.p4),
-                        child: Text(
-                          tab.text == widget._tabs.first.text
-                              ? FormatDate.dateToString(_start!)
-                              : FormatDate.dateToString(_end!),
-                          textAlign: TextAlign.center,
-                          style: CustomTextStyle.textFieldLabelStyle()
-                              .copyWith(fontSize: Sizes.p4.sw),
-                        ),
-                      ),
-                    ),
+                    // Container(
+                    //   alignment: Alignment.center,
+                    //   width: ResponsiveAppUtil.width,
+                    //   height: Sizes.p6.sh,
+                    //   margin: EdgeInsets.symmetric(
+                    //       horizontal: Sizes.p4.sw, vertical: Sizes.p2.sh),
+                    //   color: AppColors.dimPurpleColor,
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.symmetric(
+                    //         horizontal: Sizes.p8, vertical: Sizes.p4),
+                    //     child: Text(
+                    //       tab.text == widget._tabs.first.text
+                    //           ? FormatDate.dateToString(_start!)
+                    //           : FormatDate.dateToString(_end!),
+                    //       textAlign: TextAlign.center,
+                    //       style: CustomTextStyle.textFieldLabelStyle()
+                    //           .copyWith(fontSize: Sizes.p4.sw),
+                    //     ),
+                    //   ),
+                    // ),
                     Expanded(
                       child: CupertinoTheme(
                         data: CupertinoThemeData(
@@ -290,8 +291,17 @@ class PickerWidgetState extends State<PickerWidget>
                       height: Sizes.p6.sh,
                       text: widget._doneText,
                       onPress: () {
-                        Navigator.of(context).pop();
                         if (widget._onConfirm != null) {
+                          if (_end!.compareTo(_start!) < Sizes.p0.toInt()) {
+                            showAlertActionDialog(
+                              context: context,
+                              title: Strings.endDate,
+                              content: Strings.endDateNoLess,
+                              onYesPress: () {},
+                            );
+                            return;
+                          }
+                          Navigator.of(context).pop();
                           widget._onConfirm!(_start!, _end!);
                         }
                       },

@@ -180,6 +180,7 @@ class AppDropDownFiledState<T> extends State<AppDropDownFiled<T>> {
                     decoration: widget.dropdownDecoration ??
                         BoxDecoration(
                           borderRadius: BorderRadius.circular(Sizes.p2.sw),
+                          color: AppColors.alphaPurpleColor,
                         ),
                     elevation: widget.dropdownElevation ?? Sizes.p8.toInt(),
                     //Null or Offset(0, 0) will open just under the button. You can edit as you want.

@@ -1,17 +1,10 @@
-import 'package:bottom_picker/bottom_picker.dart';
-import 'package:bottom_picker/resources/arrays.dart';
-import 'package:daily_dairy_diary/api_service/queries.dart';
-import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/delegate/search.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
-import 'package:daily_dairy_diary/models/filter_date.dart';
 import 'package:daily_dairy_diary/provider/filter_date_controller.dart';
-import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/product_filter_controller.dart';
 import 'package:daily_dairy_diary/provider/providers.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
-import 'package:daily_dairy_diary/widgets/app_drop_down_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -271,8 +264,6 @@ class ReportState extends ConsumerState<Report> {
         initialEndTime: DateTime.now().add(const Duration(days: 1)),
         mode: DateTimeRangePickerMode.date,
         onConfirm: (start, end) {
-          print(start);
-          print(end);
           setState(() {
             selectedFilterData =
                 '${FormatDate.dateToString(start)} - ${FormatDate.dateToString(end)}';

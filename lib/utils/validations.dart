@@ -40,8 +40,8 @@ class Validations {
   }
 
   static String? validateConfirmPassword(String value, String password) {
-    if (password != value) return "Confirm Password is not matched";
-    if (value.trim().isEmpty) return "Enter Confirm password";
+    if (password != value) return "Confirm password is not matched";
+    if (value.trim().isEmpty) return "Enter confirm password";
     if (value.trim().length < 6) {
       return "Confirm Password should be greater then 6 character.";
     }

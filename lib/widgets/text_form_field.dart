@@ -123,8 +123,8 @@ class AppTextFormFieldState extends State<AppTextFormField> {
                     : AppColors.thinPurpleColor,
                 size: Sizes.p5.sw,
                 obscureText
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
               ),
             ),
       filled: true,

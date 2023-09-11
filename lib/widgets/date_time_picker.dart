@@ -1,10 +1,7 @@
 import 'dart:async';
 
 import 'package:daily_dairy_diary/utils/common_utils.dart';
-import 'package:daily_dairy_diary/utils/format_Date.dart';
-import 'package:daily_dairy_diary/utils/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
 import 'input_dropdown.dart';
 
@@ -84,7 +81,7 @@ class DateTimePicker extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
-          // flex: Sizes.p5.toInt(),
+          flex: Sizes.p5.toInt(),
           child: InputDropdown(
             labelText: dateLabelText,
             valueText: FormatDate.date(selectedDate),
@@ -94,7 +91,7 @@ class DateTimePicker extends StatelessWidget {
         ),
         Box.gapW2,
         Expanded(
-          // flex: Sizes.p4.toInt(),
+          flex: Sizes.p4.toInt(),
           child: InputDropdown(
             labelText: timeLabelText,
             valueText: selectedTime.format(context),

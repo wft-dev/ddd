@@ -93,10 +93,10 @@ class AppPickerWidgetState extends State<AppPickerWidget>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: AppColors.alphaPurpleColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: AppColors.lightPurpleColor,
         title: TabBar(
           controller: _tabController,
           tabs: widget._tabs,
@@ -109,47 +109,51 @@ class AppPickerWidgetState extends State<AppPickerWidget>
       body: Stack(
         children: <Widget>[
           Container(
+            color: AppColors.alphaPurpleColor,
             height: Sizes.p180,
             alignment: Alignment.topCenter,
             child: Column(
               children: [
-                Container(
-                  alignment: Alignment.center,
-                  width: ResponsiveAppUtil.width,
-                  height: Sizes.p6.sh,
-                  margin: EdgeInsets.symmetric(
-                      horizontal: Sizes.p4.sw, vertical: Sizes.p2.sh),
-                  color: AppColors.alphaPurpleColor,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: Sizes.p8, vertical: Sizes.p4),
-                    child: Text(
-                      selectedText ?? '',
-                      textAlign: TextAlign.center,
-                      style: CustomTextStyle.textFieldLabelStyle()
-                          .copyWith(fontSize: Sizes.p4.sw),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   alignment: Alignment.center,
+                //   width: ResponsiveAppUtil.width,
+                //   height: Sizes.p6.sh,
+                //   margin: EdgeInsets.symmetric(
+                //       horizontal: Sizes.p4.sw, vertical: Sizes.p2.sh),
+                //   color: AppColors.thinPurpleColor,
+                //   child: Padding(
+                //     padding: const EdgeInsets.symmetric(
+                //         horizontal: Sizes.p8, vertical: Sizes.p4),
+                //     child: Text(
+                //       selectedText ?? '',
+                //       textAlign: TextAlign.center,
+                //       style: CustomTextStyle.textFieldLabelStyle()
+                //           .copyWith(fontSize: Sizes.p4.sw),
+                //     ),
+                //   ),
+                // ),
                 Expanded(
-                  child: CupertinoPicker(
-                    looping: true,
-                    itemExtent: Sizes.p32,
-                    onSelectedItemChanged: (int index) {
-                      setState(() {
-                        selectedText = widget._pickerList?[index].toString();
-                      });
-                    },
-                    children: List<Widget>.generate(widget._pickerList!.length,
-                        (index) {
-                      return Center(
-                        child: Text(
-                          '${widget._pickerList?[index]}',
-                          style: CustomTextStyle.textFieldLabelStyle()
-                              .copyWith(fontSize: Sizes.p4_5.sw),
-                        ),
-                      );
-                    }),
+                  child: Container(
+                    width: ResponsiveAppUtil.width * Sizes.p06,
+                    child: CupertinoPicker(
+                      looping: true,
+                      itemExtent: Sizes.p32,
+                      onSelectedItemChanged: (int index) {
+                        setState(() {
+                          selectedText = widget._pickerList?[index].toString();
+                        });
+                      },
+                      children: List<Widget>.generate(
+                          widget._pickerList!.length, (index) {
+                        return Center(
+                          child: Text(
+                            '${widget._pickerList?[index]}',
+                            style: CustomTextStyle.textFieldLabelStyle()
+                                .copyWith(fontSize: Sizes.p4_5.sw),
+                          ),
+                        );
+                      }),
+                    ),
                   ),
                 ),
               ],

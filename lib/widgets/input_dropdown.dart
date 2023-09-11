@@ -63,7 +63,7 @@ class InputDropdown extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(
                 horizontal: Sizes.p4.sw,
-                vertical: Sizes.p1.sh,
+                vertical: Sizes.p1_5.sh,
               ),
               decoration: buildBoxDecoration(
                   borderColor: AppColors.lightPurpleColor,
