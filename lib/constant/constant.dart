@@ -22,11 +22,11 @@ class Fonts {
   static const fontWeightThin = FontWeight.w100;
 }
 
-final List<Inventory> inventoryList = [
+final List<Inventory> inventoryDemoList = [
   Inventory(type: 'Milk', price: 20),
   Inventory(type: 'Milk Tonned', price: 30),
-  Inventory(type: 'Bread', price: 20),
+  Inventory(type: 'Bread', price: 40),
   Inventory(type: 'Curd', price: 20),
-  Inventory(type: 'Sugar', price: 60),
-  Inventory(type: 'Rice', price: 160),
+  Inventory(type: 'Sugar', price: 40),
+  Inventory(type: 'Rice', price: 70),
 ];

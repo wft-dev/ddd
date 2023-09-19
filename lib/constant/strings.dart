@@ -124,6 +124,10 @@ class Strings {
   }
 
   static const String emailChanged = 'Email Changed';
+  static const String startDateNoGreater =
+      'Start Date should not be greater than End Date.';
+  static const String endDateNoLess =
+      'End Date should not be less than Start Date.';
 }
 
 // An enum representing the menu type.
