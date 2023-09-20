@@ -6,8 +6,13 @@ import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/repositories/storage_repository.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:googleapis_auth/auth.dart';
+import 'package:googleapis_auth/auth_io.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'package:googleapis/people/v1.dart' as people;
+import 'package:googleapis_auth/googleapis_auth.dart' as googleapis_auth;
 
 import '../models/auth_results.dart';
 
@@ -122,8 +127,15 @@ class AuthRepository {
           ),
         ),
       );
-
-      return AuthResults.signInResultValue(result: result);
+      print(result);
+      GoogleSignIn googleSignIn = GoogleSignIn(
+          scopes: ['email', 'profile'],
+          clientId:
+              "1066437602094-p5dhpusn3s0ld2kmd2kjlmcpv44e4b0k.apps.googleusercontent.com");
+      await googleSignIn.signInSilently();
+      final googleSignInAccount = googleSignIn.currentUser;
+      print(googleSignInAccount);
+      return const AuthResults.signInResultValue(result: null);
     } on AmplifyException catch (e) {
       if (e is UserCancelledException) {
         return const AuthResults.signInResultValue(result: null);
@@ -144,7 +156,7 @@ class AuthRepository {
       String providerType = '';
 
       for (final element in result) {
-        //safePrint('key: ${element.userAttributeKey}; value: ${element.value}');
+        safePrint('key: ${element.userAttributeKey}; value: ${element.value}');
         if (element.userAttributeKey.toString() == 'name') {
           name = element.value;
         }
