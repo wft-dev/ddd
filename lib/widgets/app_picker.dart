@@ -35,7 +35,7 @@ class AppPicker<T> {
         builder: (BuildContext context) {
           return FractionallySizedBox(
             widthFactor: Sizes.p1,
-            heightFactor: Sizes.p09,
+            heightFactor: Sizes.p08,
             child: AppPickerWidget(
               [
                 Tab(text: title),
@@ -106,97 +106,100 @@ class AppPickerWidgetState extends State<AppPickerWidget>
           indicatorColor: AppColors.darkPurpleColor,
         ),
       ),
-      body: Stack(
-        children: <Widget>[
-          Container(
-            color: AppColors.alphaPurpleColor,
-            height: Sizes.p180,
-            alignment: Alignment.topCenter,
-            child: Column(
-              children: [
-                // Container(
-                //   alignment: Alignment.center,
-                //   width: ResponsiveAppUtil.width,
-                //   height: Sizes.p6.sh,
-                //   margin: EdgeInsets.symmetric(
-                //       horizontal: Sizes.p4.sw, vertical: Sizes.p2.sh),
-                //   color: AppColors.thinPurpleColor,
-                //   child: Padding(
-                //     padding: const EdgeInsets.symmetric(
-                //         horizontal: Sizes.p8, vertical: Sizes.p4),
-                //     child: Text(
-                //       selectedText ?? '',
-                //       textAlign: TextAlign.center,
-                //       style: CustomTextStyle.textFieldLabelStyle()
-                //           .copyWith(fontSize: Sizes.p4.sw),
-                //     ),
-                //   ),
-                // ),
-                Expanded(
-                  child: Container(
-                    width: ResponsiveAppUtil.width * Sizes.p06,
-                    child: CupertinoPicker(
-                      looping: true,
-                      itemExtent: Sizes.p32,
-                      onSelectedItemChanged: (int index) {
-                        setState(() {
-                          selectedText = widget._pickerList?[index].toString();
-                        });
-                      },
-                      children: List<Widget>.generate(
-                          widget._pickerList!.length, (index) {
-                        return Center(
-                          child: Text(
-                            '${widget._pickerList?[index]}',
-                            style: CustomTextStyle.textFieldLabelStyle()
-                                .copyWith(fontSize: Sizes.p4_5.sw),
-                          ),
-                        );
-                      }),
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            Container(
+              color: AppColors.alphaPurpleColor,
+              height: Sizes.p25.sh,
+              alignment: Alignment.topCenter,
+              child: Column(
+                children: [
+                  // Container(
+                  //   alignment: Alignment.center,
+                  //   width: ResponsiveAppUtil.width,
+                  //   height: Sizes.p6.sh,
+                  //   margin: EdgeInsets.symmetric(
+                  //       horizontal: Sizes.p4.sw, vertical: Sizes.p2.sh),
+                  //   color: AppColors.thinPurpleColor,
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(
+                  //         horizontal: Sizes.p8, vertical: Sizes.p4),
+                  //     child: Text(
+                  //       selectedText ?? '',
+                  //       textAlign: TextAlign.center,
+                  //       style: CustomTextStyle.textFieldLabelStyle()
+                  //           .copyWith(fontSize: Sizes.p4.sw),
+                  //     ),
+                  //   ),
+                  // ),
+                  Expanded(
+                    child: Container(
+                      width: ResponsiveAppUtil.width * Sizes.p06,
+                      child: CupertinoPicker(
+                        looping: true,
+                        itemExtent: Sizes.p32,
+                        onSelectedItemChanged: (int index) {
+                          setState(() {
+                            selectedText =
+                                widget._pickerList?[index].toString();
+                          });
+                        },
+                        children: List<Widget>.generate(
+                            widget._pickerList!.length, (index) {
+                          return Center(
+                            child: Text(
+                              '${widget._pickerList?[index]}',
+                              style: CustomTextStyle.textFieldLabelStyle()
+                                  .copyWith(fontSize: Sizes.p4_5.sw),
+                            ),
+                          );
+                        }),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.only(bottom: Sizes.p1.sh),
-            alignment: Alignment.bottomCenter,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: AppButton(
-                    width: Sizes.p20.sw,
-                    height: Sizes.p6.sh,
-                    text: widget._cancelText,
-                    onPress: () {
-                      Navigator.pop(context);
-                      if (widget._onCancel != null) {
-                        widget._onCancel!();
-                      }
-                    },
+            Container(
+              padding: EdgeInsets.only(bottom: Sizes.p1.sh),
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Flexible(
+                    child: AppButton(
+                      width: Sizes.p20.sw,
+                      height: Sizes.p5.sh,
+                      text: widget._cancelText,
+                      onPress: () {
+                        Navigator.pop(context);
+                        if (widget._onCancel != null) {
+                          widget._onCancel!();
+                        }
+                      },
+                    ),
                   ),
-                ),
-                Box.gapW2,
-                Flexible(
-                  child: AppButton(
-                    width: Sizes.p20.sw,
-                    height: Sizes.p6.sh,
-                    text: widget._doneText,
-                    onPress: () {
-                      Navigator.of(context).pop();
-                      if (widget._onConfirm != null) {
-                        widget._onConfirm!(selectedText ?? '');
-                      }
-                    },
+                  Box.gapW2,
+                  Flexible(
+                    child: AppButton(
+                      width: Sizes.p20.sw,
+                      height: Sizes.p5.sh,
+                      text: widget._doneText,
+                      onPress: () {
+                        Navigator.of(context).pop();
+                        if (widget._onConfirm != null) {
+                          widget._onConfirm!(selectedText ?? '');
+                        }
+                      },
+                    ),
                   ),
-                ),
-                Box.gapW2,
-              ],
+                  Box.gapW2,
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

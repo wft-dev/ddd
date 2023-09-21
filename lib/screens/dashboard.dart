@@ -111,31 +111,32 @@ class DashboardState extends ConsumerState<Dashboard> {
 
     return Container(
       height: ResponsiveAppUtil.height * Sizes.p01.sh,
-      // width: ResponsiveAppUtil.width,
       decoration: BoxDecoration(
         color: AppColors.whiteColor,
         borderRadius:
             BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
       ),
       padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: Sizes.p6.sw),
-              child: Column(
-                children: [
-                  buildCalendar(),
-                  Box.gapH2,
-                  buildProductList(),
-                ],
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.p6.sw),
+                child: Column(
+                  children: [
+                    buildCalendar(),
+                    Box.gapH2,
+                    buildProductList(),
+                  ],
+                ),
               ),
-            ),
-            buildProductType(),
-            Box.gapH2,
-            buildListOfProducts(),
-          ],
+              buildProductType(),
+              Box.gapH2,
+              buildListOfProducts(),
+            ],
+          ),
         ),
       ),
     );
@@ -253,7 +254,7 @@ class DashboardState extends ConsumerState<Dashboard> {
   // This is used for display [TableCalendar].
   Container buildCalendar() {
     return Container(
-      padding: EdgeInsets.only(bottom: Sizes.p4.sh),
+      padding: EdgeInsets.only(bottom: Sizes.p3.sh),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.only(

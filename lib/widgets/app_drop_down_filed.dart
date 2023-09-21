@@ -90,7 +90,7 @@ class AppDropDownFiledState<T> extends State<AppDropDownFiled<T>> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: Sizes.p1_5.sh),
+                padding: EdgeInsets.symmetric(horizontal: Sizes.p3.sw),
                 child: Text(
                   widget.label ?? '',
                   textAlign: TextAlign.left,
@@ -231,7 +231,7 @@ class AppDropDownFiledState<T> extends State<AppDropDownFiled<T>> {
       disabledBorder: buildBorder(AppColors.grayColor),
       contentPadding: EdgeInsets.symmetric(
         horizontal: Sizes.p2.sw,
-        vertical: Sizes.p2.sh,
+        vertical: Sizes.p1.sh,
       ),
     );
   }

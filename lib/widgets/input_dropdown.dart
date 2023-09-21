@@ -52,7 +52,7 @@ class InputDropdown extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: Sizes.p1_5.sh),
+              padding: EdgeInsets.symmetric(horizontal: Sizes.p3.sw),
               child: Text(
                 labelText ?? '',
                 textAlign: TextAlign.left,
@@ -61,10 +61,11 @@ class InputDropdown extends StatelessWidget {
             ),
             Box.gapH1,
             Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: Sizes.p4.sw,
-                vertical: Sizes.p1_5.sh,
-              ),
+              padding: EdgeInsets.only(
+                  top: Sizes.p1.sh,
+                  bottom: Sizes.p1.sh,
+                  left: Sizes.p4.sw,
+                  right: Sizes.p3.sw),
               decoration: buildBoxDecoration(
                   borderColor: AppColors.lightPurpleColor,
                   fillColor: AppColors.whiteColor),

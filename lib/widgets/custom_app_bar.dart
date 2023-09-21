@@ -34,7 +34,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
       flexibleSpace: ClipPath(
         clipper: CurveClipper(),
         child: SizedBox(
-            height: navigationBarHeight + Sizes.p1.sh,
+            height: navigationBarHeight.sh + Sizes.p1.sh,
             child: Image.asset(AppImages.appBarImage, fit: BoxFit.fill)),
       ),
     );

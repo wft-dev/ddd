@@ -95,7 +95,7 @@ class PhoneNumberTextFieldState extends State<PhoneNumberTextField> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: Sizes.p1_5.sh),
+                padding: EdgeInsets.symmetric(horizontal: Sizes.p3.sw),
                 child: Text(
                   widget.label ?? '',
                   textAlign: TextAlign.left,

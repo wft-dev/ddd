@@ -25,9 +25,20 @@ class ScaffoldAppBar extends StatelessWidget {
           actions: barActions,
         ),
         body: Container(
-            height: ResponsiveAppUtil.height,
-            color: AppColors.alphaPurpleColor,
-            child: child),
+          height: ResponsiveAppUtil.height,
+          color: AppColors.alphaPurpleColor,
+          child: Container(
+            height: ResponsiveAppUtil.height * Sizes.p01.sh,
+            decoration: BoxDecoration(
+              color: AppColors.whiteColor,
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(Sizes.p12.sw),
+              ),
+            ),
+            padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
+            child: SafeArea(child: child),
+          ),
+        ),
       ),
     );
   }

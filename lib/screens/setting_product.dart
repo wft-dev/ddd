@@ -70,7 +70,7 @@ class SettingProductState extends ConsumerState<SettingProduct> {
         }
       }
     });
-    ref.listen<AsyncValue>(settingControllerProvider, (_, state) {
+    ref.listen<AsyncValue>(inventoryControllerProvider, (_, state) {
       state.showAlertDialogOnError(context: context, ref: ref);
     });
   }
@@ -111,30 +111,22 @@ class SettingProductState extends ConsumerState<SettingProduct> {
     settingList.isLoadingShow(context);
 
     getInventoryData();
-    return Container(
-      height: ResponsiveAppUtil.height * Sizes.p01.sh,
-      decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius:
-            BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
-      ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.only(
-            bottom: Sizes.p4.sh, left: Sizes.p5.sw, right: Sizes.p5.sw),
-        child: buildRoundedContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              buildStartDate(),
-              buildSettingForm(_formKey),
-              Box.gapH2,
-              buildSaveButton(),
-              Box.gapH2,
-              buildRemoveButton(),
-            ],
-          ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+          bottom: Sizes.p4.sh, left: Sizes.p5.sw, right: Sizes.p5.sw),
+      child: buildRoundedContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            buildStartDate(),
+            buildSettingForm(_formKey),
+            Box.gapH2,
+            buildSaveButton(),
+            Box.gapH2,
+            buildRemoveButton(),
+          ],
         ),
       ),
     );

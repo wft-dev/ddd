@@ -145,73 +145,64 @@ class ProfileState extends ConsumerState<Profile> {
   Widget getBody() {
     getProfileData();
 
-    return Container(
-      height: ResponsiveAppUtil.height * Sizes.p01.sh,
-      decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(Sizes.p12.sw),
-        ),
-      ),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
-          child: Container(
-            padding: EdgeInsets.only(bottom: Sizes.p4.sh),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                buildRoundedContainer(
-                  child: Column(
-                    children: [
-                      Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            PickImage()
-                                .imageFormGallery(
-                              context: context,
-                            )
-                                .then((value) {
-                              if (value != null) {
-                                setState(() {
-                                  pickedImage = value;
-                                  isImageSelected = true;
-                                });
-                              }
-                            });
-                          },
-                          child: CircularImage(
-                            isImageSelected: isImageSelected,
-                            imageURL: pickedImage ?? '',
-                            size: Sizes.p100,
-                            borderColor: AppColors.lightPurpleColor,
-                          ),
+          padding: EdgeInsets.only(bottom: Sizes.p4.sh),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildRoundedContainer(
+                child: Column(
+                  children: [
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          PickImage()
+                              .imageFormGallery(
+                            context: context,
+                          )
+                              .then((value) {
+                            if (value != null) {
+                              setState(() {
+                                pickedImage = value;
+                                isImageSelected = true;
+                              });
+                            }
+                          });
+                        },
+                        child: CircularImage(
+                          isImageSelected: isImageSelected,
+                          imageURL: pickedImage ?? '',
+                          size: Sizes.p100,
+                          borderColor: AppColors.lightPurpleColor,
                         ),
                       ),
-                      Box.gapH2,
-                      buildProfileForm(),
-                      Box.gapH2,
-                      buildUpdateButton(),
-                    ],
-                  ),
+                    ),
+                    Box.gapH2,
+                    buildProfileForm(),
+                    Box.gapH2,
+                    buildUpdateButton(),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
-                  child: Column(
-                    children: [
-                      if (!isGoogleLogin) ...[
-                        Box.gapH2,
-                        buildChangePasswordButton(),
-                      ],
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
+                child: Column(
+                  children: [
+                    if (!isGoogleLogin) ...[
                       Box.gapH2,
-                      buildLogoutButton(),
+                      buildChangePasswordButton(),
                     ],
-                  ),
+                    Box.gapH2,
+                    buildLogoutButton(),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

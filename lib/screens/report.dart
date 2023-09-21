@@ -86,54 +86,45 @@ class ReportState extends ConsumerState<Report> {
     });
     ref.watch(productFilterWithDateProvider(context));
 
-    return Container(
-      height: ResponsiveAppUtil.height * Sizes.p01.sh,
-      decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius:
-            BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
-      ),
-      padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.alphaPurpleColor,
-                borderRadius: BorderRadius.all(Radius.circular(Sizes.p12.sw)),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: Sizes.p3.sw),
-              child: Text(
-                textAlign: TextAlign.center,
-                selectedFilterData,
-                style: CustomTextStyle.textFieldLabelStyle()
-                    .copyWith(fontSize: Sizes.p4_5.sw),
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.alphaPurpleColor,
+              borderRadius: BorderRadius.all(Radius.circular(Sizes.p12.sw)),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: Sizes.p3.sw),
+            child: Text(
+              textAlign: TextAlign.center,
+              selectedFilterData,
+              style: CustomTextStyle.textFieldLabelStyle()
+                  .copyWith(fontSize: Sizes.p4_5.sw),
             ),
           ),
-          Expanded(
-            child: ValueListenableBuilder<List<Product?>>(
-              valueListenable: selectedEvents,
-              builder: (context, value, _) {
-                return RefreshIndicator(
-                    color: AppColors.darkPurpleColor,
-                    onRefresh: (() async {
-                      setState(() {
-                        isRefreshing = true;
-                      });
-                      return ref
-                          .refresh(productFilterControllerProvider.notifier);
-                    }),
-                    child: ProductList(value));
-              },
-            ),
+        ),
+        Expanded(
+          child: ValueListenableBuilder<List<Product?>>(
+            valueListenable: selectedEvents,
+            builder: (context, value, _) {
+              return RefreshIndicator(
+                  color: AppColors.darkPurpleColor,
+                  onRefresh: (() async {
+                    setState(() {
+                      isRefreshing = true;
+                    });
+                    return ref
+                        .refresh(productFilterControllerProvider.notifier);
+                  }),
+                  child: ProductList(value));
+            },
           ),
-          buildFilterTypeButton(),
-          Box.gapH4,
-        ],
-      ),
+        ),
+        buildFilterTypeButton(),
+        Box.gapH4,
+      ],
     );
   }
 
@@ -141,14 +132,15 @@ class ReportState extends ConsumerState<Report> {
   Widget buildFilterTypeButton() {
     return ConstrainedBox(
       constraints: BoxConstraints(
-        maxHeight: Sizes.p6.sh,
+        maxHeight: Sizes.p5.sh,
         minHeight: Sizes.p5.sh,
       ),
       child: Container(
+        height: Sizes.p5.sh,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: AppColors.alphaPurpleColor,
+              color: AppColors.darkPurpleColor,
               blurRadius: Sizes.p3,
               spreadRadius: Sizes.p1,
               offset: const Offset(

@@ -8,12 +8,10 @@ import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
-import 'package:daily_dairy_diary/utils/show_alert_dialog.dart';
 import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class AddProduct extends ConsumerStatefulWidget {
@@ -114,62 +112,53 @@ class AddProductState extends ConsumerState<AddProduct> {
       }
     });
     getInventoryData();
-    return Container(
-      height: ResponsiveAppUtil.height * Sizes.p01.sh,
-      // width: ResponsiveAppUtil.width,
-      decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius:
-            BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
-      ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
-        child: Container(
-          padding: EdgeInsets.only(bottom: Sizes.p4.sh),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              buildRoundedContainer(
-                child: Column(
-                  children: [
-                    buildDatePicker(),
-                    buildSettingForm(_formKey),
-                    if ((widget.productData == null) &&
-                        (settingData != null)) ...[
-                      Box.gapH2,
-                      buildSaveAndResetButton(),
-                    ] else ...[
-                      if ((settingData == null) &&
-                          (widget.productData == null)) ...[
-                        buildIsDefaultCheckbox(),
-                      ],
-                      Box.gapH2,
-                      buildSaveButton(),
-                    ]
-                  ],
-                ),
-              ),
-              if (widget.productData == null) ...[
-                if (isAddMoreSelected) ...[
-                  Form(
-                    key: _moreFormKey,
-                    child: Flexible(
-                      // height: 400,
-                      child: buildMoreProductListView(),
-                    ),
-                  )
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
+      child: Container(
+        padding: EdgeInsets.only(bottom: Sizes.p4.sh),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            buildRoundedContainer(
+              child: Column(
+                children: [
+                  buildDatePicker(),
+                  buildSettingForm(_formKey),
+                  if ((widget.productData == null) &&
+                      (settingData != null)) ...[
+                    Box.gapH2,
+                    buildSaveAndResetButton(),
+                  ] else ...[
+                    if ((settingData == null) &&
+                        (widget.productData == null)) ...[
+                      buildIsDefaultCheckbox(),
+                    ],
+                    Box.gapH2,
+                    buildSaveButton(),
+                  ]
                 ],
-                Box.gapH2,
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
-                  child: buildAddMoreButton(),
-                ),
-                Box.gapH2,
-              ]
-            ],
-          ),
+              ),
+            ),
+            if (widget.productData == null) ...[
+              if (isAddMoreSelected) ...[
+                Form(
+                  key: _moreFormKey,
+                  child: Flexible(
+                    // height: 400,
+                    child: buildMoreProductListView(),
+                  ),
+                )
+              ],
+              Box.gapH2,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
+                child: buildAddMoreButton(),
+              ),
+              Box.gapH2,
+            ]
+          ],
         ),
       ),
     );

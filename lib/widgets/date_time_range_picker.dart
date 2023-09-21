@@ -99,7 +99,7 @@ class DateTimeRangePicker {
         builder: (BuildContext context) {
           return FractionallySizedBox(
             widthFactor: Sizes.p1,
-            heightFactor: Sizes.p09,
+            heightFactor: Sizes.p08,
             child: PickerWidget([
               Tab(text: startText),
               Tab(text: endText),
@@ -180,24 +180,25 @@ class PickerWidgetState extends State<PickerWidget>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.alphaPurpleColor,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: AppColors.lightPurpleColor,
-          title: TabBar(
-            controller: _tabController,
-            tabs: widget._tabs,
-            labelStyle: CustomTextStyle.textFieldLabelStyle()
-                .copyWith(fontSize: Sizes.p4.sw),
-            labelColor: AppColors.darkPurpleColor,
-            indicatorColor: AppColors.darkPurpleColor,
-          ),
+      backgroundColor: AppColors.alphaPurpleColor,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: AppColors.lightPurpleColor,
+        title: TabBar(
+          controller: _tabController,
+          tabs: widget._tabs,
+          labelStyle: CustomTextStyle.textFieldLabelStyle()
+              .copyWith(fontSize: Sizes.p4.sw),
+          labelColor: AppColors.darkPurpleColor,
+          indicatorColor: AppColors.darkPurpleColor,
         ),
-        body: Stack(
+      ),
+      body: SafeArea(
+        child: Stack(
           children: <Widget>[
             Container(
               color: AppColors.alphaPurpleColor,
-              height: Sizes.p180,
+              height: Sizes.p25.sh,
               alignment: Alignment.topCenter,
               child: TabBarView(
                 controller: _tabController,
@@ -274,7 +275,7 @@ class PickerWidgetState extends State<PickerWidget>
                   Flexible(
                     child: AppButton(
                       width: Sizes.p20.sw,
-                      height: Sizes.p6.sh,
+                      height: Sizes.p5.sh,
                       text: widget._cancelText,
                       onPress: () {
                         Navigator.pop(context);
@@ -288,7 +289,7 @@ class PickerWidgetState extends State<PickerWidget>
                   Flexible(
                     child: AppButton(
                       width: Sizes.p20.sw,
-                      height: Sizes.p6.sh,
+                      height: Sizes.p5.sh,
                       text: widget._doneText,
                       onPress: () {
                         if (widget._onConfirm != null) {
@@ -312,6 +313,8 @@ class PickerWidgetState extends State<PickerWidget>
               ),
             )
           ],
-        ));
+        ),
+      ),
+    );
   }
 }

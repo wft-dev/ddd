@@ -33,26 +33,18 @@ class ChangePasswordState extends ConsumerState<ChangePassword> {
 
   // This is used for display all widgets.
   Widget getBody() {
-    return Container(
-      height: ResponsiveAppUtil.height * Sizes.p01.sh,
-      decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        borderRadius:
-            BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
-      ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.only(
-            bottom: Sizes.p4.sh, left: Sizes.p5.sw, right: Sizes.p5.sw),
-        child: buildRoundedContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Box.gapH2,
-              buildChangePasswordForm(),
-              Box.gapH2,
-              buildSaveButton(),
-            ],
-          ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+          bottom: Sizes.p4.sh, left: Sizes.p5.sw, right: Sizes.p5.sw),
+      child: buildRoundedContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Box.gapH2,
+            buildChangePasswordForm(),
+            Box.gapH2,
+            buildSaveButton(),
+          ],
         ),
       ),
     );
