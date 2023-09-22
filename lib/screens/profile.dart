@@ -8,6 +8,7 @@ import 'package:daily_dairy_diary/router/router_listenable.dart';
 import 'package:daily_dairy_diary/utils/show_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -119,7 +120,8 @@ class ProfileState extends ConsumerState<Profile> {
             if (splitUserName.isNotEmpty) {
               firstNameController.text = splitUserName[Sizes.pInt0];
             }
-            if (splitUserName.length == Sizes.p2.toInt()) {
+            if (splitUserName.length == Sizes.p2.toInt() ||
+                splitUserName.length == Sizes.p3.toInt()) {
               lastNameController.text = splitUserName[Sizes.pInt1] ?? '';
             }
           }
@@ -184,8 +186,10 @@ class ProfileState extends ConsumerState<Profile> {
                     ),
                     Box.gapH2,
                     buildProfileForm(),
-                    Box.gapH2,
-                    buildUpdateButton(),
+                    if (!isGoogleLogin) ...[
+                      Box.gapH2,
+                      buildUpdateButton(),
+                    ],
                   ],
                 ),
               ),
@@ -303,6 +307,9 @@ class ProfileState extends ConsumerState<Profile> {
           defaultActionText: Strings.yes,
           onYesPress: () async {
             await ref.read(authRepositoryProvider).signOut();
+            if (isGoogleLogin) {
+              await GoogleSignIn().signOut();
+            }
             if (mounted) {
               ref.read(routerListenableProvider.notifier).userIsLogin(false);
               const LoginRoute().go(context);
