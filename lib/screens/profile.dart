@@ -163,18 +163,20 @@ class ProfileState extends ConsumerState<Profile> {
                     Center(
                       child: GestureDetector(
                         onTap: () {
-                          PickImage()
-                              .imageFormGallery(
-                            context: context,
-                          )
-                              .then((value) {
-                            if (value != null) {
-                              setState(() {
-                                pickedImage = value;
-                                isImageSelected = true;
-                              });
-                            }
-                          });
+                          if (!isGoogleLogin) {
+                            PickImage()
+                                .imageFormGallery(
+                              context: context,
+                            )
+                                .then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  pickedImage = value;
+                                  isImageSelected = true;
+                                });
+                              }
+                            });
+                          }
                         },
                         child: CircularImage(
                           isImageSelected: isImageSelected,
@@ -220,12 +222,14 @@ class ProfileState extends ConsumerState<Profile> {
       child: Column(
         children: <Widget>[
           AppTextFormField(
+            enabled: !isGoogleLogin,
             controller: firstNameController,
             label: Strings.firstName,
             validator: Validations.validateFirstName,
             textInputAction: TextInputAction.next,
           ),
           AppTextFormField(
+            enabled: !isGoogleLogin,
             controller: lastNameController,
             label: Strings.lastName,
             validator: Validations.validateLastName,
@@ -245,6 +249,7 @@ class ProfileState extends ConsumerState<Profile> {
               valueListenable: countyCodeNotifier,
               builder: (context, value, _) {
                 return PhoneNumberTextField(
+                  enabled: !isGoogleLogin,
                   focus: focusPhoneNumber,
                   controller: phoneNumberController,
                   label: Strings.phoneNumber,

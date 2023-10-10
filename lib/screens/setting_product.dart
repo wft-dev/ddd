@@ -35,7 +35,7 @@ class SettingProductState extends ConsumerState<SettingProduct> {
   bool skipValidation = false;
 
   Setting? settingData;
-  List<Inventory> inventoryList = [];
+  List<Inventory> inventoryList = inventoryDemoList;
 
   DateTime get start => DateTime(_startDate.year, _startDate.month,
       _startDate.day, _startTime.hour, _startTime.minute);

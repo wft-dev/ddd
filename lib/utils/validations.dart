@@ -32,7 +32,7 @@ class Validations {
   }
 
   static String? validatePassword(String value, String textFiled) {
-    if (value.trim().isEmpty) return "Enter $textFiled";
+    if (value.trim().isEmpty) return "Enter $textFiled.";
     if (value.trim().length < 6) {
       return "Password should be greater then 6 character.";
     }
@@ -40,7 +40,7 @@ class Validations {
   }
 
   static String? validateConfirmPassword(String value, String password) {
-    if (password != value) return "Confirm password is not matched";
+    if (password != value) return "Confirm password is not matched.";
     if (value.trim().isEmpty) return "Enter confirm password";
     if (value.trim().length < 6) {
       return "Confirm Password should be greater then 6 character.";
@@ -50,7 +50,7 @@ class Validations {
 
   static String? validateOTP(String value) {
     if (value.isEmpty) return 'OTP is required.';
-    if (value.length != 6) return 'OTP has to be 6 digits';
+    if (value.length != 6) return 'OTP has to be 6 digits.';
     return null;
   }
 }

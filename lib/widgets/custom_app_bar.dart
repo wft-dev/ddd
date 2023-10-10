@@ -51,25 +51,22 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
         : Row(
             children: [
               Box.gapW5,
-              Padding(
-                padding: EdgeInsets.only(top: Sizes.p1.sh),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      Strings.welcome,
-                      style: CustomTextStyle.titleStyle().copyWith(
-                          fontSize: Sizes.p6.sw,
-                          fontWeight: Fonts.fontWeightBold),
-                    ),
-                    Text(
-                      userName ?? '',
-                      style: CustomTextStyle.titleStyle().copyWith(
-                          fontSize: Sizes.p4.sw,
-                          fontWeight: Fonts.fontWeightBold),
-                    ),
-                  ],
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    Strings.welcome,
+                    style: CustomTextStyle.titleStyle().copyWith(
+                        fontSize: Sizes.p6.sw,
+                        fontWeight: Fonts.fontWeightBold),
+                  ),
+                  Text(
+                    userName ?? '',
+                    style: CustomTextStyle.titleStyle().copyWith(
+                        fontSize: Sizes.p4.sw,
+                        fontWeight: Fonts.fontWeightBold),
+                  ),
+                ],
               ),
             ],
           );

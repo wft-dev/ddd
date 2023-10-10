@@ -37,7 +37,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   Setting? settingData;
 
   List<Product> productList = [];
-  List<Inventory> inventoryList = [];
+  List<Inventory> inventoryList = inventoryDemoList;
 
   DateTime get buyDateTime => DateTime(
       buyDate.year, buyDate.month, buyDate.day, buyTime.hour, buyTime.minute);
@@ -112,6 +112,7 @@ class AddProductState extends ConsumerState<AddProduct> {
       }
     });
     getInventoryData();
+    // groupControllers[Sizes.pInt0].controllerKey = GlobalKey();
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
       child: Container(
@@ -455,6 +456,9 @@ class AddProductState extends ConsumerState<AddProduct> {
                   text: Strings.remove,
                   onPress: () {
                     setState(() {
+                      if (_moreFormKey.currentState != null) {
+                        _moreFormKey.currentState?.reset();
+                      }
                       groupControllers.removeAt(indexForList);
                       productList.removeAt(index);
                       if (productList.length == Sizes.pInt0) {

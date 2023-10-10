@@ -71,7 +71,7 @@ class LoginState extends ConsumerState<Login> {
                 Box.gapH2,
                 buildEmailSignUpForm(),
                 buildRememberCheckbox(),
-                buildButton(),
+                buildLoginButton(),
                 Box.gapH4,
                 Align(
                   alignment: Alignment.center,
@@ -126,7 +126,7 @@ class LoginState extends ConsumerState<Login> {
   }
 
   // This [AppButton] is used for login.
-  AppButton buildButton() {
+  AppButton buildLoginButton() {
     ref.listen<AsyncValue>(loginControllerProvider, (_, state) {
       print('loginControllerProvider state, $state');
       state.showAlertDialogOnError(context: context, ref: ref);

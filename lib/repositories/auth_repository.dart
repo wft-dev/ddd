@@ -43,7 +43,7 @@ class AuthRepository {
   ) async {
     try {
       final userAttributes = {
-        AuthUserAttributeKey.name: firstName + lastName,
+        AuthUserAttributeKey.name: "$firstName $lastName",
         AuthUserAttributeKey.email: email,
         if (phoneNumber != null) AuthUserAttributeKey.phoneNumber: phoneNumber,
       };

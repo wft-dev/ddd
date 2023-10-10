@@ -35,7 +35,7 @@ class ScaffoldAppBar extends StatelessWidget {
                 bottom: Radius.circular(Sizes.p12.sw),
               ),
             ),
-            padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
+            // padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
             child: SafeArea(child: child),
           ),
         ),

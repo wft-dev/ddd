@@ -39,6 +39,7 @@ class Sizes {
   static const p16 = 16.0;
   static const p20 = 20.0;
   static const p24 = 24.0;
+  static const p25 = 25.0;
   static const p30 = 30.0;
   static const p32 = 32.0;
   static const p35 = 35.0;
@@ -55,6 +56,7 @@ class Sizes {
 
 class Box {
   /// [SizedBox] gap widths
+  static SizedBox gapW1 = SizedBox(width: Sizes.p1.sw);
   static SizedBox gapW2 = SizedBox(width: Sizes.p2.sw);
   static SizedBox gapW4 = SizedBox(width: Sizes.p4.sw);
   static SizedBox gapW5 = SizedBox(width: Sizes.p5.sw);
@@ -85,4 +87,4 @@ class Box {
 }
 
 // Navigation Bar Height
-const double navigationBarHeight = Sizes.p100;
+const double navigationBarHeight = Sizes.p80;
