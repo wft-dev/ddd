@@ -1,6 +1,7 @@
-import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
-import 'package:daily_dairy_diary/models/Setting.dart';
 import 'package:daily_dairy_diary/screens/add_product.dart';
 import 'package:daily_dairy_diary/screens/dashboard.dart';
 import 'package:daily_dairy_diary/screens/profile.dart';
@@ -8,17 +9,13 @@ import 'package:daily_dairy_diary/screens/report.dart';
 import 'package:daily_dairy_diary/screens/reset_password.dart';
 import 'package:daily_dairy_diary/screens/change_email.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart';
-import 'package:responsive_builder/responsive_builder.dart';
-
-import '../screens/change_password.dart';
-import '../screens/confirm_code.dart';
-import '../screens/forget_password.dart';
-import '../screens/login.dart';
-import '../screens/register.dart';
-import '../screens/setting_product.dart';
-import '../screens/splash.dart';
+import 'package:daily_dairy_diary/screens/change_password.dart';
+import 'package:daily_dairy_diary/screens/confirm_code.dart';
+import 'package:daily_dairy_diary/screens/forget_password.dart';
+import 'package:daily_dairy_diary/screens/login.dart';
+import 'package:daily_dairy_diary/screens/register.dart';
+import 'package:daily_dairy_diary/screens/setting_product.dart';
+import 'package:daily_dairy_diary/screens/splash.dart';
 
 part 'routes.g.dart';
 

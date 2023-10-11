@@ -1,21 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:daily_dairy_diary/constant/constant.dart';
+import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/event.dart';
 import 'package:daily_dairy_diary/provider/calendar_event_provider.dart';
 import 'package:daily_dairy_diary/provider/fetch_user_controller.dart';
-import 'package:daily_dairy_diary/provider/product_controller.dart';
+import 'package:daily_dairy_diary/router/routes.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
-import 'package:daily_dairy_diary/utils/size_config.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:responsive_builder/responsive_builder.dart';
-
-import '../constant/strings.dart';
-import '../router/routes.dart';
-import '../widgets/all_widgets.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 
 final kToday = DateTime.now();
 

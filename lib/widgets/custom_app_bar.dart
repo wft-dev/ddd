@@ -1,10 +1,9 @@
-import 'package:daily_dairy_diary/constant/constant.dart';
-import 'package:daily_dairy_diary/constant/strings.dart';
-import 'package:daily_dairy_diary/provider/update_user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import '../utils/common_utils.dart';
+import 'package:daily_dairy_diary/constant/constant.dart';
+import 'package:daily_dairy_diary/constant/strings.dart';
 
 /// [CustomAppBar] is used in the whole app.
 class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {

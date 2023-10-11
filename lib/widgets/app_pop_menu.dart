@@ -1,9 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
 class AppPopMenu extends StatefulWidget {
   const AppPopMenu({required this.onSelected, Key? key}) : super(key: key);

@@ -1,11 +1,11 @@
-import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 
 class LoadingIndicatorDialog {
   static final LoadingIndicatorDialog _singleton =
       LoadingIndicatorDialog._internal();
-  late BuildContext _context;
+  late BuildContext context;
   bool isDisplayed = false;
 
   factory LoadingIndicatorDialog() {
@@ -22,7 +22,7 @@ class LoadingIndicatorDialog {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          _context = context;
+          context = context;
           isDisplayed = true;
           return WillPopScope(
             onWillPop: () async => false,

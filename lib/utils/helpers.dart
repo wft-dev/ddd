@@ -1,8 +1,7 @@
-import 'package:daily_dairy_diary/constant/constant.dart';
-import 'package:daily_dairy_diary/models/Inventory.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:daily_dairy_diary/models/Inventory.dart';
 
 // Let's find [Inventory] object for [AppDropDownFiled] value.
 Inventory? findInventory(String type, List<Inventory> inventoryList) {

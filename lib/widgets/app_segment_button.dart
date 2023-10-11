@@ -28,10 +28,10 @@ class AppSegmentButton extends StatelessWidget {
                     : Sizes.p02.sw),
             child: TextButton(
               style: ButtonStyle(
-                // padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                //   EdgeInsets.symmetric(
-                //       vertical: Sizes.p01.sh, horizontal: Sizes.p3.sw),
-                // ),
+                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                  EdgeInsets.symmetric(
+                      vertical: Sizes.p01.sh, horizontal: Sizes.p3.sw),
+                ),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: index == Sizes.p0

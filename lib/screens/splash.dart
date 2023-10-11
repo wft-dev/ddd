@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'package:daily_dairy_diary/screens/login.dart';
-import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
-import '../router/routes.dart';
+import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:daily_dairy_diary/router/routes.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});

@@ -275,7 +275,7 @@ class PickerWidgetState extends State<PickerWidget>
                   Flexible(
                     child: AppButton(
                       width: Sizes.p20.sw,
-                      height: Sizes.p5.sh,
+                      height: Sizes.p6.sh,
                       text: widget._cancelText,
                       onPress: () {
                         Navigator.pop(context);
@@ -289,7 +289,7 @@ class PickerWidgetState extends State<PickerWidget>
                   Flexible(
                     child: AppButton(
                       width: Sizes.p20.sw,
-                      height: Sizes.p5.sh,
+                      height: Sizes.p6.sh,
                       text: widget._doneText,
                       onPress: () {
                         if (widget._onConfirm != null) {

@@ -1,10 +1,9 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
 import 'package:daily_dairy_diary/models/result.dart';
-import 'package:daily_dairy_diary/provider/setting_controller.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'setting_repository.g.dart';
 

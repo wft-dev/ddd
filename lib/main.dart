@@ -1,6 +1,5 @@
 import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/repositories/remember_me_repository.dart';
-import 'package:daily_dairy_diary/screens/setting_product.dart';
 import 'package:daily_dairy_diary/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -53,6 +52,7 @@ class MyApp extends ConsumerWidget {
 
     return ResponsiveApp(builder: (context) {
       return MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: Fonts.mPLUSRoundedBlack),
         routerConfig: _router(notifier),
         builder: (context, child) => LoadingOverlay(child: child!),

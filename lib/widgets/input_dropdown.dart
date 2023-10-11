@@ -46,9 +46,10 @@ class InputDropdown extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: Container(
+        margin: EdgeInsets.symmetric(vertical: Sizes.p1.sh),
         padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          // mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
@@ -62,8 +63,8 @@ class InputDropdown extends StatelessWidget {
             Box.gapH1,
             Container(
               padding: EdgeInsets.only(
-                  top: Sizes.p1.sh,
-                  bottom: Sizes.p1.sh,
+                  top: Sizes.p2.sh,
+                  bottom: Sizes.p2.sh,
                   left: Sizes.p4.sw,
                   right: Sizes.p3.sw),
               decoration: buildBoxDecoration(
@@ -84,21 +85,6 @@ class InputDropdown extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  InputDecoration buildInputDecoration(bool value) {
-    return InputDecoration(
-      filled: true,
-      fillColor: value ? AppColors.lightPurpleColor : AppColors.whiteColor,
-      border: buildBorder(AppColors.lightPurpleColor),
-      enabledBorder: buildBorder(AppColors.lightPurpleColor),
-      focusedBorder: buildBorder(AppColors.lightPurpleColor),
-      disabledBorder: buildBorder(AppColors.grayColor),
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: Sizes.p4.sw,
-        vertical: Sizes.p1.sh,
       ),
     );
   }

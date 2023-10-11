@@ -1,7 +1,5 @@
-import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
-import 'package:daily_dairy_diary/utils/size_config.dart';
 import 'package:daily_dairy_diary/widgets/common_widget.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';

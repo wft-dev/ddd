@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-import '../constant/strings.dart';
-import '../models/auth_results.dart';
-import '../provider/confirm_reset_password_controller.dart';
-import '../repositories/auth_repository.dart';
-import '../utils/common_utils.dart';
-import '../widgets/all_widgets.dart';
+import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:daily_dairy_diary/models/auth_results.dart';
+import 'package:daily_dairy_diary/provider/confirm_reset_password_controller.dart';
+import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 
 class ResetPassword extends ConsumerStatefulWidget {
   const ResetPassword(this.email, this.destination, this.name, {Key? key})

@@ -1,20 +1,17 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/Inventory.dart';
 import 'package:daily_dairy_diary/models/Setting.dart';
-import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/models/result.dart';
 import 'package:daily_dairy_diary/provider/inventory_controller.dart';
-import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/setting_controller.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/widgets/all_widgets.dart';
-import 'package:daily_dairy_diary/widgets/loading_overlay.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
 class SettingProduct extends ConsumerStatefulWidget {
   const SettingProduct({super.key});

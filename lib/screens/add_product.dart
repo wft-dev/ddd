@@ -231,7 +231,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   }
 
   // [DateTimePicker]
-  Widget buildDatePicker() {
+  DateTimePicker buildDatePicker() {
     return DateTimePicker(
       dateLabelText: Strings.date,
       timeLabelText: Strings.time,

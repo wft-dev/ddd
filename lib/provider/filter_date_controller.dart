@@ -1,8 +1,6 @@
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/filter_date.dart';
-import 'package:daily_dairy_diary/provider/product_filter_controller.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
-import 'package:riverpod/src/framework.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'filter_date_controller.g.dart';

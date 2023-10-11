@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:daily_dairy_diary/models/auth_results.dart';
 import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/repositories/auth_repository.dart';
-import 'package:daily_dairy_diary/repositories/storage_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'fetch_user_controller.g.dart';

@@ -170,7 +170,7 @@ class AppPickerWidgetState extends State<AppPickerWidget>
                   Flexible(
                     child: AppButton(
                       width: Sizes.p20.sw,
-                      height: Sizes.p5.sh,
+                      height: Sizes.p6.sh,
                       text: widget._cancelText,
                       onPress: () {
                         Navigator.pop(context);
@@ -184,7 +184,7 @@ class AppPickerWidgetState extends State<AppPickerWidget>
                   Flexible(
                     child: AppButton(
                       width: Sizes.p20.sw,
-                      height: Sizes.p5.sh,
+                      height: Sizes.p6.sh,
                       text: widget._doneText,
                       onPress: () {
                         Navigator.of(context).pop();
