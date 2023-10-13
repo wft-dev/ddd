@@ -18,6 +18,7 @@ class Sizes {
   static const p09 = 0.9;
   static const p0 = 0.0;
   static const p1 = 1.0;
+  static const p1_4 = 1.4;
   static const p1_5 = 1.5;
   static const p2 = 2.0;
   static const p2_5 = 2.5;

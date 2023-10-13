@@ -166,7 +166,8 @@ class LoginState extends ConsumerState<Login> {
             ConfirmCodeRoute(
                     email: emailController.text,
                     destination: codeDetail.destination,
-                    name: codeDetail.deliveryMedium.name)
+                    name: codeDetail.deliveryMedium.name,
+                    password: passwordController.text)
                 .push(context);
           }
         });

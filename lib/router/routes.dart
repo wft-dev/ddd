@@ -60,16 +60,22 @@ class RegisterRoute extends GoRouteData {
 //ConfirmCodeRoute
 @TypedGoRoute<ConfirmCodeRoute>(path: ConfirmCodeRoute.path)
 class ConfirmCodeRoute extends GoRouteData {
-  ConfirmCodeRoute({this.email = '', this.destination, this.name = ''});
+  ConfirmCodeRoute({
+    this.email = '',
+    this.destination,
+    this.name = '',
+    this.password = '',
+  });
   static const path = '/confirmCode';
 
   final String email;
   final String? destination;
   final String name;
+  final String password;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ConfirmCode(email, destination, name);
+    return ConfirmCode(email, destination, name, password);
   }
 }
 

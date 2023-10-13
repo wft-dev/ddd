@@ -2,6 +2,7 @@ import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/repositories/remember_me_repository.dart';
 import 'package:daily_dairy_diary/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +16,7 @@ import 'utils/state_logger.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   final sharedPreferences = await SharedPreferences.getInstance();

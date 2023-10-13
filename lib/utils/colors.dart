@@ -12,7 +12,6 @@ class HexColors {
 // header B6A2FF, Text 382D60,  calender bg EDE9FB, 500ml text color AFA8C8,EDE9FB
 
 class AppColors {
-  static Color primary = HexColors.fromHex('#399df8');
   static Color bgColor = HexColors.fromHex('#E5EBF9');
   static Color grayColor = HexColors.fromHex('#8E8E90');
   static Color blackColor = HexColors.fromHex('#000000');
@@ -25,9 +24,4 @@ class AppColors {
   static Color pinkColor = HexColors.fromHex('#FFA2BF');
   static Color transparentColor = Colors.transparent;
   static Color redColor = HexColors.fromHex('#F44336');
-}
-
-class ThemeColor {
-  static Color primary = HexColors.fromHex('#399df8');
-  static Color bgColor = HexColors.fromHex('#010101');
 }

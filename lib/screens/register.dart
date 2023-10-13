@@ -157,7 +157,8 @@ class RegisterState extends ConsumerState<Register> {
                 ConfirmCodeRoute(
                         email: emailController.text,
                         destination: codeDetail?.destination,
-                        name: codeDetail!.deliveryMedium.name)
+                        name: codeDetail!.deliveryMedium.name,
+                        password: passwordController.text)
                     .push(context);
               } else if (signUpStep == AuthSignUpStep.done) {
                 ref.read(routerListenableProvider.notifier).userIsLogin(true);

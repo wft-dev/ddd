@@ -1,24 +1,23 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:daily_dairy_diary/provider/resend_code_controller.dart';
-import 'package:daily_dairy_diary/router/router_listenable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
-import '../constant/strings.dart';
-import '../models/auth_results.dart';
-import '../provider/confirm_user_controller.dart';
-import '../router/routes.dart';
-import '../utils/common_utils.dart';
-import '../widgets/all_widgets.dart';
+import 'package:daily_dairy_diary/provider/login_controller.dart';
+import 'package:daily_dairy_diary/provider/resend_code_controller.dart';
+import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:daily_dairy_diary/models/auth_results.dart';
+import 'package:daily_dairy_diary/provider/confirm_user_controller.dart';
+import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 
 class ConfirmCode extends ConsumerStatefulWidget {
-  const ConfirmCode(this.email, this.destination, this.name, {Key? key})
+  const ConfirmCode(this.email, this.destination, this.name, this.password,
+      {Key? key})
       : super(key: key);
   final String? destination;
   final String name;
   final String email;
-
+  final String password;
   @override
   ConsumerState<ConfirmCode> createState() => ConfirmCodeState();
 }
@@ -116,8 +115,9 @@ class ConfirmCodeState extends ConsumerState<ConfirmCode> {
             if (signUpResult is SignUpResultValue) {
               final signUpStep = signUpResult.result!.nextStep.signUpStep;
               if (signUpStep == AuthSignUpStep.done) {
-                ref.read(routerListenableProvider.notifier).userIsLogin(true);
-                const DashboardRoute().go(context);
+                await ref
+                    .read(loginControllerProvider.notifier)
+                    .logInUser(widget.email, widget.password);
               }
             }
           },

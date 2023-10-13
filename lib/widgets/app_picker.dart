@@ -134,7 +134,7 @@ class AppPickerWidgetState extends State<AppPickerWidget>
                   //   ),
                   // ),
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       width: ResponsiveAppUtil.width * Sizes.p06,
                       child: CupertinoPicker(
                         looping: true,
