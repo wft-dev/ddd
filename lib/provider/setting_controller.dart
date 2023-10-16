@@ -19,7 +19,7 @@ class SettingController extends _$SettingController {
     return fetchSetting();
   }
 
-  // Let's allow add setting.
+  // Let's allow get setting.
   Future<void> fetchData() async {
     final settingRepository = ref.watch(settingRepositoryProvider);
     state = const AsyncLoading();

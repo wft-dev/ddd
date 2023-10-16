@@ -1,13 +1,9 @@
 import 'dart:async';
-
-import 'package:daily_dairy_diary/provider/providers.dart';
-import 'package:daily_dairy_diary/repositories/auth_repository.dart';
-import 'package:daily_dairy_diary/router/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-//import '../state/auth_controller.dart';
+import 'package:daily_dairy_diary/repositories/auth_repository.dart';
+import 'package:daily_dairy_diary/router/routes.dart';
 
 part 'router_listenable.g.dart';
 
@@ -63,7 +59,8 @@ class RouterListenable extends _$RouterListenable implements Listenable {
     final isLoggingIn = state.location == LoginRoute.path;
     if (isLoggingIn) return _isAuth ? DashboardRoute.path : null;
 
-    return _isAuth ? null : SplashRoute.path;
+    return null;
+    // return _isAuth ? null : SplashRoute.path;
   }
 
   /// Adds [GoRouter]'s listener as specified by its [Listenable].

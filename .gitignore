@@ -70,3 +70,4 @@ amplifytools.xcconfig
 
 **/*.g.dart
 **/*.freezed.dart
+ios/Runner/GoogleService-Info.plist

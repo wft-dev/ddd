@@ -15,7 +15,6 @@ class AppPopMenu extends StatefulWidget {
 
 class AppPopMenuState extends State<AppPopMenu> {
   var popupMenuItemIndex = 0;
-  Color changeColorAccordingToMenuItem = Colors.red;
 
   // This is used to display [PopupMenuButton].
   PopupMenuButton buildPopUpMenu() {

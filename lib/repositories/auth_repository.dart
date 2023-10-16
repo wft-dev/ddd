@@ -13,6 +13,7 @@ import '../models/auth_results.dart';
 part 'auth_repository.g.dart';
 
 class AuthRepository {
+  /// Fetch the current auth session.
   Future<bool> isUserSignedIn() async {
     try {
       final result = await Amplify.Auth.fetchAuthSession();
@@ -23,6 +24,7 @@ class AuthRepository {
     }
   }
 
+  /// Retrieve the current active user.
   Future<String?> getCurrentUserId() async {
     try {
       final user = await Amplify.Auth.getCurrentUser();
@@ -61,6 +63,7 @@ class AuthRepository {
     }
   }
 
+  /// Confirm the current sign up for [username] with the [confirmationCode] provided by the user.
   Future<AuthResults> confirmUser(
     String username,
     String confirmationCode,
@@ -77,6 +80,7 @@ class AuthRepository {
     }
   }
 
+  /// Sign in for user with [email] and [password].
   Future<AuthResults> signInUser(String email, String password) async {
     try {
       signOut();
@@ -86,11 +90,12 @@ class AuthRepository {
       );
       return AuthResults.signInResultValue(result: result);
     } on AuthException catch (e) {
-      safePrint('Error confirming user: ${e.message}');
+      safePrint('Error sign In user: ${e.message}');
       rethrow;
     }
   }
 
+  /// Resend the code that is used to confirm the user's account after sign up.
   Future<AuthResults> resendSignUpCode(String email) async {
     try {
       final result = await Amplify.Auth.resendSignUpCode(
@@ -103,6 +108,7 @@ class AuthRepository {
     }
   }
 
+  /// Sign the user out of the current device.
   Future<void> signOut() async {
     try {
       await Amplify.Auth.signOut();
@@ -111,6 +117,7 @@ class AuthRepository {
     }
   }
 
+  /// Google sigIn and fetch user detail.
   Future<void> signInWithGoogle() async {
     try {
       GoogleSignIn googleSignIn = GoogleSignIn(
@@ -151,8 +158,7 @@ class AuthRepository {
     }
   }
 
-// Use this function to initiate Google sign-in.
-
+  /// Use this function to initiate Google sign-in.
   Future<AuthResults> signInWithWebUI() async {
     try {
       final result = await Amplify.Auth.signInWithWebUI(
@@ -175,6 +181,7 @@ class AuthRepository {
     }
   }
 
+  /// Fetch all user attributes of the current user.
   Future<User> fetchCurrentUserAttributes() async {
     try {
       final result = await Amplify.Auth.fetchUserAttributes();
@@ -220,6 +227,7 @@ class AuthRepository {
     }
   }
 
+  /// Updates multiple user attributes at once.
   Future<AuthResults> updateUser(String firstName, String lastName,
       String email, String? phoneNumber, String? picture) async {
     try {
@@ -252,6 +260,7 @@ class AuthRepository {
     }
   }
 
+  /// Initiates a password reset for the user with the given username.
   Future<AuthResults> resetPassword(String email) async {
     try {
       final result = await Amplify.Auth.resetPassword(
@@ -259,11 +268,12 @@ class AuthRepository {
       );
       return AuthResults.resetPasswordResultValue(result: result);
     } on AuthException catch (e) {
-      safePrint('Error resetting password111: ${e.message}');
+      safePrint('Error resetting password: ${e.message}');
       rethrow;
     }
   }
 
+  /// Completes the password reset given a username, new password, and the confirmation code which was sent calling [resetPassword].
   Future<AuthResults> confirmResetPassword(
     String email,
     String newPassword,
@@ -275,7 +285,6 @@ class AuthRepository {
         newPassword: newPassword,
         confirmationCode: confirmationCode,
       );
-      safePrint('Password reset complete: ${result.isPasswordReset}');
       return AuthResults.resetPasswordResultValue(result: result);
     } on AuthException catch (e) {
       safePrint('Error resetting password: ${e.message}');
@@ -283,6 +292,7 @@ class AuthRepository {
     }
   }
 
+  /// Update the password of the current user.
   Future<AuthResults> updatePassword(
     String oldPassword,
     String newPassword,
@@ -299,6 +309,7 @@ class AuthRepository {
     }
   }
 
+  /// Confirm update user with confirmation code.
   Future<AuthResults> verifyAttributeUpdate(
     String confirmationCode,
   ) async {
@@ -314,6 +325,7 @@ class AuthRepository {
     }
   }
 
+  /// Resend a confirmation code for the given [userAttributeKey].
   Future<AuthResults> resendUserAttributeVerificationCode() async {
     try {
       final result = await Amplify.Auth.resendUserAttributeConfirmationCode(

@@ -47,43 +47,45 @@ class InputDropdown extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: Sizes.p1.sh),
-        padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Sizes.p3.sw),
-              child: Text(
-                labelText ?? '',
-                textAlign: TextAlign.left,
-                style: CustomTextStyle.textFieldLabelStyle(),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.p3.sw),
+                child: Text(
+                  labelText ?? '',
+                  textAlign: TextAlign.left,
+                  style: CustomTextStyle.textFieldLabelStyle(),
+                ),
               ),
-            ),
-            Box.gapH1,
-            Container(
-              padding: EdgeInsets.only(
-                  top: Sizes.p2.sh,
-                  bottom: Sizes.p2.sh,
-                  left: Sizes.p4.sw,
-                  right: Sizes.p3.sw),
-              decoration: buildBoxDecoration(
-                  borderColor: AppColors.lightPurpleColor,
-                  fillColor: AppColors.whiteColor),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Expanded(
-                    child: Text(valueText, style: valueStyle),
-                  ),
-                  Icon(Icons.keyboard_arrow_down_rounded,
-                      size: Sizes.p6.sw, color: AppColors.thinPurpleColor),
-                ],
+              Box.gapH1,
+              Container(
+                padding: EdgeInsets.only(
+                    top: Sizes.p1.sh,
+                    bottom: Sizes.p1.sh,
+                    left: Sizes.p4.sw,
+                    right: Sizes.p3.sw),
+                decoration: buildBoxDecoration(
+                    borderColor: AppColors.lightPurpleColor,
+                    fillColor: AppColors.whiteColor),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(valueText, style: valueStyle),
+                    ),
+                    Icon(Icons.keyboard_arrow_down_rounded,
+                        size: Sizes.p6.sw, color: AppColors.thinPurpleColor),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

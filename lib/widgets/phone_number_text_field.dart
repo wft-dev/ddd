@@ -158,9 +158,10 @@ class PhoneNumberTextFieldState extends State<PhoneNumberTextField> {
       enabledBorder: buildBorder(AppColors.lightPurpleColor),
       focusedBorder: buildBorder(AppColors.lightPurpleColor),
       disabledBorder: buildBorder(AppColors.grayColor),
+      isDense: true,
       contentPadding: EdgeInsets.symmetric(
         horizontal: Sizes.p4.sw,
-        vertical: Sizes.p1.sh,
+        vertical: Sizes.p1_4.sh,
       ),
     );
   }
@@ -193,9 +194,10 @@ class PhoneNumberTextFieldState extends State<PhoneNumberTextField> {
       enabledBorder: buildBorder(AppColors.lightPurpleColor),
       focusedBorder: buildBorder(AppColors.lightPurpleColor),
       disabledBorder: buildBorder(AppColors.grayColor),
+      isDense: true,
       contentPadding: EdgeInsets.symmetric(
         horizontal: Sizes.p4.sw,
-        vertical: Sizes.p1.sh,
+        vertical: Sizes.p1_4.sh,
       ),
     );
   }

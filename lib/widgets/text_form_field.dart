@@ -69,6 +69,7 @@ class AppTextFormFieldState extends State<AppTextFormField> {
         builder: (context, value, child) => Padding(
           padding: EdgeInsets.symmetric(vertical: Sizes.p01.sh),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
@@ -127,6 +128,8 @@ class AppTextFormFieldState extends State<AppTextFormField> {
                     : Icons.visibility_outlined,
               ),
             ),
+      suffixIconConstraints:
+          BoxConstraints(minWidth: Sizes.p12.sw, minHeight: Sizes.p5.sh),
       filled: true,
       fillColor: value ? AppColors.lightPurpleColor : AppColors.whiteColor,
       // labelText: label,
@@ -134,9 +137,10 @@ class AppTextFormFieldState extends State<AppTextFormField> {
       enabledBorder: buildBorder(AppColors.lightPurpleColor),
       focusedBorder: buildBorder(AppColors.lightPurpleColor),
       disabledBorder: buildBorder(AppColors.grayColor),
+      isDense: true,
       contentPadding: EdgeInsets.symmetric(
         horizontal: Sizes.p4.sw,
-        vertical: Sizes.p1.sh,
+        vertical: Sizes.p1_4.sh,
       ),
     );
   }

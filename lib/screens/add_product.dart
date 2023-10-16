@@ -112,7 +112,6 @@ class AddProductState extends ConsumerState<AddProduct> {
       }
     });
     getInventoryData();
-    // groupControllers[Sizes.pInt0].controllerKey = GlobalKey();
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
       child: Container(
@@ -291,7 +290,6 @@ class AddProductState extends ConsumerState<AddProduct> {
 
   // This [AppButton] is used for create the setting product and additional products.
   AppButton buildSaveButton() {
-    // final q = ref.watch(settingControllerProvider);
     ref.listen<AsyncValue>(productControllerProvider, (_, state) {
       state.showAlertDialogOnError(context: context, ref: ref);
       state.whenData((product) {

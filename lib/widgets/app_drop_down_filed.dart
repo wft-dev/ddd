@@ -201,8 +201,7 @@ class AppDropDownFiledState<T> extends State<AppDropDownFiled<T>> {
                   menuItemStyleData: MenuItemStyleData(
                     // height: itemHeight ?? 40,
                     padding: widget.itemPadding ??
-                        const EdgeInsets.only(
-                            left: Sizes.p14, right: Sizes.p14),
+                        const EdgeInsets.only(left: Sizes.p4, right: Sizes.p14),
                   ),
                 ),
               ),
@@ -227,9 +226,10 @@ class AppDropDownFiledState<T> extends State<AppDropDownFiled<T>> {
       enabledBorder: buildBorder(AppColors.lightPurpleColor),
       focusedBorder: buildBorder(AppColors.lightPurpleColor),
       disabledBorder: buildBorder(AppColors.grayColor),
+      isDense: true,
       contentPadding: EdgeInsets.symmetric(
         horizontal: Sizes.p2.sw,
-        vertical: Sizes.p1.sh,
+        vertical: Sizes.p1_4.sh,
       ),
     );
   }
