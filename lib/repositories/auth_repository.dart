@@ -8,7 +8,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/auth_results.dart';
+import 'package:daily_dairy_diary/models/auth_results.dart';
 
 part 'auth_repository.g.dart';
 
@@ -133,11 +133,11 @@ class AuthRepository {
           headers: await googleSignInAccount.authHeaders,
         );
         if (response.statusCode != 200) {
-          print('People API ${response.statusCode} response: ${response.body}');
+          safePrint(
+              'People API ${response.statusCode} response: ${response.body}');
         }
         final Map<String, dynamic> data =
             json.decode(response.body) as Map<String, dynamic>;
-        print(data);
         final List<dynamic>? phoneNumberList =
             data['phoneNumbers'] as List<dynamic>?;
         final Map<String, dynamic>? phoneNumbers = phoneNumberList?.firstWhere(
@@ -151,10 +151,9 @@ class AuthRepository {
       if (googleUserDetail != null) {
         await updateUser(googleUserDetail.displayName ?? '', '',
             googleUserDetail.email, phoneNumber, googleUserDetail.photoUrl);
-        print(googleUserDetail);
       }
     } catch (e) {
-      print("Error signing in with Google: $e");
+      safePrint("Error signing in with Google: $e");
     }
   }
 

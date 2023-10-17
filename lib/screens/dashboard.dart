@@ -208,7 +208,7 @@ class DashboardState extends ConsumerState<Dashboard> {
   Widget buildListOfProducts() {
     return ConstrainedBox(
       constraints: BoxConstraints(
-        maxHeight: Sizes.p20.sh,
+        maxHeight: Sizes.p24.sh,
         minHeight: Sizes.p10.sh,
       ),
       child: ValueListenableBuilder<List<Product>>(

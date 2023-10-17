@@ -1,18 +1,21 @@
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
+import 'package:daily_dairy_diary/models/result.dart';
+import 'package:daily_dairy_diary/provider/product_controller.dart';
+import 'package:daily_dairy_diary/provider/product_filter_controller.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
-  CustomSearchDelegate({required this.productList})
+  CustomSearchDelegate()
       : super(
           searchFieldStyle: TextStyle(
               color: AppColors.darkPurpleColor, fontSize: Sizes.p4.sw),
         );
-  late final List<Product?> productList;
 
   @override
   String get searchFieldLabel => Strings.searchPlaceHolder;
@@ -85,37 +88,55 @@ class CustomSearchDelegate extends SearchDelegate {
 // Show query result
   @override
   Widget buildResults(BuildContext context) {
-    return Container();
+    return buildSearchList();
   }
 
 // Show the products based on the search query like name, type, price, quantity.
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<Product> matchQuery = [];
-    for (var item in productList) {
-      if (item!.name!.toLowerCase().contains(query.toLowerCase()) ||
-          item.type!.toLowerCase().contains(query.toLowerCase()) ||
-          item.price!.toString().contains(query) ||
-          item.quantity!.toString().contains(query)) {
-        matchQuery.add(item);
-      }
-    }
-    return Container(
-      height: ResponsiveAppUtil.height,
-      color: AppColors.alphaPurpleColor,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.whiteColor,
-          borderRadius:
-              BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
-        ),
-        padding: EdgeInsets.symmetric(vertical: Sizes.p2.sh),
-        child: ProductList(
-          matchQuery,
-          message:
-              matchQuery.isEmpty ? null : Strings.noSearchResultMessage(query),
-        ),
-      ),
+    return buildSearchList();
+  }
+
+  buildSearchList() {
+    return Consumer(
+      builder: (context, ref, child) {
+        List<Product> matchQuery = [];
+
+        final products = ref.watch(productControllerProvider).value;
+        if (products != null) {
+          final List? productItems = products.items;
+          if (productItems != null && productItems.isNotEmpty) {
+            for (var item in productItems) {
+              if (item!.name!.toLowerCase().contains(query.toLowerCase()) ||
+                  item.type!.toLowerCase().contains(query.toLowerCase()) ||
+                  item.price!.toString().contains(query) ||
+                  item.quantity!.toString().contains(query)) {
+                matchQuery.add(item);
+              }
+            }
+          } else {
+            matchQuery.clear();
+          }
+        }
+        return Container(
+          height: ResponsiveAppUtil.height,
+          color: AppColors.alphaPurpleColor,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.whiteColor,
+              borderRadius:
+                  BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
+            ),
+            padding: EdgeInsets.symmetric(vertical: Sizes.p2.sh),
+            child: ProductList(
+              matchQuery,
+              message: matchQuery.isEmpty
+                  ? null
+                  : Strings.noSearchResultMessage(query),
+            ),
+          ),
+        );
+      },
     );
   }
 }

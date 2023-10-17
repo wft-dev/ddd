@@ -145,17 +145,16 @@ class AppDropDownFiledState<T> extends State<AppDropDownFiled<T>> {
                   selectedItemBuilder: widget.selectedItemBuilder,
                   buttonStyleData: ButtonStyleData(
                     // height: buttonHeight ?? 40,
-                    // width: buttonWidth ?? 140,
+                    width: Sizes.p10.sw,
                     padding: widget.buttonPadding ??
-                        EdgeInsets.only(right: Sizes.p1.sw),
-                    // decoration: buttonDecoration ??
-                    //     BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(Sizes.p2.sw),
-                    //       border: Border.all(
-                    //         color: Colors.grey,
-                    //         width: Sizes.p05.sw,
-                    //       ),
-                    //     ),
+                        EdgeInsets.only(left: Sizes.p2.sw, right: Sizes.p1.sw),
+                    // decoration: BoxDecoration(
+                    //   borderRadius: BorderRadius.circular(Sizes.p2.sw),
+                    //   border: Border.all(
+                    //     color: Colors.grey,
+                    //     width: Sizes.p05.sw,
+                    //   ),
+                    // ),
                     // elevation: buttonElevation,
                   ),
                   iconStyleData: IconStyleData(
@@ -201,7 +200,8 @@ class AppDropDownFiledState<T> extends State<AppDropDownFiled<T>> {
                   menuItemStyleData: MenuItemStyleData(
                     // height: itemHeight ?? 40,
                     padding: widget.itemPadding ??
-                        const EdgeInsets.only(left: Sizes.p4, right: Sizes.p14),
+                        const EdgeInsets.only(
+                            left: Sizes.p14, right: Sizes.p14),
                   ),
                 ),
               ),
