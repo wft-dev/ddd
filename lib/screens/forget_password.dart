@@ -79,6 +79,7 @@ class ForgetPasswordState extends ConsumerState<ForgetPassword> {
   // This [AppButton] is used for send code to email for reset the password.
   AppButton buildSaveButton() {
     ref.listen<AsyncValue>(resetPasswordControllerProvider, (_, state) {
+      state.isLoadingShow(context);
       state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(

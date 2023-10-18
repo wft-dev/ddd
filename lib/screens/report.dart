@@ -1,6 +1,7 @@
 import 'package:daily_dairy_diary/delegate/search.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
 import 'package:daily_dairy_diary/provider/filter_date_controller.dart';
+import 'package:daily_dairy_diary/provider/product_controller.dart';
 import 'package:daily_dairy_diary/provider/product_filter_controller.dart';
 import 'package:daily_dairy_diary/provider/providers.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
@@ -56,10 +57,10 @@ class ReportState extends ConsumerState<Report> {
         onPressed: () {
           // method to show the search bar
           showSearch(
-              context: context,
-              // delegate to customize the search bar
-              delegate:
-                  CustomSearchDelegate(productList: selectedEvents.value));
+            context: context,
+            // delegate to customize the search bar
+            delegate: CustomSearchDelegate(),
+          );
         },
         icon: Icon(
           Icons.search,
@@ -84,6 +85,9 @@ class ReportState extends ConsumerState<Report> {
       }
     });
     ref.watch(productFilterWithDateProvider(context));
+    ref.listen<AsyncValue>(productControllerProvider, (_, state) {
+      print('object, state');
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

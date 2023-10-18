@@ -29,8 +29,10 @@ Future<void> main() async {
       ),
     ],
   );
-  runApp(ProviderScope(
-      parent: container, observers: [StateLogger()], child: const MyApp()));
+  runApp(
+    ProviderScope(
+        parent: container, observers: [StateLogger()], child: const MyApp()),
+  );
 }
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();

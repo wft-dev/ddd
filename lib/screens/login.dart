@@ -123,7 +123,7 @@ class LoginState extends ConsumerState<Login> {
   // This [AppButton] is used for login.
   AppButton buildLoginButton() {
     ref.listen<AsyncValue>(loginControllerProvider, (_, state) {
-      print('loginControllerProvider state, $state');
+      state.isLoadingShow(context);
       state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(

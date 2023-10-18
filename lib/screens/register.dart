@@ -131,11 +131,6 @@ class RegisterState extends ConsumerState<Register> {
             },
             textInputAction: TextInputAction.done,
           ),
-          // AppTextFormField(
-          //   controller: phoneNumberController,
-          //   label: Strings.phoneNumber,
-          //   textInputAction: TextInputAction.done,
-          // ),
         ],
       ),
     );
@@ -144,6 +139,7 @@ class RegisterState extends ConsumerState<Register> {
   AppButton buildRegisterButton() {
     ref.listen<AsyncValue>(registerControllerProvider, (_, state) {
       print('loginControllerProvider state, $state');
+      state.isLoadingShow(context);
       state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(

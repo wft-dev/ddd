@@ -65,7 +65,7 @@ class ConfirmCodeState extends ConsumerState<ConfirmCode> {
                       .copyWith(fontSize: Sizes.p5.sw),
                 ),
                 Box.gapH2,
-                buildEmailForm(),
+                buildCodeForm(),
                 Box.gapH2,
                 buildConfirmCodeButton(),
                 Box.gapH2,
@@ -87,7 +87,7 @@ class ConfirmCodeState extends ConsumerState<ConfirmCode> {
   }
 
   // This [Form] is used for enter confirmation code.
-  Form buildEmailForm() {
+  Form buildCodeForm() {
     return Form(
       key: _formKey,
       child: Column(
@@ -107,6 +107,7 @@ class ConfirmCodeState extends ConsumerState<ConfirmCode> {
   // This [AppButton] is used for confirm the code.
   AppButton buildConfirmCodeButton() {
     ref.listen<AsyncValue>(confirmUserControllerProvider, (_, state) {
+      state.isLoadingShow(context);
       state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(

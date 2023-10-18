@@ -30,7 +30,9 @@ class CircularContainer extends StatelessWidget {
               // width: ResponsiveAppUtil.width,
               decoration: BoxDecoration(
                 color: AppColors.whiteColor,
-                borderRadius: BorderRadius.all(Radius.circular(Sizes.p12.sw)),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(Sizes.p12.sw),
+                ),
               ),
               padding: EdgeInsets.symmetric(
                   vertical: Sizes.p3.sh, horizontal: Sizes.p10.sw),

@@ -37,7 +37,6 @@ class DashboardState extends ConsumerState<Dashboard> {
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
-    // ref.read(getCalendarEventProvider);
     selectedEvents = ValueNotifier(getEventsForDay(_selectedDay!));
   }
 

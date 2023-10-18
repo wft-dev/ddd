@@ -97,6 +97,7 @@ class ResetPasswordState extends ConsumerState<ResetPassword> {
   // This [AppButton] is used for confirm the reset password.
   AppButton buildSaveButton() {
     ref.listen<AsyncValue>(confirmResetPasswordControllerProvider, (_, state) {
+      state.isLoadingShow(context);
       state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData(

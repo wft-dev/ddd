@@ -5,19 +5,17 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/models/auth_results.dart';
 import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/router/router_listenable.dart';
-import 'package:daily_dairy_diary/utils/show_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
-import '../constant/strings.dart';
-import '../provider/update_user_controller.dart';
-import '../repositories/auth_repository.dart';
-import '../router/routes.dart';
-import '../utils/common_utils.dart';
-import '../widgets/all_widgets.dart';
+import 'package:daily_dairy_diary/constant/strings.dart';
+import 'package:daily_dairy_diary/provider/update_user_controller.dart';
+import 'package:daily_dairy_diary/repositories/auth_repository.dart';
+import 'package:daily_dairy_diary/router/routes.dart';
+import 'package:daily_dairy_diary/utils/common_utils.dart';
+import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 
 class Profile extends ConsumerStatefulWidget {
   const Profile({super.key});
