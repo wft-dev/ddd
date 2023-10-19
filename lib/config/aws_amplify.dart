@@ -2,8 +2,8 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
-import '../amplifyconfiguration.dart';
-import '../models/ModelProvider.dart';
+import 'package:daily_dairy_diary/amplifyconfiguration.dart';
+import 'package:daily_dairy_diary/models/ModelProvider.dart';
 
 //  AWSAmplifyConfigure
 class AWSAmplifyConfigure {

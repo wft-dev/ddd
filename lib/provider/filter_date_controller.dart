@@ -12,6 +12,7 @@ class FilterDateController extends _$FilterDateController {
     return setFilterDate(ProductFilterType.week);
   }
 
+// Update filter type based on month, year, week etc.
   void updateFilterType(
     ProductFilterType filterType, {
     int? month,

@@ -139,6 +139,7 @@ class ConfirmCodeState extends ConsumerState<ConfirmCode> {
   // This [AppButton] is used for resend the confirmation the code.
   AppButton buildResendCodeButton() {
     ref.listen<AsyncValue>(resendCodeControllerProvider, (_, state) {
+      state.isLoadingShow(context);
       state.showAlertDialogOnError(context: context, ref: ref);
       if (!state.hasError && state.hasValue && !state.isLoading) {
         state.whenData((result) async {

@@ -14,21 +14,22 @@ class Splash extends StatefulWidget {
 
 class SplashState extends State<Splash> with TickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: Sizes.pInt1),
+    duration: Duration(seconds: Sizes.p2.toInt()),
     vsync: this,
   )..repeat(reverse: false);
   late final Animation<double> _animation = CurvedAnimation(
     parent: _controller,
-    curve: Curves.easeIn,
+    curve: Curves.easeInCubic,
   );
   Timer? timer;
 
   @override
   void initState() {
     super.initState();
-    FlutterNativeSplash.remove();
-
     timer = Timer(const Duration(seconds: Sizes.pInt1), () {
+      FlutterNativeSplash.remove();
+    });
+    timer = Timer(Duration(seconds: Sizes.p2.toInt()), () {
       const LoginRoute().go(context);
     });
   }
@@ -47,6 +48,7 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
     );
   }
 
+  // Show animated logo on the top of the splash background.
   Widget animatedLogoWidget() {
     return FadeTransition(
       opacity: _animation,

@@ -8,7 +8,7 @@ class CircularContainer extends StatelessWidget {
 
   const CircularContainer({
     required this.child,
-    this.heightSize = Sizes.p07,
+    this.heightSize = Sizes.p08,
     super.key,
   });
 

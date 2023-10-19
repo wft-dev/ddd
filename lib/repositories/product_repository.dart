@@ -1,6 +1,5 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:daily_dairy_diary/api_service/queries.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/ModelProvider.dart';
 import 'package:daily_dairy_diary/models/filter_date.dart';
@@ -47,32 +46,32 @@ class ProductRepository {
   //   }
   // }
 
-  Future<void> createProductList(List<Product> product) async {
-    try {
-      final todoList = product;
-      final List<Map<String, dynamic>> todoListInput =
-          todoList.map((todo) => todo.toJson()).toList();
+  // Future<void> createProductList(List<Product> product) async {
+  //   try {
+  //     final todoList = product;
+  //     final List<Map<String, dynamic>> todoListInput =
+  //         todoList.map((todo) => todo.toJson()).toList();
 
-      var result = Amplify.API.mutate<String>(
-        request: GraphQLRequest(
-          document: Queries.product,
-          variables: {
-            "input": todoListInput,
-          },
-        ),
-      );
-      // final result = Amplify.API.mutate(
-      //   request: Queries.product,
-      //     variables: {'input': todoListInput},
-      //   );
-      var response = await result.response;
-      print(response);
-      // var response =  result.data;
-    } on ApiException catch (e) {
-      safePrint('Mutation failed: $e');
-      rethrow;
-    }
-  }
+  //     var result = Amplify.API.mutate<String>(
+  //       request: GraphQLRequest(
+  //         document: Queries.product,
+  //         variables: {
+  //           "input": todoListInput,
+  //         },
+  //       ),
+  //     );
+  //     // final result = Amplify.API.mutate(
+  //     //   request: Queries.product,
+  //     //     variables: {'input': todoListInput},
+  //     //   );
+  //     var response = await result.response;
+  //     print(response);
+  //     // var response =  result.data;
+  //   } on ApiException catch (e) {
+  //     safePrint('Mutation failed: $e');
+  //     rethrow;
+  //   }
+  // }
 
   // This [GraphQL] mutation is used for update the [Product].
   Future<Result> updateProduct(Product originalProduct) async {
@@ -141,6 +140,7 @@ class ProductRepository {
   //   }
   // }
 
+  // This [GraphQL] query is used for get the list of [Product] with the given filter type like month, year, etc.
   Future<List<Product?>> queryProductsWithDateFiltration(
       FilterDate date) async {
     try {

@@ -1,8 +1,6 @@
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/Product.dart';
-import 'package:daily_dairy_diary/models/result.dart';
 import 'package:daily_dairy_diary/provider/product_controller.dart';
-import 'package:daily_dairy_diary/provider/product_filter_controller.dart';
 import 'package:daily_dairy_diary/screens/product_list.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +95,7 @@ class CustomSearchDelegate extends SearchDelegate {
     return buildSearchList();
   }
 
+  // Show search list
   buildSearchList() {
     return Consumer(
       builder: (context, ref, child) {

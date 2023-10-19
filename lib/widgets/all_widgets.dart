@@ -7,7 +7,7 @@ export 'app_drop_down_filed.dart';
 export 'date_time_picker.dart';
 export 'date_time_range_picker.dart';
 export 'app_picker.dart';
-export 'circular_Image.dart';
+export 'circular_image.dart';
 export 'app_alert.dart';
 export 'custom_app_bar.dart';
 export 'hide_keyboard_widget.dart';

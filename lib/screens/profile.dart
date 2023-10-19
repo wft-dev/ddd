@@ -309,10 +309,9 @@ class ProfileState extends ConsumerState<Profile> {
           isShowCancel: true,
           defaultActionText: Strings.yes,
           onYesPress: () async {
-            await ref.read(authRepositoryProvider).signOut();
-            if (isGoogleLogin) {
-              await GoogleSignIn().signOut();
-            }
+            await ref
+                .read(authRepositoryProvider)
+                .signOut(isGoogleLogin ? ProviderType.google : null);
             if (mounted) {
               ref.read(routerListenableProvider.notifier).userIsLogin(false);
               const LoginRoute().go(context);

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,6 +14,10 @@ import 'package:daily_dairy_diary/models/auth_results.dart';
 part 'auth_repository.g.dart';
 
 class AuthRepository {
+  GoogleSignIn googleSignIn = GoogleSignIn(
+    scopes: ['email', 'profile'],
+  );
+
   /// Fetch the current auth session.
   Future<bool> isUserSignedIn() async {
     try {
@@ -109,8 +114,11 @@ class AuthRepository {
   }
 
   /// Sign the user out of the current device.
-  Future<void> signOut() async {
+  Future<void> signOut([ProviderType? providerType]) async {
     try {
+      if (providerType == ProviderType.google) {
+        await googleSignIn.signOut();
+      }
       await Amplify.Auth.signOut();
     } on Exception {
       rethrow;
@@ -120,9 +128,6 @@ class AuthRepository {
   /// Google sigIn and fetch user detail.
   Future<void> signInWithGoogle() async {
     try {
-      GoogleSignIn googleSignIn = GoogleSignIn(
-        scopes: ['email', 'profile'],
-      );
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signInSilently();
       final googleUserDetail = googleSignIn.currentUser;

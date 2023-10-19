@@ -11,6 +11,8 @@ part 'storage_repository.g.dart';
 
 class StorageRepository {
   ValueNotifier<double> uploadProgress = ValueNotifier<double>(0);
+
+  // Get image url from storage aws.
   Future<String> getImageUrl(String key) async {
     final result = await Amplify.Storage.getUrl(
       key: key,
@@ -25,10 +27,12 @@ class StorageRepository {
     return result.url.toString();
   }
 
+  // Get progress value.
   ValueNotifier<double> getUploadProgress() {
     return uploadProgress;
   }
 
+  // Upload image to storage aws.
   Future<String?> uploadFile(File file) async {
     try {
       final extension = p.extension(file.path);
@@ -53,6 +57,7 @@ class StorageRepository {
     }
   }
 
+  // Reset progress value.
   void resetUploadProgress() {
     uploadProgress.value = 0;
   }

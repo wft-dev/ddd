@@ -10,6 +10,7 @@ class RememberMeRepository {
   RememberMeRepository(this.sharedPreferences);
   final SharedPreferences sharedPreferences;
 
+  // Set the shared preferences for the remember user.
   Future<void> setRememberMeComplete(
       {required bool checkValue,
       required String email,
@@ -19,9 +20,11 @@ class RememberMeRepository {
     await sharedPreferences.setString(Strings.password, password);
   }
 
+  // Check remember user.
   bool isRememberMeComplete() =>
       sharedPreferences.getBool(Strings.rememberMeCompleteKey) ?? false;
 
+  // Get the shared preferences for the remember user.
   Remember getRememberMe() {
     final isRememberCheck =
         sharedPreferences.getBool(Strings.rememberMeCompleteKey) ?? false;
@@ -31,11 +34,13 @@ class RememberMeRepository {
   }
 }
 
+//[RememberMeRepository] provider.
 @Riverpod(keepAlive: true)
 RememberMeRepository rememberMeRepository(RememberMeRepositoryRef ref) {
   throw UnimplementedError();
 }
 
+// Get remember user information from the provider.
 @riverpod
 Remember getRemember(GetRememberRef ref) {
   ref.watch(rememberMeControllerProvider);

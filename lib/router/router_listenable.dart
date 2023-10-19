@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -52,7 +53,7 @@ class RouterListenable extends _$RouterListenable implements Listenable {
     final isSplash = state.location == SplashRoute.path;
 
     if (isSplash) {
-      Timer(const Duration(seconds: 1),
+      Timer(const Duration(seconds: Sizes.pInt1),
           () => _isAuth ? DashboardRoute.path : LoginRoute.path);
     }
 

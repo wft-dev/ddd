@@ -56,7 +56,7 @@
 		<key>UIStatusBarHidden</key>
 		<false/>
         <key>SERVER_CLIENT_ID</key>
-        <string>1066437602094-p5dhpusn3s0ld2kmd2kjlmcpv44e4b0k.apps.googleusercontent.com</string>
+        <string>209849049655-8rbk11d2ibbgui41p7687o6bgpekvfgn.apps.googleusercontent.com</string>
         <!-- Put me in the [my_project]/ios/Runner/Info.plist file -->
         <!-- Google Sign-in Section -->
         <key>CFBundleURLTypes</key>
@@ -68,7 +68,7 @@
                 <array>
                     <!-- TODO Replace this value: -->
                     <!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
-                    <string>com.googleusercontent.apps.1066437602094-p5dhpusn3s0ld2kmd2kjlmcpv44e4b0k</string>
+                    <string>com.googleusercontent.apps.209849049655-a0ad1acl6k61vhnm0kdev8q4v08tbek7</string>
                 </array>
             </dict>
         </array>

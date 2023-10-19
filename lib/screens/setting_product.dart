@@ -23,10 +23,10 @@ class SettingProductState extends ConsumerState<SettingProduct> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<GroupControllers> groupControllers = [];
 
-  late DateTime _startDate = DateTime.now();
-  late TimeOfDay _startTime = TimeOfDay.now();
-  late DateTime _endDate;
-  late TimeOfDay _endTime;
+  // late DateTime _startDate = DateTime.now();
+  // late TimeOfDay _startTime = TimeOfDay.now();
+  // late DateTime _endDate;
+  // late TimeOfDay _endTime;
   String? selectedValue;
   bool isDefault = false;
   bool skipValidation = false;
@@ -34,10 +34,10 @@ class SettingProductState extends ConsumerState<SettingProduct> {
   Setting? settingData;
   List<Inventory> inventoryList = inventoryDemoList;
 
-  DateTime get start => DateTime(_startDate.year, _startDate.month,
-      _startDate.day, _startTime.hour, _startTime.minute);
-  DateTime get end => DateTime(_endDate.year, _endDate.month, _endDate.day,
-      _endTime.hour, _endTime.minute);
+  // DateTime get start => DateTime(_startDate.year, _startDate.month,
+  //     _startDate.day, _startTime.hour, _startTime.minute);
+  // DateTime get end => DateTime(_endDate.year, _endDate.month, _endDate.day,
+  //     _endTime.hour, _endTime.minute);
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +117,7 @@ class SettingProductState extends ConsumerState<SettingProduct> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            buildStartDate(),
+            //buildStartDate(),
             buildSettingForm(_formKey),
             Box.gapH2,
             buildSaveButton(),
@@ -143,17 +143,17 @@ class SettingProductState extends ConsumerState<SettingProduct> {
     );
   }
 
-  // [DateTimePicker]
-  Widget buildStartDate() {
-    return DateTimePicker(
-      dateLabelText: Strings.date,
-      timeLabelText: Strings.time,
-      selectedDate: _startDate,
-      selectedTime: _startTime,
-      onSelectedDate: (date) => setState(() => _startDate = date),
-      onSelectedTime: (time) => setState(() => _startTime = time),
-    );
-  }
+  // // [DateTimePicker]
+  // Widget buildStartDate() {
+  //   return DateTimePicker(
+  //     dateLabelText: Strings.date,
+  //     timeLabelText: Strings.time,
+  //     selectedDate: _startDate,
+  //     selectedTime: _startTime,
+  //     onSelectedDate: (date) => setState(() => _startDate = date),
+  //     onSelectedTime: (time) => setState(() => _startTime = time),
+  //   );
+  // }
 
   // [AppDropDownFiled]
   AppDropDownFiled buildDropDownFiled(int index, String? value,
