@@ -1,6 +1,7 @@
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/models/filter_date.dart';
 
+// Get [FilterDate] from the filter type like month, year, week etc.
 FilterDate setFilterDate(
   ProductFilterType filterType, {
   int? month,

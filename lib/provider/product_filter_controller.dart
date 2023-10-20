@@ -8,6 +8,7 @@ part 'product_filter_controller.g.dart';
 
 @riverpod
 class ProductFilterController extends _$ProductFilterController {
+  // State of the get all products.
   @override
   FutureOr<List<Product?>> build() async {
     return getAllProducts();

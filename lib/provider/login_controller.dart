@@ -8,11 +8,13 @@ part 'login_controller.g.dart';
 
 @riverpod
 class LoginController extends _$LoginController {
+  // State of the login controller that will be created when the user is logged in.
   @override
   FutureOr<AuthResults> build() {
     return const AuthResults.signInResultValue(result: null);
   }
 
+  // Log in with the given email and password.
   Future<void> logInUser(String email, String password) async {
     final authRepository = ref.watch(authRepositoryProvider);
     state = const AsyncLoading();
@@ -20,6 +22,7 @@ class LoginController extends _$LoginController {
         () => authRepository.signInUser(email, password));
   }
 
+  // Log in with Google.
   Future<void> googleLogInUser() async {
     final authRepository = ref.watch(authRepositoryProvider);
     state = const AsyncLoading();

@@ -8,11 +8,13 @@ part 'resend_code_controller.g.dart';
 
 @riverpod
 class ResendCodeController extends _$ResendCodeController {
+  // State of the resend code.
   @override
   FutureOr<AuthResults> build() {
     return const AuthResults.resendSignUpCodeResultValue(result: null);
   }
 
+  // Resend the code that is used to confirm the user's account after sign up.
   Future<void> resendSignUpUserCode(String email) async {
     final authRepository = ref.watch(authRepositoryProvider);
     state = const AsyncLoading();

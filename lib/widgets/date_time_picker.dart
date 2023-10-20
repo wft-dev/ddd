@@ -23,6 +23,7 @@ class DateTimePicker extends StatelessWidget {
   final ValueChanged<DateTime>? onSelectedDate;
   final ValueChanged<TimeOfDay>? onSelectedTime;
 
+  // Show date picker.
   Future<void> _selectDate(BuildContext context) async {
     final ThemeData customDatePickerTheme = ThemeData(
       colorScheme: ColorScheme.light(
@@ -51,6 +52,7 @@ class DateTimePicker extends StatelessWidget {
     }
   }
 
+  // Show time picker.
   Future<void> _selectTime(BuildContext context) async {
     final ThemeData customTimePickerTheme = ThemeData(
       colorScheme: ColorScheme.light(

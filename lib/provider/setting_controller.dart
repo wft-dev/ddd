@@ -8,12 +8,14 @@ part 'setting_controller.g.dart';
 
 @riverpod
 class SettingController extends _$SettingController {
+  // Let's allow get setting with action types like add or remove.
   Future<Result> fetchSetting({actionType = ActionType.none}) async {
     final settingList =
         await ref.watch(settingRepositoryProvider).querySettingItems();
     return Result(items: settingList, actionType: actionType);
   }
 
+  // State of the setting.
   @override
   FutureOr<Result> build() async {
     return fetchSetting();

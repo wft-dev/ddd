@@ -14,6 +14,7 @@ class LoadingIndicatorDialog {
 
   LoadingIndicatorDialog._internal();
 
+  // Show loading indicator.
   show(BuildContext context, {String text = 'Loading...'}) {
     if (isDisplayed) {
       return;
@@ -51,6 +52,7 @@ class LoadingIndicatorDialog {
         });
   }
 
+  // Dismiss the loading indicator.
   dismiss(BuildContext context) {
     if (isDisplayed) {
       context.pop();

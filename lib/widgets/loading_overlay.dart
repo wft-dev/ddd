@@ -25,12 +25,15 @@ class LoadingOverlay extends StatefulWidget {
 
 class LoadingOverlayState extends State<LoadingOverlay> {
   bool _isLoading = false;
+
+  // Show the loading overlay if the state is loading.
   void show() {
     setState(() {
       _isLoading = true;
     });
   }
 
+  // Hide the loading overlay if the state is not loading.
   void hide() {
     setState(() {
       _isLoading = false;
@@ -47,6 +50,7 @@ class LoadingOverlayState extends State<LoadingOverlay> {
     return buildProgress();
   }
 
+  // Build LoadingOverlay.
   buildProgress() {
     return Stack(
       children: [

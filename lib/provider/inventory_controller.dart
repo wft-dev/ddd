@@ -8,18 +8,20 @@ part 'inventory_controller.g.dart';
 
 @riverpod
 class InventoryController extends _$InventoryController {
-  // Let's allow get all inventories.
+  // Let's allow get all inventories with action type like add or remove.
   Future<Result> fetchInventory({actionType = ActionType.none}) async {
     final inventoryList = await fetchInventoryList();
     return Result(items: inventoryList, actionType: actionType);
   }
 
+  // Let's allow get all inventories.
   Future<List<Inventory?>> fetchInventoryList() async {
     final inventoryList =
         await ref.watch(inventoryRepositoryProvider).queryInventoryItems();
     return inventoryList;
   }
 
+  // State of the inventory list with action type.
   @override
   FutureOr<Result> build() async {
     return fetchInventory();

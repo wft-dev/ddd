@@ -8,11 +8,13 @@ part 'update_password_controller.g.dart';
 
 @riverpod
 class UpdatePasswordController extends _$UpdatePasswordController {
+  // State of the update password.
   @override
   FutureOr<AuthResults> build() {
     return const AuthResults.updatePasswordResultValue(result: null);
   }
 
+  // Update the user password.
   Future<void> updateUserPassword(
     String oldPassword,
     String newPassword,

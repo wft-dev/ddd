@@ -8,11 +8,13 @@ part 'confirm_email_controller.g.dart';
 
 @riverpod
 class ConfirmEmailController extends _$ConfirmEmailController {
+  // State of the confirm email controller.
   @override
   FutureOr<AuthResults> build() {
     return const AuthResults.signInResultValue(result: null);
   }
 
+  // Confirm update user email with confirmation code.
   Future<void> confirmEmailWithCode(String confirmationCode) async {
     final authRepository = ref.watch(authRepositoryProvider);
     state = const AsyncLoading();

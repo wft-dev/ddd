@@ -7,6 +7,7 @@ part 'fetch_user_controller.g.dart';
 
 @riverpod
 class FetchUserController extends _$FetchUserController {
+  // State of the fetch user controller that return the user.
   @override
   FutureOr<User> build() {
     return fetchUser();

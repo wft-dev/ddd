@@ -8,11 +8,13 @@ part 'confirm_reset_password_controller.g.dart';
 
 @riverpod
 class ConfirmResetPasswordController extends _$ConfirmResetPasswordController {
+  // State of the reset password controller.
   @override
   FutureOr<AuthResults> build() {
     return const AuthResults.resetPasswordResultValue(result: null);
   }
 
+  // Function to confirm the user's reset password.
   Future<void> confirmUserResetPassword(
     String email,
     String newPassword,

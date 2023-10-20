@@ -48,6 +48,7 @@ class DateTimeRangePicker {
     this.onConfirm,
   });
 
+  // Show model bottom sheet for the date and time picker.
   void showPicker(BuildContext context) {
     initialStartTime ??= DateTime.now();
 
@@ -120,6 +121,7 @@ class DateTimeRangePicker {
   }
 }
 
+// Picker widget that is displayed on [showModalBottomSheet].
 class PickerWidget extends StatefulWidget {
   final List<Tab> _tabs;
   final int _interval;

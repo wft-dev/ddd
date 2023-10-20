@@ -10,6 +10,7 @@ part 'update_user_controller.g.dart';
 
 @riverpod
 class UpdateUserController extends _$UpdateUserController {
+  // State of the user.
   @override
   FutureOr<AuthResults> build() {
     return fetchUser();

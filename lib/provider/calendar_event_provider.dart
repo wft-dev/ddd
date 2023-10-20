@@ -10,6 +10,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 part 'calendar_event_provider.g.dart';
 
+// Get [LinkedHashMap] of the product list and date for the calendar.
 @riverpod
 LinkedHashMap<DateTime, List<Product>> getCalendarEvent(
   GetCalendarEventRef ref, {
@@ -58,6 +59,7 @@ LinkedHashMap<DateTime, List<Product>> getCalendarEvent(
   return events;
 }
 
+// Get [Map] of the product list and product type.
 @riverpod
 Map<String, List<Product>> getProductByType(GetProductByTypeRef ref) {
   final products = ref.watch(productControllerProvider).value;

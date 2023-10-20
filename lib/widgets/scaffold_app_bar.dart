@@ -3,6 +3,9 @@ import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+// [Scaffold] is wrap with the [HideKeyboardWidget].
+// [HideKeyboardWidget] is applying [GestureDetector] on the screen that is used to hide the keyboard when tap on the screen.
+// [Scaffold] appBar is displaying [CustomAppBar].
 class ScaffoldAppBar extends StatelessWidget {
   final Widget child;
   final String? barTitle;

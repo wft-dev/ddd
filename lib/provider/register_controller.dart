@@ -8,11 +8,13 @@ part 'register_controller.g.dart';
 
 @riverpod
 class RegisterController extends _$RegisterController {
+  // State of the register controller.
   @override
   FutureOr<AuthResults> build() {
     return const AuthResults.signInResultValue(result: null);
   }
 
+  // Register user.
   Future<void> registerUser(String firstName, String lastName, String email,
       String password, String phoneNumber) async {
     final authRepository = ref.watch(authRepositoryProvider);

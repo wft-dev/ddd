@@ -11,6 +11,8 @@ typedef VoidAsyncValue = AsyncValue<void>;
 extension AsyncValueUI on AsyncValue {
   bool get isLoading => this is AsyncLoading<void>;
 
+  // If state is loading then show the [LoadingOverlay].
+  // If state is not loading then hide the [LoadingOverlay].
   void isLoadingShow(BuildContext context) {
     debugPrint('isLoadingShow: $isLoading,');
     Future.delayed(Duration.zero, () {
@@ -20,6 +22,7 @@ extension AsyncValueUI on AsyncValue {
     });
   }
 
+  // If state has error = true then show the [showExceptionAlertDialog].
   void showAlertDialogOnError({required BuildContext context, WidgetRef? ref}) {
     debugPrint(
         'isLoading: $isLoading, hasError: $hasError, hasValue: $hasValue');

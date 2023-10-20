@@ -7,6 +7,7 @@ part 'filter_date_controller.g.dart';
 
 @riverpod
 class FilterDateController extends _$FilterDateController {
+  // State of the filter date.
   @override
   FilterDate build() {
     return setFilterDate(ProductFilterType.week);

@@ -10,18 +10,20 @@ part 'product_controller.g.dart';
 
 @riverpod
 class ProductController extends _$ProductController {
-  // Let's allow get all products.
+  // Let's allow get all products with action types like add or remove.
   Future<Result> fetchProduct({actionType = ActionType.none}) async {
     final productList = await fetchProductList();
     return Result(items: productList, actionType: actionType);
   }
 
+  // Let's allow get all products.
   Future<List<Product?>> fetchProductList() async {
     final productList =
         await ref.watch(productRepositoryProvider).queryProductItems();
     return productList;
   }
 
+  // State of the product list and the action type of the product.
   @override
   FutureOr<Result> build() async {
     return fetchProduct();
@@ -69,6 +71,7 @@ class ProductController extends _$ProductController {
     });
   }
 
+  // Let's allow filter products by date.
   void reportDataUpdate() async {
     final filterDate = ref.watch(filterDateControllerProvider);
     await ref

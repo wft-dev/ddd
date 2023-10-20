@@ -71,6 +71,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
           );
   }
 
+  // Get navigation bar height.
   @override
   Size get preferredSize => const Size.fromHeight(navigationBarHeight);
 }

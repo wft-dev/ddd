@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'providers.g.dart';
 
+// Listen to the filter date controller provider and the product filter controller provider for update the filter date.
 @riverpod
 void productFilterWithDate(
     ProductFilterWithDateRef ref, BuildContext context) async {
