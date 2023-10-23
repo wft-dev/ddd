@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 import 'package:flutter/material.dart';
 
+// This widget is used to display the [CachedNetworkImage] widget.
 class CircularImage extends StatelessWidget {
   final String imageURL;
   final double size;
@@ -40,8 +42,8 @@ class CircularImage extends StatelessWidget {
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(300.0)),
             child: isImageSelected == true
-                ? Image.asset(
-                    imageURL,
+                ? Image.file(
+                    File(imageURL),
                     fit: fit,
                   )
                 : CachedNetworkImage(

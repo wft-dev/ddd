@@ -2,6 +2,7 @@ import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+// [CircularContainer]
 class CircularContainer extends StatelessWidget {
   final Widget child;
   final double heightSize;

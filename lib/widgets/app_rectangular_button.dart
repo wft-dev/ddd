@@ -3,6 +3,7 @@ import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+// This [AppRectangularButton] is used to display a rectangular button.
 class AppRectangularButton extends StatefulWidget {
   final int index;
   final int activeIndex;

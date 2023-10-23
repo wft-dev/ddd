@@ -7,12 +7,14 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 typedef PickerConfirmCallback = void Function(DateTime start, DateTime end);
 
+// This enum is used to display the picker mode.
 enum DateTimeRangePickerMode {
   time,
   date,
   dateAndTime,
 }
 
+// This widget is used to display the date and time range pick for the app.
 class DateTimeRangePicker {
   final String startText;
   final String endText;

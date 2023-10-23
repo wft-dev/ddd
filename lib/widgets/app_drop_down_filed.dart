@@ -5,6 +5,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+// This [AppDropDownFiled] is used to display list of items on the [DropdownButtonFormField2] widget.
 class AppDropDownFiled<T> extends StatefulWidget {
   const AppDropDownFiled({
     required this.hint,

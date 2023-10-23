@@ -4,6 +4,7 @@ import 'package:daily_dairy_diary/widgets/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+// This [InputDropdown] class is used to display the [DateTimePicker].
 class InputDropdown extends StatelessWidget {
   const InputDropdown({
     Key? key,

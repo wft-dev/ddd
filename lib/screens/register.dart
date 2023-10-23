@@ -52,6 +52,7 @@ class RegisterState extends ConsumerState<Register> {
     );
   }
 
+  // Build all widgets.
   Widget getBody() {
     return CircularContainer(
       child: SingleChildScrollView(
@@ -76,6 +77,7 @@ class RegisterState extends ConsumerState<Register> {
     );
   }
 
+  // This [Form] is used for enter first name, last name, email, password, phone number.
   Form buildEmailSignUpForm() {
     return Form(
       key: _formKey,
@@ -136,6 +138,7 @@ class RegisterState extends ConsumerState<Register> {
     );
   }
 
+  // This [AppButton] is used for sign up.
   AppButton buildRegisterButton() {
     ref.listen<AsyncValue>(registerControllerProvider, (_, state) {
       print('loginControllerProvider state, $state');
@@ -187,6 +190,7 @@ class RegisterState extends ConsumerState<Register> {
     );
   }
 
+  // This [AppCheckbox] is used for select the term and condition.
   AppCheckbox buildTermCondition() {
     return AppCheckbox(
       errorText: isTermConditionChecked != true && isTermConditionError

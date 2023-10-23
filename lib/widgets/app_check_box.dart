@@ -3,6 +3,7 @@ import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+// [AppCheckbox] is used to show the [Checkbox].
 class AppCheckbox extends StatefulWidget {
   final bool? listTileCheckBox;
   final bool? isTitle;

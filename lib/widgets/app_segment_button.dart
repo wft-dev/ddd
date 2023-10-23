@@ -3,6 +3,7 @@ import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+// This [AppSegmentButton] class is used to create a list of [TextButton].
 class AppSegmentButton extends StatelessWidget {
   final List<String> labels;
   final int selectedIndex;

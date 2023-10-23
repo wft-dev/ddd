@@ -7,6 +7,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 typedef AppPickerConfirmCallback = void Function(String text);
 
+// This [AppPicker] is used to show the [AppPickerWidget].
 class AppPicker<T> {
   final String title;
   final String doneText;
@@ -52,6 +53,7 @@ class AppPicker<T> {
   }
 }
 
+// This [AppPickerWidget] is used to display the list of items in the custom picker.
 class AppPickerWidget<T> extends StatefulWidget {
   final List<Tab> _tabs;
   final VoidCallback? _onCancel;

@@ -6,6 +6,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 import '../utils/common_utils.dart';
 
+// [PhoneNumberTextField] class is used to display the [InternationalPhoneNumberInput].
 class PhoneNumberTextField extends StatefulWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;

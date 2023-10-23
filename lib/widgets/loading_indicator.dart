@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:daily_dairy_diary/widgets/all_widgets.dart';
 
+// This [LoadingIndicatorDialog] class is used to load the [ProgressIndicator] on the widgets.
 class LoadingIndicatorDialog {
   static final LoadingIndicatorDialog _singleton =
       LoadingIndicatorDialog._internal();

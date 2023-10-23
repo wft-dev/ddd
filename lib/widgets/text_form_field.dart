@@ -3,6 +3,7 @@ import 'package:daily_dairy_diary/widgets/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+// This [AppTextFormField] contain the [Textfield].
 class AppTextFormField extends StatefulWidget {
   final TextEditingController? controller;
   final Function? validator;

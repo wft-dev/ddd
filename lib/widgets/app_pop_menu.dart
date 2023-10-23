@@ -4,6 +4,7 @@ import 'package:daily_dairy_diary/constant/constant.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 
+// This [AppPopMenu] class is used to display the [PopupMenuButton].
 class AppPopMenu extends StatefulWidget {
   const AppPopMenu({required this.onSelected, Key? key}) : super(key: key);
 

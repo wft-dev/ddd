@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'input_dropdown.dart';
 
+// This [DateTimePicker] is used to display the date and time picker.
 class DateTimePicker extends StatelessWidget {
   const DateTimePicker({
     Key? key,

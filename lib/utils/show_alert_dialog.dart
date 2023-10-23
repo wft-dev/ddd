@@ -1,6 +1,7 @@
 import 'package:daily_dairy_diary/constant/strings.dart';
 import 'package:daily_dairy_diary/router/router_listenable.dart';
 import 'package:daily_dairy_diary/router/routes.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -46,6 +47,7 @@ Future<bool?> showAlertDialog(
   );
 }
 
+// Show alert dialog with custom action for the app.
 Future<bool?> showAlertActionDialog({
   required BuildContext context,
   required String title,
@@ -77,4 +79,28 @@ Future<bool?> showAlertActionDialog({
       ],
     ),
   );
+}
+
+// Show alert dialog with custom action for the app.
+Future<bool?> showActionSheetDialog(
+    {required BuildContext context,
+    required String title,
+    String? message,
+    List<Widget>? actions}) async {
+  final action = CupertinoActionSheet(
+    title: Text(
+      title,
+    ),
+    message: message != null ? Text(message) : null,
+    actions: actions,
+    cancelButton: CupertinoActionSheetAction(
+      child: const Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    ),
+  );
+
+  return showCupertinoModalPopup(
+      context: context, builder: (context) => action);
 }

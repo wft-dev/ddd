@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:daily_dairy_diary/utils/common_utils.dart';
 import 'package:daily_dairy_diary/widgets/common_widget.dart';
 
+// This [LoadingOverlay] class is used to load the [ProgressIndicator] on the widgets.
 class LoadingOverlay extends StatefulWidget {
   const LoadingOverlay({
     Key? key,
