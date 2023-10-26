@@ -50,6 +50,7 @@ class ChangePasswordState extends ConsumerState<ChangePassword> {
     );
   }
 
+  // This [Form] is used for enter old password, new password, confirm password.
   Form buildChangePasswordForm() {
     return Form(
       key: _formKey,
@@ -84,6 +85,7 @@ class ChangePasswordState extends ConsumerState<ChangePassword> {
     );
   }
 
+  // This [AppButton] is used for change the password.
   AppButton buildSaveButton() {
     ref.listen<AsyncValue>(updatePasswordControllerProvider, (_, state) {
       state.isLoadingShow(context);

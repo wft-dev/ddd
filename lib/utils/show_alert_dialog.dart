@@ -94,9 +94,10 @@ Future<bool?> showActionSheetDialog(
     message: message != null ? Text(message) : null,
     actions: actions,
     cancelButton: CupertinoActionSheetAction(
-      child: const Text("Cancel"),
+      isDestructiveAction: true,
+      child: const Text(Strings.cancel),
       onPressed: () {
-        Navigator.pop(context);
+        context.pop(false);
       },
     ),
   );

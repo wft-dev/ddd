@@ -42,7 +42,7 @@ class Strings {
   static const String profile = 'Profile';
   static const String wantToLogout = 'Do you want to logout?';
   static const String dashboard = 'Dashboard';
-  static const String pickImage = 'Pick image for camera or gallery.';
+  static const String pickImage = 'Pick image from camera or gallery.';
   static const String gallery = 'Gallery';
   static const String camera = 'Camera';
 

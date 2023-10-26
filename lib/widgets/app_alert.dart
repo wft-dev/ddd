@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+// [AppAlert] class for the alert message.
 class AppAlert extends StatelessWidget {
   final String title;
   final String content;

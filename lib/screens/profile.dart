@@ -5,9 +5,11 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:daily_dairy_diary/models/auth_results.dart';
 import 'package:daily_dairy_diary/models/user.dart';
 import 'package:daily_dairy_diary/router/router_listenable.dart';
+import 'package:daily_dairy_diary/widgets/loading_overlay.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:daily_dairy_diary/constant/strings.dart';
@@ -162,18 +164,7 @@ class ProfileState extends ConsumerState<Profile> {
                       child: GestureDetector(
                         onTap: () {
                           if (!isGoogleLogin) {
-                            PickImage()
-                                .imageFormGallery(
-                              context: context,
-                            )
-                                .then((value) {
-                              if (value != null) {
-                                setState(() {
-                                  pickedImage = value;
-                                  isImageSelected = true;
-                                });
-                              }
-                            });
+                            showImageActionSheet();
                           }
                         },
                         child: CircularImage(
@@ -211,6 +202,46 @@ class ProfileState extends ConsumerState<Profile> {
         ),
       ),
     );
+  }
+
+  // Show action sheet for pick the image from the camera and gallery.
+  void showImageActionSheet() {
+    showActionSheetDialog(
+      context: context,
+      title: Strings.pickImage,
+      actions: <Widget>[
+        CupertinoActionSheetAction(
+          isDefaultAction: true,
+          onPressed: () => handleImageActionSheet(
+              actionType: Strings.gallery, context: context),
+          child: const Text(Strings.gallery),
+        ),
+        CupertinoActionSheetAction(
+          isDefaultAction: true,
+          onPressed: () => handleImageActionSheet(
+              actionType: Strings.camera, context: context),
+          child: const Text(Strings.camera),
+        )
+      ],
+    );
+  }
+
+  // Handle the click on the gallery button and camera button.
+  Future<void> handleImageActionSheet(
+      {required String actionType, required BuildContext context}) async {
+    context.pop(false);
+    String? value;
+    if (actionType == Strings.camera) {
+      value = await PickImage().imageFormCamera(context: context);
+    } else if (actionType == Strings.gallery) {
+      value = await PickImage().imageFormGallery(context: context);
+    }
+    if (value != null) {
+      setState(() {
+        pickedImage = value;
+        isImageSelected = true;
+      });
+    }
   }
 
   // This [Form] display first name, last name, phone number.
@@ -309,11 +340,13 @@ class ProfileState extends ConsumerState<Profile> {
           isShowCancel: true,
           defaultActionText: Strings.yes,
           onYesPress: () async {
+            LoadingOverlay.of(context)?.show();
             await ref
                 .read(authRepositoryProvider)
                 .signOut(isGoogleLogin ? ProviderType.google : null);
             if (mounted) {
               ref.read(routerListenableProvider.notifier).userIsLogin(false);
+              LoadingOverlay.of(context)?.hide();
               const LoginRoute().go(context);
             }
           },

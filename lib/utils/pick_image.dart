@@ -8,7 +8,8 @@ class PickImage {
     required BuildContext context,
   }) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery, requestFullMetadata: false);
     if (pickedFile == null) {
       return null;
     }
@@ -20,7 +21,8 @@ class PickImage {
     required BuildContext context,
   }) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    final pickedFile = await picker.pickImage(
+        source: ImageSource.camera, requestFullMetadata: false);
     if (pickedFile == null) {
       return null;
     }

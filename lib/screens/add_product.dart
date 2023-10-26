@@ -15,8 +15,10 @@ import 'package:go_router/go_router.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class AddProduct extends ConsumerStatefulWidget {
-  const AddProduct(this.productData, {Key? key}) : super(key: key);
+  const AddProduct(this.productData, this.selectedDate, {Key? key})
+      : super(key: key);
   final Product? productData;
+  final DateTime? selectedDate;
 
   @override
   ConsumerState<AddProduct> createState() => AddProductState();
@@ -27,7 +29,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   final GlobalKey<FormState> _moreFormKey = GlobalKey<FormState>();
   List<GroupControllers> groupControllers = [];
 
-  late DateTime buyDate = DateTime.now();
+  late DateTime buyDate = widget.selectedDate ?? DateTime.now();
   late TimeOfDay buyTime = TimeOfDay.now();
   String? selectedValue;
   bool isDefault = false;

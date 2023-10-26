@@ -82,7 +82,7 @@ class DashboardState extends ConsumerState<Dashboard> {
               icon: Image.asset(AppImages.addMoreBtnImage),
               iconSize: Sizes.p40,
               onPressed: () {
-                AddProductRoute().push(context);
+                AddProductRoute(selectedDate: _selectedDay).push(context);
               },
             ),
           ),

@@ -279,13 +279,14 @@ class ReportRoute extends GoRouteData {
 // AddProduct
 @TypedGoRoute<AddProductRoute>(path: AddProductRoute.path)
 class AddProductRoute extends GoRouteData {
-  AddProductRoute({this.$extra});
+  AddProductRoute({this.$extra, this.selectedDate});
   static const path = '/addProduct';
   final Product? $extra;
+  final DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return AddProduct($extra);
+    return AddProduct($extra, selectedDate);
   }
 }
 
