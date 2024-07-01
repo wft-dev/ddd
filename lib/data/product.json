@@ -1,0 +1,43 @@
+[
+    {
+        "title": "Verka Milk",
+        "category": "Milk",
+        "type": "Low Fat",
+        "price": 42.95
+    },
+    {
+        "id": "d0975326-7b43-479e-a109-cb818abec62d",
+        "title": "Verka Milk",
+        "category": "Milk",
+        "type": "High",
+        "price": 42.95
+    },
+    {
+        "id": "d0975326-7b43-479e-a109-cb818abec62d",
+        "title": "Bread",
+        "category": "Bread",
+        "type": "Small",
+        "price": 42.95
+    },
+    {
+        "id": "d0975326-7b43-479e-a109-cb818abec62d",
+        "title": "Bread",
+        "category": "Bread",
+        "type": "large",
+        "price": 42.95
+    },
+    {
+        "id": "d0975326-7b43-479e-a109-cb818abec62d",
+        "title": "Curd",
+        "category": "Curd",
+        "type": "Small",
+        "price": 42.95
+    },
+    {
+        "id": "d0975326-7b43-479e-a109-cb818abec62d",
+        "title": "Curd",
+        "category": "Curd",
+        "type": "large",
+        "price": 42.95
+    }
+]

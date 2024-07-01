@@ -19,7 +19,7 @@ type Product @model @auth(rules: [{ allow: owner }]) {
   userID: ID!
 }
 
-type Inventory @model  @auth(rules: [{ allow: public, operations: [read] }, { allow: owner }]) {
+type Inventory @model  @auth(rules: [{ allow: public, operations: [read] }]) {
   id: ID!
   type: String
   price: Int

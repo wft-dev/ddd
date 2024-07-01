@@ -9,6 +9,15 @@
     "amplify/backend/awscloudformation": true
   },
   "cSpell.words": [
-    "ARGB"
+    "amplifyconfiguration",
+    "ARGB",
+    "autofocus",
+    "autovalidate",
+    "Bezier",
+    "cupertino",
+    "Reclip",
+    "riverpod",
+    "unfocus",
+    "vsync"
   ]
 }

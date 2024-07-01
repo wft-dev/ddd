@@ -15,10 +15,8 @@ import 'package:go_router/go_router.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class AddProduct extends ConsumerStatefulWidget {
-  const AddProduct(this.productData, this.selectedDate, {Key? key})
-      : super(key: key);
+  const AddProduct(this.productData, {Key? key}) : super(key: key);
   final Product? productData;
-  final DateTime? selectedDate;
 
   @override
   ConsumerState<AddProduct> createState() => AddProductState();
@@ -29,7 +27,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   final GlobalKey<FormState> _moreFormKey = GlobalKey<FormState>();
   List<GroupControllers> groupControllers = [];
 
-  late DateTime buyDate = widget.selectedDate ?? DateTime.now();
+  late DateTime buyDate = DateTime.now();
   late TimeOfDay buyTime = TimeOfDay.now();
   String? selectedValue;
   bool isDefault = false;
@@ -113,61 +111,6 @@ class AddProductState extends ConsumerState<AddProduct> {
         });
       }
     });
-    getInventoryData();
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
-      child: Container(
-        padding: EdgeInsets.only(bottom: Sizes.p4.sh),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            buildRoundedContainer(
-              child: Column(
-                children: [
-                  buildDatePicker(),
-                  buildSettingForm(_formKey),
-                  if ((widget.productData == null) &&
-                      (settingData != null)) ...[
-                    Box.gapH2,
-                    buildSaveAndResetButton(),
-                  ] else ...[
-                    if ((settingData == null) &&
-                        (widget.productData == null)) ...[
-                      buildIsDefaultCheckbox(),
-                    ],
-                    Box.gapH2,
-                    buildSaveButton(),
-                  ]
-                ],
-              ),
-            ),
-            if (widget.productData == null) ...[
-              if (isAddMoreSelected) ...[
-                Form(
-                  key: _moreFormKey,
-                  child: Flexible(
-                    // height: 400,
-                    child: buildMoreProductListView(),
-                  ),
-                )
-              ],
-              Box.gapH2,
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
-                child: buildAddMoreButton(),
-              ),
-              Box.gapH2,
-            ]
-          ],
-        ),
-      ),
-    );
-  }
-
-  //Get [Inventory] data for [AppDropDownFiled].
-  getInventoryData() {
     final list = ref.watch(inventoryControllerProvider);
     list.whenData((value) {
       final inventoryResult = value;
@@ -182,9 +125,69 @@ class AddProductState extends ConsumerState<AddProduct> {
     ref.listen<AsyncValue>(settingControllerProvider, (_, state) {
       state.showAlertDialogOnError(context: context, ref: ref);
     });
+
+    return Container(
+      height: ResponsiveAppUtil.height * Sizes.p01.sh,
+      // width: ResponsiveAppUtil.width,
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius:
+            BorderRadius.vertical(bottom: Radius.circular(Sizes.p12.sw)),
+      ),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
+        child: Container(
+          padding: EdgeInsets.only(bottom: Sizes.p4.sh),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildRoundedContainer(
+                child: Column(
+                  children: [
+                    buildDatePicker(),
+                    buildSettingForm(_formKey),
+                    if ((widget.productData == null) &&
+                        (settingData != null)) ...[
+                      Box.gapH2,
+                      buildSaveAndResetButton(),
+                    ] else ...[
+                      if ((settingData == null) &&
+                          (widget.productData == null)) ...[
+                        buildIsDefaultCheckbox(),
+                      ],
+                      Box.gapH2,
+                      buildSaveButton(),
+                    ]
+                  ],
+                ),
+              ),
+              if (widget.productData == null) ...[
+                if (isAddMoreSelected) ...[
+                  Form(
+                    key: _moreFormKey,
+                    child: Flexible(
+                      // height: 400,
+                      child: buildMoreProductListView(),
+                    ),
+                  )
+                ],
+                Box.gapH2,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Sizes.p5.sw),
+                  child: buildAddMoreButton(),
+                ),
+                Box.gapH2,
+              ]
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  // This [Row] is used for show add, update and reset buttons.
+  // This [Row] is used show add, update and reset buttons.
   Row buildSaveAndResetButton() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -232,7 +235,7 @@ class AddProductState extends ConsumerState<AddProduct> {
   }
 
   // [DateTimePicker]
-  DateTimePicker buildDatePicker() {
+  Widget buildDatePicker() {
     return DateTimePicker(
       dateLabelText: Strings.date,
       timeLabelText: Strings.time,
@@ -254,7 +257,8 @@ class AddProductState extends ConsumerState<AddProduct> {
       [ValueChanged<Inventory?>? onChanged]) {
     return AppDropDownFiled<Inventory>(
       label: Strings.type,
-      dropdownItems: inventoryList,
+      dropdownItems:
+          inventoryList.isNotEmpty ? inventoryList : inventoryDemoList,
       onChanged: onChanged,
       hint: Strings.selectType,
       validator: (value) {
@@ -292,6 +296,7 @@ class AddProductState extends ConsumerState<AddProduct> {
 
   // This [AppButton] is used for create the setting product and additional products.
   AppButton buildSaveButton() {
+    // final q = ref.watch(settingControllerProvider);
     ref.listen<AsyncValue>(productControllerProvider, (_, state) {
       state.showAlertDialogOnError(context: context, ref: ref);
       state.whenData((product) {
@@ -368,6 +373,13 @@ class AddProductState extends ConsumerState<AddProduct> {
             await ref
                 .read(productControllerProvider.notifier)
                 .editProduct(updatedProductData);
+
+            // ref
+            //     .read(inventoryControllerProvider.notifier)
+            //     .addInventory(inventoryDemoList);
+            // ref
+            //     .read(inventoryControllerProvider.notifier)
+            //     .removeInventory(inventoryList[0]);
           } else {
             await ref
                 .read(productControllerProvider.notifier)
@@ -456,9 +468,6 @@ class AddProductState extends ConsumerState<AddProduct> {
                   text: Strings.remove,
                   onPress: () {
                     setState(() {
-                      if (_moreFormKey.currentState != null) {
-                        _moreFormKey.currentState?.reset();
-                      }
                       groupControllers.removeAt(indexForList);
                       productList.removeAt(index);
                       if (productList.length == Sizes.pInt0) {
